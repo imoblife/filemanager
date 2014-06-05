@@ -18,18 +18,18 @@
         android:orderInCategory="10"
         android:title="@string/menu_search">
     </item>
-    <item
+ <!--    <item
         android:id="@+id/menu_settings"
         android:icon="@drawable/ic_action_settings"
         android:showAsAction="never"
         android:menuCategory="container"
         android:title="@string/menu_settings">
-    </item>
-    <item
+    </item> -->
+  <!--   <item
         android:id="@+id/menu_donate"
         android:icon="@drawable/ic_action_settings"
         android:showAsAction="never"
         android:title="@string/menu_donate">
-    </item>
+    </item> -->
 
 </menu>

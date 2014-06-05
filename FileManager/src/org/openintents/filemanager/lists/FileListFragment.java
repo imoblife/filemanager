@@ -14,13 +14,13 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import org.openintents.filemanager.FileHolderListAdapter;
-import org.openintents.filemanager.FileManagerApplication;
 import org.openintents.filemanager.R;
 import org.openintents.filemanager.compatibility.ActionbarRefreshHelper;
 import org.openintents.filemanager.files.DirectoryContents;
@@ -78,11 +78,11 @@ public abstract class FileListFragment extends ListFragment {
 
 	private ViewFlipper mFlipper;
 	private File mCurrentDirectory;
-    private View mClipboardInfo;
-    private TextView mClipboardContent;
-    private TextView mClipboardAction;
+	private View mClipboardInfo;
+	private TextView mClipboardContent;
+	private TextView mClipboardAction;
 
-    @Override
+	@Override
 	public void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
 
@@ -91,7 +91,8 @@ public abstract class FileListFragment extends ListFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.filelist, null);
 	}
 
@@ -122,19 +123,43 @@ public abstract class FileListFragment extends ListFragment {
 
 		// Init flipper
 		mFlipper = (ViewFlipper) view.findViewById(R.id.flipper);
-        mClipboardInfo = view.findViewById(R.id.clipboard_info);
-        mClipboardContent = (TextView) view.findViewById(R.id.clipboard_content);
-        mClipboardAction = (TextView) view.findViewById(R.id.clipboard_action);
-        mClipboardAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((FileManagerApplication)getActivity().getApplication()).getCopyHelper().clear();
-                updateClipboardInfo();
+		mClipboardInfo = view.findViewById(R.id.clipboard_info);
+		mClipboardContent = (TextView) view
+				.findViewById(R.id.clipboard_content);
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                    ActionbarRefreshHelper.activity_invalidateOptionsMenu(getActivity());
-            }
-        });
+		mClipboardContent.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+
+				if (CopyHelper.get(getActivity()).canPaste())
+					CopyHelper.get(getActivity()).paste(new File(getPath()),
+							new CopyHelper.OnOperationFinishedListener() {
+								public void operationFinished(boolean success) {
+									refresh();
+
+								}
+							});
+				else {
+					Toast.makeText(getActivity(), R.string.nothing_to_paste,
+							Toast.LENGTH_LONG).show();
+				}
+			}
+		});
+
+		mClipboardAction = (TextView) view.findViewById(R.id.clipboard_action);
+		mClipboardAction.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				CopyHelper.get(getActivity()).clear();
+				updateClipboardInfo();
+
+//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+//					ActionbarRefreshHelper
+//							.activity_invalidateOptionsMenu(getActivity());
+			}
+		});
 
 		// Get arguments
 		if (savedInstanceState == null) {
@@ -237,16 +262,15 @@ public abstract class FileListFragment extends ListFragment {
 
 				mAdapter.notifyDataSetChanged();
 
-				
-				if (mPreviousDirectory != null){
+				if (mPreviousDirectory != null) {
 					selectInList(mPreviousDirectory);
 				} else {
 					// Reset list position.
 					if (mFiles.size() > 0)
-						getListView().setSelection(0);					
+						getListView().setSelection(0);
 				}
 				setLoading(false);
-                updateClipboardInfo();
+				updateClipboardInfo();
 				break;
 			case DirectoryScanner.MESSAGE_SET_PROGRESS:
 				// Irrelevant.
@@ -255,24 +279,27 @@ public abstract class FileListFragment extends ListFragment {
 		}
 	}
 
-    public void updateClipboardInfo() {
-        CopyHelper copyHelper = ((FileManagerApplication) getActivity().getApplication()).getCopyHelper();
-        if (copyHelper.canPaste()){
-            mClipboardInfo.setVisibility(View.VISIBLE);
-            int count = copyHelper.getItemsCount();
-            if (CopyHelper.Operation.COPY.equals(copyHelper.getOperationType())) {
-                mClipboardContent.setText(getResources().getQuantityString(R.plurals.clipboard_info_items_to_copy, count, count));
-                mClipboardAction.setText(getString(R.string.clipboard_dismiss));
-            } else if (CopyHelper.Operation.CUT.equals(copyHelper.getOperationType())) {
-                mClipboardContent.setText(getResources().getQuantityString(R.plurals.clipboard_info_items_to_move, count, count));
-                mClipboardAction.setText(getString(R.string.clipboard_undo));
-            }
-        } else {
-            mClipboardInfo.setVisibility(View.GONE);
-        }
-    }
+	public void updateClipboardInfo() {
+		if (CopyHelper.get(getActivity()).canPaste()) {
+			mClipboardInfo.setVisibility(View.VISIBLE);
+			int count = CopyHelper.get(getActivity()).getItemsCount();
+			if (CopyHelper.Operation.COPY.equals(CopyHelper.get(getActivity())
+					.getOperationType())) {
+				mClipboardContent.setText(getResources().getQuantityString(
+						R.plurals.clipboard_info_items_to_copy, count, count));
+				mClipboardAction.setText(getString(R.string.clipboard_dismiss));
+			} else if (CopyHelper.Operation.CUT.equals(CopyHelper.get(
+					getActivity()).getOperationType())) {
+				mClipboardContent.setText(getResources().getQuantityString(
+						R.plurals.clipboard_info_items_to_move, count, count));
+				mClipboardAction.setText(getString(R.string.clipboard_undo));
+			}
+		} else {
+			mClipboardInfo.setVisibility(View.GONE);
+		}
+	}
 
-    /**
+	/**
 	 * Used to inform subclasses about loading state changing. Can be used to
 	 * make the ui indicate the loading state of the fragment.
 	 * 
@@ -296,12 +323,12 @@ public abstract class FileListFragment extends ListFragment {
 	 *            The path to set.
 	 */
 	public final void setPath(File dir) {
-		
-		if (dir.exists() && dir.isDirectory()){
+
+		if (dir.exists() && dir.isDirectory()) {
 			mPreviousDirectory = mCurrentDirectory;
 			mCurrentDirectory = dir;
 			mPath = dir.getAbsolutePath();
-			
+
 		}
 	}
 

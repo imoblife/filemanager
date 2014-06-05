@@ -3,100 +3,85 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:inAnimation="@anim/fade_in"
-    android:outAnimation="@anim/fade_out"
-    android:isScrollContainer="true" >
+    android:isScrollContainer="true"
+    android:outAnimation="@anim/fade_out" >
 
-  <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <ProgressBar
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:indeterminate="true" />
-
-    <TextView
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:text="@string/scanning" />
-  </LinearLayout>
-
-  <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
 
-    <FrameLayout
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          android:id="@+id/list_container"
-          android:orientation="vertical"
-          android:gravity="center"
-          android:layout_alignParentStart="true"
-          android:layout_alignParentEnd="true"
-          android:layout_above="@+id/clipboard_info">
-          <ListView
-              android:id="@android:id/list"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:fastScrollEnabled="true"
-              android:paddingLeft="@dimen/list_margin"
-              android:paddingRight="@dimen/list_margin"
-              android:background="?attr/listBackground" >
-          </ListView>
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true" />
 
-          <TextView
-              android:id="@android:id/empty"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:text="@string/this_folder_is_empty"
-              android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    </FrameLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/scanning" />
+    </LinearLayout>
 
     <RelativeLayout
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:layout_alignParentBottom="true"
-      android:padding="8dp"
-      android:orientation="horizontal"
-      android:id="@+id/clipboard_info"
-      android:background="?org.openintents.filemanager:attr/pathBarBackground">
-
-      <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/clipboard_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/navbar_details"
-        android:layout_alignParentStart="true"
-        android:layout_toStartOf="@+id/clipboard_separator"
-        android:layout_centerVertical="true" />
-      <TextView
-        android:layout_width="2dp"
-        android:layout_height="wrap_content"
-        android:paddingLeft="@dimen/list_margin"
-        android:paddingRight="@dimen/list_margin"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:background="@color/navbar_details"
-        android:id="@+id/clipboard_separator"
-        android:layout_toStartOf="@+id/clipboard_action"
-        android:layout_margin="8dp"
-        android:layout_centerVertical="true" />
-      <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/clipboard_action"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/navbar_details"
-        android:layout_alignParentEnd="true"
-        android:clickable="true"
-        android:gravity="center"
-        android:layout_centerVertical="true" />
-    </RelativeLayout>
+        android:layout_height="match_parent" >
 
-  </RelativeLayout>
+        <FrameLayout
+            android:id="@+id/list_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/clipboard_info"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@android:id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fastScrollEnabled="true"
+                android:paddingLeft="@dimen/list_margin"
+                android:paddingRight="@dimen/list_margin" >
+            </ListView>
+
+            <TextView
+                android:id="@android:id/empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/this_folder_is_empty"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/clipboard_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:padding="8dp" >
+
+            <TextView
+                android:id="@+id/clipboard_content"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:layout_toStartOf="@+id/clipboard_separator"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/navbar_details" />
+
+            <TextView
+                android:layout_weight="1"
+                android:id="@+id/clipboard_action"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:clickable="true"
+                android:gravity="center"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/navbar_details" />
+        </LinearLayout>
+    </RelativeLayout>
 
 </ViewFlipper>

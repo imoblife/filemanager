@@ -52,12 +52,12 @@ public class BookmarkListFragment extends ListFragment {
 		setEmptyText(getString(R.string.bookmark_empty));
 		
 		// Handle item selection.
-		if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB){
+	//	if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB){
 			registerForContextMenu(getListView());
-		} else {
-			BookmarkMultiChoiceModeHelper.listView_setMultiChoiceModeListener(getListView(), getActivity());
-			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		}
+//		} else {
+//			BookmarkMultiChoiceModeHelper.listView_setMultiChoiceModeListener(getListView(), getActivity());
+//			getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+//		}
 	}
 	
 	@Override

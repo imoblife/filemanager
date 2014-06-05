@@ -36,7 +36,7 @@ import android.widget.ViewFlipper;
  */
 public class PathBar extends ViewFlipper {
 	private String TAG = this.getClass().getName();
-	
+
 	/**
 	 * The available Modes of this PathBar. </br> See {@link PathBar#switchToManualInput() switchToManualInput()} and {@link PathBar#switchToStandardInput() switchToStandardInput()}.
 	 */
@@ -65,7 +65,7 @@ public class PathBar extends ViewFlipper {
 	private EditText mPathEditText = null;
 	/** The ImageButton to confirm the manually entered path. */
 	private ImageButton mGoButton = null;
-	
+
 	private OnDirectoryChangedListener mDirectoryChangedListener = new OnDirectoryChangedListener() {
 		@Override
 		public void directoryChanged(File newCurrentDir) {
@@ -294,14 +294,14 @@ public class PathBar extends ViewFlipper {
 	 */
 	public boolean cd(File file) {
 		boolean res = false;
-		
+
 		if (isFileOk(file)) {
 			// Set proper current directory.
 			mCurrentDirectory = file;
-	
+
 			// Refresh button layout.
 			mPathButtons.refresh(mCurrentDirectory);
-	
+
 			// Reset scrolling position. http://stackoverflow.com/questions/3263259/scrollview-scrollto-not-working-saving-scrollview-position-on-rotation
 			mPathButtonsContainer.post(new Runnable() {
 				@Override
@@ -311,10 +311,10 @@ public class PathBar extends ViewFlipper {
 							(int) mPathButtonsContainer.getTop());
 				}
 			});
-	
+
 			// Refresh manual input field.
 			mPathEditText.setText(file.getAbsolutePath());
-			
+
 			res = true;
 		} else
 			res = false;
@@ -425,7 +425,7 @@ public class PathBar extends ViewFlipper {
 			}
 		}
 	}
-	
+
 	@Override
 	public void setEnabled(boolean enabled) {
 		if(enabled)
@@ -434,7 +434,7 @@ public class PathBar extends ViewFlipper {
 			switchToManualInput();
 		mPathEditText.setEnabled(enabled);
 		mGoButton.setVisibility(enabled ? View.VISIBLE : View.GONE);
-		
+
 		super.setEnabled(enabled);
 	}
 
@@ -448,25 +448,25 @@ public class PathBar extends ViewFlipper {
 	public PathButtonLayout getPathButtonLayout() {
 		return mPathButtons;
 	}
-	
+
 	boolean isFileOk(File file) {
 		// Check file state.
 		boolean isFileOK = true;
 		isFileOK &= file.exists();
 		isFileOK &= file.isDirectory();
 		// add more filters here..
-		
+
 		return isFileOK;
 	}
-	
+
 	public Drawable getItemBackground(){
 		int[] attrs = new int[] {R.attr.pathBarItemBackground};
 
 		TypedArray ta = getContext().obtainStyledAttributes(attrs);
 		Drawable d = ta.getDrawable(0);
-		
+
 		ta.recycle();
-		
+
 		return d.mutate();
 	}
 }
