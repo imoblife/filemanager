@@ -20,20 +20,26 @@ import org.openintents.filemanager.files.FileHolder;
  */
 public class CopyHelper {
 	private static final int COPY_BUFFER_SIZE = 32 * 1024;
-
+	private static CopyHelper instance;
+	
     public static enum Operation {
 		COPY, CUT
 	}
-	
+
 	private Context mContext;
 	private List<FileHolder> mClipboard;
 	private Operation mOperation;
 	private OnOperationFinishedListener mListener;
-	
+
 	public CopyHelper(Context c){
 		mContext = c;
 	}
-
+	public static CopyHelper get(Context c) {
+		if(instance == null) {
+			instance = new CopyHelper(c);
+		}
+		return instance;
+	}
     public int getItemsCount() {
         if (canPaste()){
             return mClipboard.size();
@@ -44,22 +50,22 @@ public class CopyHelper {
 
     public void copy(List<FileHolder> tbc){
 		mOperation = Operation.COPY;
-		
+
 		mClipboard = tbc;
 	}
-	
+
 	public void copy(FileHolder tbc){
 		ArrayList<FileHolder> tbcl = new ArrayList<FileHolder>();
 		tbcl.add(tbc);
 		copy(tbcl);
 	}
-	
+
 	public void cut(List<FileHolder> tbc){
 		mOperation = Operation.CUT;
-		
+
 		mClipboard = tbc;
 	}
-	
+
 	public void cut(FileHolder tbc){
 		ArrayList<FileHolder> tbcl = new ArrayList<FileHolder>();
 		tbcl.add(tbc);
@@ -76,11 +82,11 @@ public class CopyHelper {
 	public boolean canPaste(){
 		return mClipboard != null && !mClipboard.isEmpty();
 	}
-	
+
 	public Operation getOperationType(){
 		return mOperation;
 	}
-	
+
 	/**
 	 * Call this to actually copy.
 	 * @param dest The path to copy the clipboard into.
@@ -88,14 +94,14 @@ public class CopyHelper {
 	 */
 	private boolean performCopy(File dest){
 		boolean res = true;
-		
+
 		for(FileHolder fh : mClipboard){
 			if(fh.getFile().isFile())
 				res &= copyFile(fh.getFile(), FileUtils.createUniqueCopyName(mContext, dest, fh.getName()));
 			else
 				res &= copyFolder(fh.getFile(), FileUtils.createUniqueCopyName(mContext, dest, fh.getName()));
 		}
-		
+
 		return res;
 	}	
 
@@ -109,31 +115,31 @@ public class CopyHelper {
 		try {
 			FileInputStream input = new FileInputStream(oldFile);
 			FileOutputStream output = new FileOutputStream(newFile);
-		
+
 			byte[] buffer = new byte[COPY_BUFFER_SIZE];
-			
+
 			while (true) {
 				int bytes = input.read(buffer);
-				
+
 				if (bytes <= 0) {
 					break;
 				}
-				
+
 				output.write(buffer, 0, bytes);
 			}
-			
+
 			output.close();
 			input.close();
-			
+
 			// Request media scan
 			MediaScannerUtils.informFileAdded(mContext, newFile);
-			
+
 		} catch (Exception e) {
 		    return false;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Recursively copy a folder.
 	 * @param oldFile Folder to copy.
@@ -163,7 +169,7 @@ public class CopyHelper {
 		} else {
 			res &= copyFile(oldFile, newFile);
 		}
-		
+
 		return res;
 	}
 
@@ -179,21 +185,21 @@ public class CopyHelper {
 		File from;
 		for(FileHolder fh : mClipboard){
 			from = fh.getFile().getAbsoluteFile();
-				
+
 			deleteOk = fh.getFile().renameTo(FileUtils.getFile(dest, fh.getName()));
-			
+
 			// Inform media scanner
 			if(deleteOk) {
 				MediaScannerUtils.informFileDeleted(mContext, from);
 				MediaScannerUtils.informFileAdded(mContext, FileUtils.getFile(dest, fh.getName()));
 			}
-			
+
 			res &= deleteOk;
 		}
-		
+
 		return res;
 	}
-	
+
 	/**
 	 * Paste the copied/cut items.
 	 * @param copyTo Path to paste to.
@@ -201,11 +207,11 @@ public class CopyHelper {
 	 */
 	public void paste(File copyTo, OnOperationFinishedListener listener){
 		mListener = listener;
-		
+
 		// Quick check just to make sure. Normally this should never be the case as the path we get is not user-generated.
 		if(!copyTo.isDirectory())
 			return;
-		
+
 		switch (mOperation) {
 		case COPY:
 			new CopyAsync().execute(copyTo);
@@ -217,57 +223,57 @@ public class CopyHelper {
 			return;
 		}
 	}
-	
+
 	private class CopyAsync extends AsyncTask<File, Void, Boolean> {
 		@Override
 		protected void onPreExecute() {
 			Toast.makeText(mContext, R.string.copying, Toast.LENGTH_SHORT).show();
 		}
-		
+
 		@Override
 		protected Boolean doInBackground(File... params) {
 			return performCopy(params[0]);
 		}
-		
+
 		@Override
 		protected void onPostExecute(Boolean result) {
 			Toast.makeText(mContext, result ? R.string.copied : R.string.copy_error, Toast.LENGTH_SHORT).show();
-			
+
 			// Clear as the references have been invalidated.
 			mClipboard.clear();
-			
+
 			mListener.operationFinished(result);
-			
+
 			// Invalidate listener. 
 			mListener = null;
 		}
 	}
-	
+
 	private class MoveAsync extends AsyncTask<File, Void, Boolean> {
 		@Override
 		protected void onPreExecute() {
 			Toast.makeText(mContext, R.string.moving, Toast.LENGTH_SHORT).show();
 		}
-		
+
 		@Override
 		protected Boolean doInBackground(File... params) {
 			return performCut(params[0]);
 		}
-		
+
 		@Override
 		protected void onPostExecute(Boolean result) {
 			Toast.makeText(mContext, result ? R.string.moved : R.string.move_error, Toast.LENGTH_SHORT).show();
-			
+
 			// Clear as the references have been invalidated.
 			mClipboard.clear();
-			
+
 			mListener.operationFinished(result);
-			
+
 			// Invalidate listener. 
 			mListener = null;
 		}
 	}
-	
+
 	public interface OnOperationFinishedListener {
 		/**
 		 * @param success Whether the operation was entirely successful.

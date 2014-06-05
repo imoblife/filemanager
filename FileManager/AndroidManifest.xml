@@ -71,7 +71,7 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
 
     <!-- We use this theme here, so that for the time the user waits for the app to launch, he doesn't get blinded by the white default theme. Proper theme is set onCreate of any Activity. -->
-    <application
+  <!--   <application
         android:name="FileManagerApplication"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -80,13 +80,10 @@
             android:name="hideMarketLink"
             android:value="false" />
 
-        <!-- aTrackDog metadata -->
+        aTrackDog metadata
         <meta-data
             android:name="com.a0soft.gphone.aTrackDog.testVersion"
             android:value="28" />
-        <meta-data
-            android:name="org.openintents.about"
-            android:resource="@xml/about" />
 
         <activity
             android:name=".FileManagerActivity"
@@ -117,13 +114,13 @@
             android:name=".PreferenceActivity"
             android:label="@string/settings" />
 
-        <!-- Filters for the Save as feature -->
+        Filters for the Save as feature
         <activity
             android:name=".SaveAsActivity"
             android:label="Save as" >
 
-            <!-- Save as a file: scheme (e.g. After downloading attachment in GMail -->
-            <!--
+            Save as a file: scheme (e.g. After downloading attachment in GMail
+            
             ** DEACTIVATED FOR NOW, because it interferes with many commands **
             <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
@@ -131,8 +128,8 @@
 		        <category android:name="android.intent.category.BROWSABLE" />
 		        <data android:scheme="file" android:host="*" android:mimeType="*/*"/>
        		</intent-filter>
-            -->
-            <!-- Save as a content: scheme with CATHEGORY_OPENABLE - the right way -->
+           
+            Save as a content: scheme with CATHEGORY_OPENABLE - the right way
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -142,20 +139,20 @@
                     android:mimeType="*/*"
                     android:scheme="content" />
             </intent-filter>
-            <!--
+            
                  Special intent for GMail attachments. GMail doesn't use CATEGORY_OPENABLE,
             	 although it's possible to use ContentResolver.openFileReader().
             	 For further applications like GMail, just copy following five lines and change "gmail-ls"
             	 to something else. You will also have to do some changes in SaveAsActivity.java
-            -->
-            <!--
+           
+            
             ** DEACTIVATED FOR NOW, because it interferes with many commands **
             <intent-filter>
 		        <action android:name="android.intent.action.VIEW" />
 		        <category android:name="android.intent.category.DEFAULT" />
 		        <data android:scheme="content" android:mimeType="*/*" android:host="gmail-ls"/>
        		</intent-filter>
-            -->
+           
         </activity>
 
         <provider
@@ -177,7 +174,7 @@
             android:exported="true" >
         </provider>
 
-        <!-- Activities from OI Distribution Library -->
+        Activities from OI Distribution Library
         <activity
             android:name="org.openintents.distribution.EulaActivity"
             android:theme="@android:style/Theme.DeviceDefault"
@@ -213,7 +210,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="file" />
-                <data android:mimeType="*/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="org.openintents.action.PICK_FILE" />
@@ -262,13 +258,13 @@
                 <category android:name="android.intent.category.OPENABLE" />
             </intent-filter>
 
-            <!-- Filter for multi select feature -->
+            Filter for multi select feature
             <intent-filter>
                 <action android:name="org.openintents.action.MULTI_SELECT" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-    </application>
+    </application> -->
 
 </manifest>
