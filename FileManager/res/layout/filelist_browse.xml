@@ -3,11 +3,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <org.openintents.filemanager.view.PathBar
+    <com.filemanager.view.PathBar
         android:id="@+id/pathbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/topBar_height" >
-    </org.openintents.filemanager.view.PathBar>
+    </com.filemanager.view.PathBar>
 
     <include layout="@layout/filelist"/>
     

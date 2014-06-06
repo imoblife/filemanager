@@ -40,7 +40,7 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <org.openintents.filemanager.view.PickBar
+            <com.filemanager.view.PickBar
                 android:id="@+id/pickBar"
                 style="?android:attr/buttonBarStyle"
                 android:layout_width="match_parent"
