@@ -3,7 +3,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <org.openintents.filemanager.view.LegacyActionContainer
+    <com.filemanager.view.LegacyActionContainer
         android:id="@+id/action_container"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/topBar_height"

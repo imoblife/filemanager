@@ -35,7 +35,6 @@
 	     ***************************
     -->
     <!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
-    <string name="app_name">OI File Manager</string>
     <string name="menu_open">Open</string>
     <string name="menu_more">More</string>
     <string name="menu_include_in_media_scan">Include in media scan</string>
