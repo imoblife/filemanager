@@ -25,6 +25,7 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -66,6 +68,15 @@ public class SimpleFileListFragment extends FileListFragment {
 		mPathBar = (PathBar) view.findViewById(R.id.pathbar);
 		// Handle mPath differently if we restore state or just initially create
 		// the view.
+	/*	LinearLayout base_titlebar_ll = (LinearLayout) view.findViewById(R.id.base_titlebar_ll);
+		base_titlebar_ll.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				getActivity().finish();
+			}
+		});*/
 		if (savedInstanceState == null)
 			mPathBar.setInitialDirectory(getPath());
 		else
@@ -84,6 +95,7 @@ public class SimpleFileListFragment extends FileListFragment {
 		// this way on Nexus S.
 
 		initContextualActions();
+	
 	}
 
 	/**

@@ -2,7 +2,6 @@ package com.filemanager.lists;
 
 import java.util.ArrayList;
 
-
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.MenuUtils;
@@ -15,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -37,6 +37,7 @@ public class MultiselectListFragment extends FileListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setHasOptionsMenu(true);
 	}
 
