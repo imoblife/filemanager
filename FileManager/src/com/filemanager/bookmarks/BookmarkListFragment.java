@@ -13,6 +13,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.AbsListView;
 import android.widget.ListView;
 import android.widget.AbsListView.OnScrollListener;
@@ -24,7 +25,7 @@ public class BookmarkListFragment extends ListFragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+		getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setListAdapter(new BookmarkListAdapter(getActivity()));
 	}
 	

@@ -3,12 +3,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <include layout="@layout/base_titlebar2" />
+
     <com.filemanager.view.PathBar
         android:id="@+id/pathbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/topBar_height" >
+        android:layout_height="@dimen/topBar_height"
+        android:background="@drawable/base_bg" >
     </com.filemanager.view.PathBar>
 
-    <include layout="@layout/filelist"/>
-    
+    <include layout="@layout/filelist" />
+
 </LinearLayout>

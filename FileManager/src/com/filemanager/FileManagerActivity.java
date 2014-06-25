@@ -90,7 +90,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle icicle) {
-		UIUtils.setThemeFor(this);
+	//	UIUtils.setThemeFor(this);
 
 		super.onCreate(icicle);
 
@@ -244,6 +244,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		Bundle appData = new Bundle();
 		appData.putString(FileManagerIntents.EXTRA_SEARCH_INIT_PATH,
 				mFragment.getPath());
+		Log.i("appdate", mFragment.getPath()+"================");
 		startSearch(null, false, appData, false);
 
 		return true;

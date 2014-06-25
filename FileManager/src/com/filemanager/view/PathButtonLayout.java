@@ -257,7 +257,7 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 				}
 			});
 			btn.setOnLongClickListener(navbar.getPathButtonLayout());
-			btn.setBackgroundDrawable(navbar.getItemBackground());
+		//	btn.setBackgroundDrawable(navbar.getItemBackground());
 			
 			// We have to set this after adding the background as it'll cancel the padding out.
 			if(btn instanceof Button) {

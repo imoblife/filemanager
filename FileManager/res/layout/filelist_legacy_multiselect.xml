@@ -7,7 +7,7 @@
         android:id="@+id/action_container"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/topBar_height"
-        android:background="?attr/topBarBackground" />
+        android:background="@drawable/base_bg" />
 
     <include layout="@layout/filelist" />
 
