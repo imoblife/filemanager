@@ -110,7 +110,7 @@ public class BookmarkListAdapter extends BaseAdapter{
 		viewHolder.secondaryInfo.setText(items.get(position).path);
         
 		if(item.getFile().isDirectory()) {
-			viewHolder.icon.setImageResource(R.drawable.ic_launcher_folder);
+			viewHolder.icon.setImageResource(R.drawable.ic_launcher);
 		}
 		
 		if (shouldLoadIcon(item)) {

@@ -47,11 +47,11 @@
         android:icon="@drawable/ic_action_bookmarks"
         android:title="@string/menu_bookmark">
     </item>
-    <item
+  <!--   <item
         android:id="@+id/menu_details"
         android:icon="@drawable/ic_action_details"
         android:title="@string/menu_details">
-    </item>
+    </item> -->
     <item
         android:id="@+id/menu_more"
         android:title="@string/menu_more">

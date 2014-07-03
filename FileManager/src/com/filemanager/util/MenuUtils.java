@@ -240,7 +240,8 @@ public abstract class MenuUtils {
 		} else if (id == R.id.menu_send) {
 			sendFile(fItem, context);
 			return true;
-		} else if (id == R.id.menu_details) {
+		} 
+		/*else if (id == R.id.menu_details) {
 			dialog = new DetailsDialog();
 			dialog.setTargetFragment(navigator, 0);
 			args = new Bundle();
@@ -250,7 +251,8 @@ public abstract class MenuUtils {
 			dialog.show(navigator.getFragmentManager(),
 					DetailsDialog.class.getName());
 			return true;
-		} else if (id == R.id.menu_compress) {
+		} */
+		else if (id == R.id.menu_compress) {
 			dialog = new SingleCompressDialog();
 			dialog.setTargetFragment(navigator, 0);
 			args = new Bundle();

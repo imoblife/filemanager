@@ -18,6 +18,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -64,8 +65,8 @@ public class PathBar extends ViewFlipper {
 	/** The EditText holding the path in MANUAL_INPUT. */
 	private EditText mPathEditText = null;
 	/** The ImageButton to confirm the manually entered path. */
-	private ImageButton mGoButton = null;
-
+	private ImageView mGoButton = null;
+	//private ImageButton mGoButton = null;
 	private OnDirectoryChangedListener mDirectoryChangedListener = new OnDirectoryChangedListener() {
 		@Override
 		public void directoryChanged(File newCurrentDir) {
@@ -95,26 +96,28 @@ public class PathBar extends ViewFlipper {
 			android.widget.ViewFlipper.LayoutParams layoutParams = new android.widget.ViewFlipper.LayoutParams(
 					LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
 			standardModeLayout.setLayoutParams(layoutParams);
-
 			this.addView(standardModeLayout);
 		}
 
-		// ImageButton -- GONE. Kept this code in case we need to use an right-aligned button in the future.
+		// ImageButton -- GONE. Kept this code in case we need to use an
+		// right-aligned button in the future.
 		mSwitchToManualModeButton = new ImageButton(getContext());
 		{
-			android.widget.RelativeLayout.LayoutParams layoutParams = new android.widget.RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+			android.widget.RelativeLayout.LayoutParams layoutParams = new android.widget.RelativeLayout.LayoutParams(
+					LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
 			mSwitchToManualModeButton.setLayoutParams(layoutParams);
 			mSwitchToManualModeButton.setId(10);
-		///	mSwitchToManualModeButton.setBackgroundDrawable(getItemBackground());
-			mSwitchToManualModeButton.setImageResource(R.drawable.ic_navbar_edit);
+			// mSwitchToManualModeButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.base_card_selector));
+			// mSwitchToManualModeButton.setImageResource(R.drawable.notificaion_verline);
 			mSwitchToManualModeButton.setVisibility(View.GONE);
 
 			standardModeLayout.addView(mSwitchToManualModeButton);
 		}
 
-		// ImageButton -- GONE. Kept this code in case we need to use an left-aligned button in the future.
+		// ImageButton -- GONE. Kept this code in case we need to use an
+		// left-aligned button in the future.
 		ImageButton cdToRootButton = new ImageButton(getContext());
 		{
 			android.widget.RelativeLayout.LayoutParams layoutParams = new android.widget.RelativeLayout.LayoutParams(
@@ -123,13 +126,13 @@ public class PathBar extends ViewFlipper {
 
 			cdToRootButton.setLayoutParams(layoutParams);
 			cdToRootButton.setId(11);
-			//cdToRootButton.setBackgroundDrawable(getItemBackground());
-			cdToRootButton.setImageResource(R.drawable.ic_navbar_home);
+			// cdToRootButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.base_card_selector));
+			cdToRootButton.setImageResource(R.drawable.notificaion_verline);
 			cdToRootButton.setScaleType(ScaleType.CENTER_INSIDE);
 			cdToRootButton.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					cd("/");
+					// cd("/");
 				}
 			});
 			cdToRootButton.setVisibility(View.GONE);
@@ -163,7 +166,7 @@ public class PathBar extends ViewFlipper {
 
 			mPathButtons.setLayoutParams(layoutParams);
 			mPathButtons.setNavigationBar(this);
-
+		
 			mPathButtonsContainer.addView(mPathButtons);
 		}
 
@@ -178,14 +181,15 @@ public class PathBar extends ViewFlipper {
 		}
 
 		// ImageButton
-		mGoButton = new ImageButton(getContext());
+		mGoButton = new ImageView(getContext());
+	//	mGoButton = new ImageButton(getContext());
 		{
 			android.widget.RelativeLayout.LayoutParams layoutParams = new android.widget.RelativeLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
 			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 
 			mGoButton.setLayoutParams(layoutParams);
 			mGoButton.setId(20);
-			//mGoButton.setBackgroundDrawable(getItemBackground());
+			mGoButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.base_card_selector));
 			mGoButton.setImageResource(R.drawable.ic_navbar_accept);
 			mGoButton.setScaleType(ScaleType.CENTER_INSIDE);
 			mGoButton.setOnClickListener(new View.OnClickListener() {
@@ -459,14 +463,14 @@ public class PathBar extends ViewFlipper {
 		return isFileOK;
 	}
 
-	public Drawable getItemBackground(){
-		int[] attrs = new int[] {R.attr.pathBarItemBackground};
-
-		TypedArray ta = getContext().obtainStyledAttributes(attrs);
-		Drawable d = ta.getDrawable(0);
-
-		ta.recycle();
-
-		return d.mutate();
-	}
+//	public Drawable getItemBackground(){
+//		int[] attrs = new int[] {R.attr.pathBarItemBackground};
+//
+//		TypedArray ta = getContext().obtainStyledAttributes(attrs);
+//		Drawable d = ta.getDrawable(0);
+//
+//		ta.recycle();
+//
+//		return d.mutate();
+//	}
 }

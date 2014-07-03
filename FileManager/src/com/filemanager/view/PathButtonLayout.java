@@ -3,7 +3,6 @@ package com.filemanager.view;
 import java.io.File;
 import java.util.HashMap;
 
-
 import com.filemanager.R;
 import com.filemanager.view.PathBar.Mode;
 
@@ -12,20 +11,30 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnLongClickListener;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.FrameLayout.LayoutParams;
 
 /**
- * This class handles the displaying of children in {@link Mode.STANDARD_INPUT}, including choosing which children to display, how, and where. It automatically uses the {@link PathBar#mCurrentDirectory} field. <b>Note: </b> Never use this with
- * a width of WRAP_CONTENT.
+ * This class handles the displaying of children in {@link Mode.STANDARD_INPUT},
+ * including choosing which children to display, how, and where. It
+ * automatically uses the {@link PathBar#mCurrentDirectory} field. <b>Note: </b>
+ * Never use this with a width of WRAP_CONTENT.
  */
 class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 	private PathBar mPathBar = null;
+	private HorizontalScrollView mPathButtonsContainer;
 	/** <absolute path, R.drawable id of image to use> */
 	public static HashMap<String, Integer> mPathDrawables = new HashMap<String, Integer>();
 
@@ -43,7 +52,8 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 		this.setOrientation(LinearLayout.HORIZONTAL);
 		this.setOnLongClickListener(this);
 
-		mPathDrawables.put(Environment.getExternalStorageDirectory().getAbsolutePath(), R.drawable.ic_navbar_sdcard);
+		mPathDrawables.put(Environment.getExternalStorageDirectory()
+				.getAbsolutePath(), R.drawable.ic_navbar_sdcard);
 		mPathDrawables.put("/sdcard", R.drawable.ic_navbar_sdcard);
 		mPathDrawables.put("/mnt/sdcard", R.drawable.ic_navbar_sdcard);
 		mPathDrawables.put("/mnt/sdcard-ext", R.drawable.ic_navbar_sdcard);
@@ -61,11 +71,13 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 	}
 
 	/**
-	 * Call to properly refresh this {@link PathButtonLayout}'s contents based on the fPath parameter.
+	 * Call to properly refresh this {@link PathButtonLayout}'s contents based
+	 * on the fPath parameter.
 	 */
 	public void refresh(File fPath) {
 		// Reload buttons.
 		this.removeAllViews();
+
 		addPathButtons(fPath);
 
 		// Redraw.
@@ -84,16 +96,28 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 			cChar = path.charAt(i);
 			cPath.append(cChar);
 
-			if ((cChar == '/' || i == path.length() - 1)) { // if folder name ended, or path string ended but not if we 're on root
+			if ((cChar == '/' || i == path.length() - 1)) { // if folder name
+															// ended, or path
+															// string ended but
+															// not if we 're on
+															// root
 				// add a button
+
 				this.addView(PathButtonFactory.newButton(cPath.toString(),
 						mPathBar));
+				ImageView iv = new ImageView(getContext());
+				iv.setImageResource(R.drawable.notificaion_verline);
+				this.addView(iv);
+				Log.i("aaaaaa", i + "========" + cPath.toString());
+				// this.addView(iv);
 			}
 		}
 	}
 
 	/**
-	 * Provides a modified implementation of the layoutHorizontal() method of LinearLayout. Removes all children that don't fully fit in this {@link PathButtonLayout}.
+	 * Provides a modified implementation of the layoutHorizontal() method of
+	 * LinearLayout. Removes all children that don't fully fit in this
+	 * {@link PathButtonLayout}.
 	 */
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
@@ -141,9 +165,14 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 						+ lp.topMargin - lp.bottomMargin;
 
 				childLeft += lp.leftMargin;
-				setChildFrame(child, childLeft, // originally childLeft + getLocationOffset(child)
+				setChildFrame(child, childLeft, // originally childLeft +
+												// getLocationOffset(child)
 						childTop, childWidth, childHeight);
-				childLeft += childWidth + lp.rightMargin; // originally childLeft += childWidth + lp.rightMargin + getNextLocationOffset(child);
+				childLeft += childWidth + lp.rightMargin; // originally
+															// childLeft +=
+															// childWidth +
+															// lp.rightMargin +
+															// getNextLocationOffset(child);
 
 				i += 0; // originally getChildrenSkipCount(child, childIndex);
 			}
@@ -174,7 +203,8 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 	}
 
 	/**
-	 * Checks this {@link ViewGroup}'s children and keeps the ones that fit inside it.
+	 * Checks this {@link ViewGroup}'s children and keeps the ones that fit
+	 * inside it.
 	 */
 	private void keepFittingChildren() {
 		View child = null;
@@ -190,7 +220,8 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 			index--;
 		} while (sumWidth <= this.getMeasuredWidth() && index >= 0);
 
-		if (sumWidth > this.getMeasuredWidth()) { // if the view width has been passed
+		if (sumWidth > this.getMeasuredWidth()) { // if the view width has been
+													// passed
 			// keep one child less
 			childrenToDraw--;
 		}
@@ -220,25 +251,37 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 
 	private static class PathButtonFactory {
 		/**
-		 * Creates a Button or ImageButton according to the path. e.g. {@code if(file.getAbsolutePath() == '/')}, it should return an ImageButton with the home drawable on it.
+		 * Creates a Button or ImageButton according to the path. e.g.
+		 * {@code if(file.getAbsolutePath() == '/')}, it should return an
+		 * ImageButton with the home drawable on it.
 		 * 
-		 * @param file The directory this button will represent.
-		 * @param navbar The {@link PathBar} which will contain the created buttons.
+		 * @param file
+		 *            The directory this button will represent.
+		 * @param navbar
+		 *            The {@link PathBar} which will contain the created
+		 *            buttons.
 		 * @return An {@link ImageButton} or a {@link Button}.
 		 */
 		private static View newButton(File file, final PathBar navbar) {
 			View btn = null;
 
 			if (mPathDrawables.containsKey(file.getAbsolutePath())) {
-				btn = new ImageButton(navbar.getContext());
-				((ImageButton) btn).setImageResource(mPathDrawables.get(file.getAbsolutePath()));
+				// btn = new ImageButton(navbar.getContext());
+				btn = new ImageView(navbar.getContext());
+				// ((ImageButton)
+				// btn).setImageResource(mPathDrawables.get(file.getAbsolutePath()));
+				((ImageView) btn).setImageResource(mPathDrawables.get(file
+						.getAbsolutePath()));
 			} else {
-				btn = new Button(navbar.getContext());
-				
-				((Button) btn).setText(file.getName());
-				((Button) btn).setMaxLines(1);
-				((Button) btn).setTextColor(navbar.getResources().getColor(R.color.navbar_details));
-				((Button) btn).setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+				// btn = new Button(navbar.getContext());
+				btn = new TextView(navbar.getContext());
+				((TextView) btn).setText(file.getName());
+				Log.i("=============", file.getName());
+				((TextView) btn).setMaxLines(1);
+				((TextView) btn).setGravity(Gravity.CENTER);
+				((TextView) btn).setTextColor(navbar.getResources().getColor(
+						R.color.base_black));
+				((TextView) btn).setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
 			}
 
 			android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams(
@@ -257,12 +300,16 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 				}
 			});
 			btn.setOnLongClickListener(navbar.getPathButtonLayout());
-		//	btn.setBackgroundDrawable(navbar.getItemBackground());
-			
-			// We have to set this after adding the background as it'll cancel the padding out.
-			if(btn instanceof Button) {
-				int sidePadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, navbar.getContext().getResources().getDisplayMetrics());
-				btn.setPadding(sidePadding, btn.getPaddingTop(), sidePadding, btn.getPaddingBottom());
+			// btn.setBackgroundDrawable(navbar.getItemBackground());
+
+			// We have to set this after adding the background as it'll cancel
+			// the padding out.
+			if (btn instanceof Button) {
+				int sidePadding = (int) TypedValue.applyDimension(
+						TypedValue.COMPLEX_UNIT_DIP, 8, navbar.getContext()
+								.getResources().getDisplayMetrics());
+				btn.setPadding(sidePadding, btn.getPaddingTop(), sidePadding,
+						btn.getPaddingBottom());
 			}
 
 			return btn;
