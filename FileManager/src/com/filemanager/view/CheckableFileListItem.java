@@ -28,6 +28,7 @@ public class CheckableFileListItem extends RelativeLayout implements Checkable{
 	}
 	private void init(){
 		mCheckbox = new CheckBox(getContext());
+		mCheckbox.setButtonDrawable(R.drawable.base_checkbox_selector);
 		mCheckbox.setId(10);
 		LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 		params.addRule(ALIGN_PARENT_RIGHT);
@@ -54,7 +55,13 @@ public class CheckableFileListItem extends RelativeLayout implements Checkable{
 
 	@Override
 	public void setChecked(boolean checked) {
+		
 		mCheckbox.setChecked(checked);
+//		if(checked){
+//			mCheckbox.setButtonDrawable(R.drawable.base_checkbox_checked);
+//		}else{
+//			mCheckbox.setButtonDrawable(R.drawable.base_checkbox_unchecked);
+//		}
 	}
 
 	@Override

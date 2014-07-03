@@ -80,8 +80,8 @@ public class DirectoryScanner extends Thread {
 		files = currentDirectory.listFiles();
 		noMedia = false;
 		displayHidden = PreferenceActivity.getDisplayHiddenFiles(context);
-		sdIcon = context.getResources().getDrawable(R.drawable.ic_launcher_sdcard);
-		folderIcon = context.getResources().getDrawable(R.drawable.ic_launcher_folder);
+		sdIcon = context.getResources().getDrawable(R.drawable.ic_navbar_sdcard);
+		folderIcon = context.getResources().getDrawable(R.drawable.ic_launcher);
 		genericFileIcon = context.getResources().getDrawable(R.drawable.ic_launcher_file);
 		
 		operationStartTime = SystemClock.uptimeMillis();
