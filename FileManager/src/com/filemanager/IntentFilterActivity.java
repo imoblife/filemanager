@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
+import base.util.PreferenceHelper;
 
 import java.io.File;
-
 
 import com.filemanager.lists.FileListFragment;
 import com.filemanager.lists.MultiselectListFragment;
@@ -24,9 +24,9 @@ public class IntentFilterActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstance) {
 		UIUtils.setThemeFor(this);
-		
+
 		super.onCreate(savedInstance);
-		
+
 		Intent intent = getIntent();
 
 		// Initialize arguments
@@ -39,8 +39,9 @@ public class IntentFilterActivity extends FragmentActivity {
 			File defaultFile = new File(
 					PreferenceActivity.getDefaultPickFilePath(this));
 			if (!defaultFile.exists()) {
-				PreferenceActivity.setDefaultPickFilePath(this, Environment
-						.getExternalStorageDirectory().getAbsolutePath());
+				PreferenceActivity
+						.setDefaultPickFilePath(this, PreferenceHelper
+								.getSdcardPath(getApplicationContext()));
 				defaultFile = new File(
 						PreferenceActivity.getDefaultPickFilePath(this));
 			}
@@ -50,15 +51,16 @@ public class IntentFilterActivity extends FragmentActivity {
 
 		// Add a path if a path has been specified in this activity's call.
 		File data = FileUtils.getFile(getIntent().getData());
-		if (data != null) {			
-			File dir = FileUtils.getPathWithoutFilename(data);		
+		if (data != null) {
+			File dir = FileUtils.getPathWithoutFilename(data);
 			if (dir != null) {
 				extras.putString(FileManagerIntents.EXTRA_DIR_PATH,
 						data.getAbsolutePath());
 			}
-			if (dir != data){
+			if (dir != data) {
 				// data is a file
-				extras.putString(FileManagerIntents.EXTRA_FILENAME, data.getName());
+				extras.putString(FileManagerIntents.EXTRA_FILENAME,
+						data.getName());
 			}
 		}
 
@@ -94,9 +96,11 @@ public class IntentFilterActivity extends FragmentActivity {
 			}
 		}
 		// Item pickers
-		else if ( FileManagerIntents.ACTION_PICK_DIRECTORY.equals(intent.getAction())
-				|| FileManagerIntents.ACTION_PICK_FILE.equals(intent.getAction())
-				|| Intent.ACTION_GET_CONTENT.equals(intent.getAction())){
+		else if (FileManagerIntents.ACTION_PICK_DIRECTORY.equals(intent
+				.getAction())
+				|| FileManagerIntents.ACTION_PICK_FILE.equals(intent
+						.getAction())
+				|| Intent.ACTION_GET_CONTENT.equals(intent.getAction())) {
 			if (intent.hasExtra(FileManagerIntents.EXTRA_TITLE))
 				setTitle(intent.getStringExtra(FileManagerIntents.EXTRA_TITLE));
 			else

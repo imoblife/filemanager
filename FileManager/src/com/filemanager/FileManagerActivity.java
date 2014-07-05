@@ -18,6 +18,8 @@ package com.filemanager;
 
 import java.io.File;
 
+import base.util.PreferenceHelper;
+
 import com.filemanager.bookmarks.BookmarkListActivity;
 import com.filemanager.compatibility.HomeIconHelper;
 import com.filemanager.files.FileHolder;
@@ -67,15 +69,15 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	private File resolveIntentData() {
 
 		//
-		if (getIntent().getStringExtra("fileUri") != null ) {
-			return FileUtils.getFile(Uri.parse(getIntent().getStringExtra("fileUri")));
+		if (getIntent().getStringExtra("fileUri") != null) {
+			return FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
+					"fileUri")));
 		}
-		
+
 		File data = FileUtils.getFile(getIntent().getData());
 		if (data == null)
 			return null;
-		
-		
+
 		if (data.isFile()
 				&& !getIntent().getBooleanExtra(
 						FileManagerIntents.EXTRA_FROM_OI_FILEMANAGER, false)) {
@@ -90,7 +92,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle icicle) {
-	//	UIUtils.setThemeFor(this);
+		//	UIUtils.setThemeFor(this);
 
 		super.onCreate(icicle);
 
@@ -125,9 +127,8 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 				args.putString(
 						FileManagerIntents.EXTRA_DIR_PATH,
 						Environment.getExternalStorageState().equals(
-								Environment.MEDIA_MOUNTED) ? Environment
-								.getExternalStorageDirectory()
-								.getAbsolutePath() : "/");
+								Environment.MEDIA_MOUNTED) ? PreferenceHelper
+								.getSdcardPath(getApplicationContext()) : "/");
 			else
 				args.putString(FileManagerIntents.EXTRA_DIR_PATH,
 						data.toString());
@@ -244,7 +245,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		Bundle appData = new Bundle();
 		appData.putString(FileManagerIntents.EXTRA_SEARCH_INIT_PATH,
 				mFragment.getPath());
-		Log.i("appdate", mFragment.getPath()+"================");
+		Log.i("appdate", mFragment.getPath() + "================");
 		startSearch(null, false, appData, false);
 
 		return true;
