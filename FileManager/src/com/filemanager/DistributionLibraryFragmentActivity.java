@@ -1,5 +1,6 @@
 package com.filemanager;
 
+import base.util.ui.titlebar.BaseTitlebarFragmentActivity;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,7 +11,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.LinearLayout;
 
-public class DistributionLibraryFragmentActivity extends FragmentActivity {
+public class DistributionLibraryFragmentActivity extends BaseTitlebarFragmentActivity {
 
 	static final int MENU_DISTRIBUTION_START = Menu.FIRST;
 

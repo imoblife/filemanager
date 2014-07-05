@@ -95,6 +95,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		//	UIUtils.setThemeFor(this);
 
 		super.onCreate(icicle);
+		this.setTitle(R.string.file_manage);
 
 		// mDistribution.setFirst(MENU_DISTRIBUTION_START,
 		// DIALOG_DISTRIBUTION_START);
