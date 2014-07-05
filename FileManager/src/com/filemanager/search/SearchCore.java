@@ -98,7 +98,7 @@ public class SearchCore {
 			values.put(SearchResultsProvider.COLUMN_PATH, f.getAbsolutePath());
 		} else if (mContentURI == SearchSuggestionsProvider.CONTENT_URI) {
 			values.put(SearchManager.SUGGEST_COLUMN_ICON_1,
-					f.isDirectory() ? R.drawable.ic_launcher
+					f.isDirectory() ? R.drawable.file_ic_launcher
 							: R.drawable.ic_launcher_file);
 			values.put(SearchManager.SUGGEST_COLUMN_TEXT_1, f.getName());
 			values.put(SearchManager.SUGGEST_COLUMN_TEXT_2, f.getAbsolutePath());
