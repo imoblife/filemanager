@@ -29,12 +29,12 @@ public class DistributionLibraryFragmentActivity extends BaseTitlebarFragmentAct
 		// MENU_DISTRIBUTION_START, DIALOG_DISTRIBUTION_START);
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		// mDistribution.onCreateOptionsMenu(menu);
-		return true;
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		super.onCreateOptionsMenu(menu);
+//		// mDistribution.onCreateOptionsMenu(menu);
+//		return true;
+//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

@@ -281,35 +281,38 @@ public abstract class MenuUtils {
 						}
 					}).extract(fItem.getFile(), dest.getAbsolutePath());
 			return true;
-		} else if (id == R.id.menu_bookmark) {
-			String path = fItem.getFile().getAbsolutePath();
-			Cursor query = context.getContentResolver().query(
-					BookmarksProvider.CONTENT_URI,
-					new String[] { BookmarksProvider._ID },
-					BookmarksProvider.PATH + "=?", new String[] { path }, null);
-			if (!query.moveToFirst()) {
-				ContentValues values = new ContentValues();
-				values.put(BookmarksProvider.NAME, fItem.getName());
-				values.put(BookmarksProvider.PATH, path);
-				context.getContentResolver().insert(
-						BookmarksProvider.CONTENT_URI, values);
-				Toast.makeText(context, R.string.bookmark_added,
-						Toast.LENGTH_SHORT).show();
-			} else {
-				Toast.makeText(context, R.string.bookmark_already_exists,
-						Toast.LENGTH_SHORT).show();
-			}
-			query.close();
-			return true;
-		} else if (id == R.id.menu_more) {
-			if (!PreferenceActivity.getShowAllWarning(context)) {
-				showMoreCommandsDialog(fItem, context);
-				return true;
-			}
-			showWarningDialog(fItem, context);
-
-			return true;
-		}
+		} 
+		
+//		else if (id == R.id.menu_bookmark) {
+//			String path = fItem.getFile().getAbsolutePath();
+//			Cursor query = context.getContentResolver().query(
+//					BookmarksProvider.CONTENT_URI,
+//					new String[] { BookmarksProvider._ID },
+//					BookmarksProvider.PATH + "=?", new String[] { path }, null);
+//			if (!query.moveToFirst()) {
+//				ContentValues values = new ContentValues();
+//				values.put(BookmarksProvider.NAME, fItem.getName());
+//				values.put(BookmarksProvider.PATH, path);
+//				context.getContentResolver().insert(
+//						BookmarksProvider.CONTENT_URI, values);
+//				Toast.makeText(context, R.string.bookmark_added,
+//						Toast.LENGTH_SHORT).show();
+//			} else {
+//				Toast.makeText(context, R.string.bookmark_already_exists,
+//						Toast.LENGTH_SHORT).show();
+//			}
+//			query.close();
+//			return true;
+//		} 
+//		else if (id == R.id.menu_more) {
+//			if (!PreferenceActivity.getShowAllWarning(context)) {
+//				showMoreCommandsDialog(fItem, context);
+//				return true;
+//			}
+//			showWarningDialog(fItem, context);
+//
+//			return true;
+//		}
 
 		return false;
 	}

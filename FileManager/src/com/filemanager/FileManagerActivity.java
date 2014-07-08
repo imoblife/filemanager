@@ -18,22 +18,12 @@ package com.filemanager;
 
 import java.io.File;
 
-import base.util.PreferenceHelper;
-
-import com.filemanager.bookmarks.BookmarkListActivity;
-import com.filemanager.compatibility.HomeIconHelper;
-import com.filemanager.files.FileHolder;
-import com.filemanager.lists.SimpleFileListFragment;
-import com.filemanager.util.FileUtils;
-import com.filemanager.util.UIUtils;
-import com.intents.FileManagerIntents;
-import com.util.MenuIntentOptionsWithIcons;
-
-import android.content.ActivityNotFoundException;
+import net.londatiga.android.ActionItem;
+import net.londatiga.android.QuickAction;
+import net.londatiga.android.QuickAction.OnActionItemClickListener;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -44,7 +34,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+import base.util.PreferenceHelper;
+import base.util.ui.titlebar.ITitlebarActionMenuListener;
+
+import com.filemanager.bookmarks.BookmarkListActivity;
+import com.filemanager.files.FileHolder;
+import com.filemanager.lists.SimpleFileListFragment;
+import com.filemanager.util.FileUtils;
+import com.intents.FileManagerIntents;
+import com.util.MenuIntentOptionsWithIcons;
 
 public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	private static final String FRAGMENT_TAG = "ListFragment";
@@ -96,7 +94,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		//	UIUtils.setThemeFor(this);
 
 		super.onCreate(icicle);
-
+		this.setTitle(getString(R.string.file_manage));
 
 		// mDistribution.setFirst(MENU_DISTRIBUTION_START,
 		// DIALOG_DISTRIBUTION_START);
@@ -150,15 +148,15 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		this.setTitle(R.string.file_manage);
 		this.setActionVisibility(View.VISIBLE);
 	}
-	
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = new MenuInflater(this);
-		inflater.inflate(R.menu.main, menu);
 
-		// mDistribution.onCreateOptionsMenu(menu);
-		return true;
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = new MenuInflater(this);
+//		inflater.inflate(R.menu.main, menu);
+//
+//		// mDistribution.onCreateOptionsMenu(menu);
+//		return true;
+//	}
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -256,5 +254,29 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		startSearch(null, false, appData, false);
 
 		return true;
+	}
+
+	@Override
+	public void onTitlebarActionClick(View view) {
+		super.onTitlebarActionClick(view);
+		new QuickActionMenu(view);
+	}
+
+	private class QuickActionMenu implements OnActionItemClickListener {
+		public QuickActionMenu(View view) {
+			QuickAction qa = new QuickAction(FileManagerActivity.this,
+					QuickAction.VERTICAL);
+			qa.setOnActionItemClickListener(this);
+			qa.addActionItem(new ActionItem(0,
+					getString(R.string.multiselect_title), null), true);
+			qa.addActionItem(new ActionItem(1,
+					getString(R.string.create_new_folder), null), false);
+			qa.show(view);
+		}
+
+		public void onItemClick(QuickAction source, int pos, int actionId) {
+			ITitlebarActionMenuListener l = (ITitlebarActionMenuListener) mFragment;
+			l.onTitlebarActionMenuClick(pos);
+		}
 	}
 }

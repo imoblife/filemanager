@@ -16,14 +16,13 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+import base.util.ui.fragment.BaseListFragment;
 
 import java.io.File;
 import java.util.ArrayList;
 
-
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
-import com.filemanager.compatibility.ActionbarRefreshHelper;
 import com.filemanager.files.DirectoryContents;
 import com.filemanager.files.DirectoryScanner;
 import com.filemanager.files.FileHolder;
@@ -42,7 +41,7 @@ import com.intents.FileManagerIntents;
  * 
  * @author George Venios
  */
-public abstract class FileListFragment extends ListFragment {
+public abstract class FileListFragment extends BaseListFragment {
 	private static final String INSTANCE_STATE_PATH = "path";
 	private static final String INSTANCE_STATE_FILES = "files";
 	File mPreviousDirectory = null;
@@ -132,8 +131,6 @@ public abstract class FileListFragment extends ListFragment {
 
 			@Override
 			public void onClick(View v) {
-				// TODO Auto-generated method stub
-
 				if (CopyHelper.get(getActivity()).canPaste())
 					CopyHelper.get(getActivity()).paste(new File(getPath()),
 							new CopyHelper.OnOperationFinishedListener() {
@@ -156,9 +153,9 @@ public abstract class FileListFragment extends ListFragment {
 				CopyHelper.get(getActivity()).clear();
 				updateClipboardInfo();
 
-//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-//					ActionbarRefreshHelper
-//							.activity_invalidateOptionsMenu(getActivity());
+				//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+				//					ActionbarRefreshHelper
+				//							.activity_invalidateOptionsMenu(getActivity());
 			}
 		});
 

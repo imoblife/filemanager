@@ -1,5 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_open"
+
+    <item
+        android:id="@+id/menu_open"
         android:title="@string/menu_open">
     </item>
     <item
@@ -29,8 +31,8 @@
     </item>
     <item
         android:id="@+id/menu_create_shortcut"
-        android:title="@string/menu_create_shortcut"
-        android:icon="@drawable/ic_action_create_shortcut">
+        android:icon="@drawable/ic_action_create_shortcut"
+        android:title="@string/menu_create_shortcut">
     </item>
     <item
         android:id="@+id/menu_rename"
@@ -42,19 +44,21 @@
         android:icon="@drawable/ic_action_compress"
         android:title="@string/menu_extract">
     </item>
+    <!-- <item -->
+    <!-- android:id="@+id/menu_bookmark" -->
+    <!-- android:icon="@drawable/ic_action_bookmarks" -->
+    <!-- android:title="@string/menu_bookmark"> -->
+    <!-- </item> -->
+    <!--
     <item
-        android:id="@+id/menu_bookmark"
-        android:icon="@drawable/ic_action_bookmarks"
-        android:title="@string/menu_bookmark">
-    </item>
-  <!--   <item
         android:id="@+id/menu_details"
         android:icon="@drawable/ic_action_details"
         android:title="@string/menu_details">
-    </item> -->
-    <item
-        android:id="@+id/menu_more"
-        android:title="@string/menu_more">
     </item>
+    -->
+    <!-- <item -->
+    <!-- android:id="@+id/menu_more" -->
+    <!-- android:title="@string/menu_more"> -->
+    <!-- </item> -->
 
 </menu>

@@ -3,6 +3,7 @@ package com.filemanager.lists;
 import java.io.File;
 import java.io.IOException;
 
+import base.util.ui.titlebar.ITitlebarActionMenuListener;
 
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
@@ -23,6 +24,7 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
@@ -43,7 +45,8 @@ import android.widget.Toast;
  * 
  * @author George Venios
  */
-public class SimpleFileListFragment extends FileListFragment {
+public class SimpleFileListFragment extends FileListFragment implements
+		ITitlebarActionMenuListener {
 	private static final String INSTANCE_STATE_PATHBAR_MODE = "pathbar_mode";
 
 	protected static final int REQUEST_CODE_MULTISELECT = 2;
@@ -68,15 +71,15 @@ public class SimpleFileListFragment extends FileListFragment {
 		mPathBar = (PathBar) view.findViewById(R.id.pathbar);
 		// Handle mPath differently if we restore state or just initially create
 		// the view.
-	/*	LinearLayout base_titlebar_ll = (LinearLayout) view.findViewById(R.id.base_titlebar_ll);
-		base_titlebar_ll.setOnClickListener(new OnClickListener() {
+		/*	LinearLayout base_titlebar_ll = (LinearLayout) view.findViewById(R.id.base_titlebar_ll);
+			base_titlebar_ll.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				getActivity().finish();
-			}
-		});*/
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					getActivity().finish();
+				}
+			});*/
 		if (savedInstanceState == null)
 			mPathBar.setInitialDirectory(getPath());
 		else
@@ -95,27 +98,27 @@ public class SimpleFileListFragment extends FileListFragment {
 		// this way on Nexus S.
 
 		initContextualActions();
-	
+
 	}
 
 	/**
 	 * Override this to handle initialization of list item long clicks.
 	 */
 	void initContextualActions() {
-		//if (mActionsEnabled) {
-			// if (VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			registerForContextMenu(getListView());
-			// } else {
-			// FileMultiChoiceModeHelper multiChoiceModeHelper = new
-			// FileMultiChoiceModeHelper(mSingleSelectionMenu,
-			// mMultiSelectionMenu);
-			// multiChoiceModeHelper.setListView(getListView());
-			// multiChoiceModeHelper.setPathBar(mPathBar);
-			// multiChoiceModeHelper.setContext(this);
-			// getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-			// }
-			setHasOptionsMenu(true);
-		//}
+		//		if (mActionsEnabled) {
+		//			if (VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+		registerForContextMenu(getListView());
+		//			} else {
+		//				FileMultiChoiceModeHelper multiChoiceModeHelper = new FileMultiChoiceModeHelper(
+		//						mSingleSelectionMenu, mMultiSelectionMenu);
+		//				multiChoiceModeHelper.setListView(getListView());
+		//				multiChoiceModeHelper.setPathBar(mPathBar);
+		//				multiChoiceModeHelper.setContext(this);
+		//				getListView()
+		//						.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		//			}
+		//			setHasOptionsMenu(true);
+		//		}
 	}
 
 	@Override
@@ -146,9 +149,7 @@ public class SimpleFileListFragment extends FileListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		
-		
-		
+
 		FileHolder item = (FileHolder) mAdapter.getItem(position);
 
 		openInformingPathBar(item);
@@ -214,8 +215,7 @@ public class SimpleFileListFragment extends FileListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.simple_file_list, menu);
-		
-		
+
 	}
 
 	@Override
@@ -242,7 +242,10 @@ public class SimpleFileListFragment extends FileListFragment {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		int id = item.getItemId();
+		return handleOptionMenu(item.getItemId());
+	}
+
+	private boolean handleOptionMenu(int id) {
 		if (id == R.id.menu_create_folder) {
 			CreateDirectoryDialog dialog = new CreateDirectoryDialog();
 			dialog.setTargetFragment(this, 0);
@@ -353,5 +356,13 @@ public class SimpleFileListFragment extends FileListFragment {
 
 		outState.putBoolean(INSTANCE_STATE_PATHBAR_MODE,
 				mPathBar.getMode() == Mode.MANUAL_INPUT);
+	}
+
+	public void onTitlebarActionMenuClick(int position) {
+		if (position == 0) {
+			handleOptionMenu(R.id.menu_multiselect);
+		} else if (position == 1) {
+			handleOptionMenu(R.id.menu_create_folder);
+		}
 	}
 }
