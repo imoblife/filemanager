@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import com.filemanager.R;
+import com.filemanager.util.ImageUtils;
 import com.filemanager.view.PathBar.Mode;
 
 import android.content.Context;
@@ -25,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.Toast;
 
 /**
  * This class handles the displaying of children in {@link Mode.STANDARD_INPUT},
@@ -108,8 +110,6 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 				ImageView iv = new ImageView(getContext());
 				iv.setImageResource(R.drawable.notificaion_verline);
 				this.addView(iv);
-				Log.i("aaaaaa", i + "========" + cPath.toString());
-				// this.addView(iv);
 			}
 		}
 	}
@@ -187,12 +187,11 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 				.getLayoutParams();
 
 		final int childWidthMeasureSpec = getChildMeasureSpec(
-				parentWidthMeasureSpec, getPaddingLeft() + getPaddingRight()
-						+ lp.leftMargin + lp.rightMargin, lp.width);
+				parentWidthMeasureSpec, lp.leftMargin + lp.rightMargin,
+				lp.width);
 		final int childHeightMeasureSpec = getChildMeasureSpec(
 				parentHeightMeasureSpec, getPaddingTop() + getPaddingBottom()
 						+ lp.topMargin + lp.bottomMargin, lp.height);
-
 		child.measure(childWidthMeasureSpec, childHeightMeasureSpec);
 
 	}
@@ -276,7 +275,6 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 				// btn = new Button(navbar.getContext());
 				btn = new TextView(navbar.getContext());
 				((TextView) btn).setText(file.getName());
-				Log.i("=============", file.getName());
 				((TextView) btn).setMaxLines(1);
 				((TextView) btn).setGravity(Gravity.CENTER);
 				((TextView) btn).setTextColor(navbar.getResources().getColor(
@@ -285,11 +283,11 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 			}
 
 			android.widget.LinearLayout.LayoutParams params = new android.widget.LinearLayout.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			params.rightMargin = (int) TypedValue.applyDimension(
-					TypedValue.COMPLEX_UNIT_DIP, 4, navbar.getResources()
+					TypedValue.COMPLEX_UNIT_DIP, 2, navbar.getResources()
 							.getDisplayMetrics());
-
+			//
 			btn.setLayoutParams(params);
 			btn.setTag(file);
 			btn.setOnClickListener(new View.OnClickListener() {
@@ -304,13 +302,13 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 
 			// We have to set this after adding the background as it'll cancel
 			// the padding out.
-			if (btn instanceof Button) {
-				int sidePadding = (int) TypedValue.applyDimension(
-						TypedValue.COMPLEX_UNIT_DIP, 8, navbar.getContext()
-								.getResources().getDisplayMetrics());
-				btn.setPadding(sidePadding, btn.getPaddingTop(), sidePadding,
-						btn.getPaddingBottom());
-			}
+			// if (btn instanceof Button) {
+			// int sidePadding = (int) TypedValue.applyDimension(
+			// TypedValue.COMPLEX_UNIT_DIP, 8, navbar.getContext()
+			// .getResources().getDisplayMetrics());
+			// btn.setPadding(sidePadding, btn.getPaddingTop(), sidePadding,
+			// btn.getPaddingBottom());
+			// }
 
 			return btn;
 		}

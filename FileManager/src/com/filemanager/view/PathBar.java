@@ -162,7 +162,7 @@ public class PathBar extends ViewFlipper {
 		mPathButtons = new PathButtonLayout(getContext());
 		{
 			android.widget.LinearLayout.LayoutParams layoutParams = new android.widget.LinearLayout.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 
 			mPathButtons.setLayoutParams(layoutParams);
 			mPathButtons.setNavigationBar(this);

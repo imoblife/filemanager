@@ -146,6 +146,9 @@ public class SimpleFileListFragment extends FileListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		
+		
+		
 		FileHolder item = (FileHolder) mAdapter.getItem(position);
 
 		openInformingPathBar(item);
@@ -211,6 +214,8 @@ public class SimpleFileListFragment extends FileListFragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.simple_file_list, menu);
+		
+		
 	}
 
 	@Override

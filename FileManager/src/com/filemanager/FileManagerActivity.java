@@ -43,6 +43,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 public class FileManagerActivity extends DistributionLibraryFragmentActivity {
@@ -95,7 +96,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		//	UIUtils.setThemeFor(this);
 
 		super.onCreate(icicle);
-		this.setTitle(R.string.file_manage);
+
 
 		// mDistribution.setFirst(MENU_DISTRIBUTION_START,
 		// DIALOG_DISTRIBUTION_START);
@@ -115,8 +116,6 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 
 		// If not called by name, open on the requested location.
 		File data = resolveIntentData();
-
-		Log.i("fileManager", data + "=======================");
 
 		// Add fragment only if it hasn't already been added.
 		mFragment = (SimpleFileListFragment) getSupportFragmentManager()
@@ -145,6 +144,13 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		}
 	}
 
+	@Override
+	protected void onPostCreate(Bundle savedInstanceState) {
+		super.onPostCreate(savedInstanceState);
+		this.setTitle(R.string.file_manage);
+		this.setActionVisibility(View.VISIBLE);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = new MenuInflater(this);

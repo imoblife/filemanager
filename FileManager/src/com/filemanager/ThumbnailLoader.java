@@ -363,7 +363,7 @@ public class ThumbnailLoader {
 		} else {
 			int size = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, context.getResources().getDisplayMetrics());
 			// Resizing image.
-			return ImageUtils.resizeDrawable(d, size, size);
+			return ImageUtils.resizeDrawable(d, size*2, size*2);
 		}
 	}
 	

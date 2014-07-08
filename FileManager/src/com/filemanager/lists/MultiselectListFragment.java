@@ -13,8 +13,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -32,6 +34,7 @@ public class MultiselectListFragment extends FileListFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.filelist_legacy_multiselect, null);
+		
 	}
 
 	@Override
@@ -39,14 +42,26 @@ public class MultiselectListFragment extends FileListFragment {
 		super.onCreate(savedInstanceState);
 		getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setHasOptionsMenu(true);
+
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
+		
+		
+		
 		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
 		super.onViewCreated(view, savedInstanceState);
-
+		LinearLayout lin = (LinearLayout)getActivity().findViewById(R.id.base_titlebar_ll);
+		lin.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				getActivity().finish();
+			}
+		});
 		mAdapter.setItemLayout(R.layout.item_filelist_multiselect);
 
 		// Init members
