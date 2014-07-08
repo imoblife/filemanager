@@ -268,7 +268,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 					QuickAction.VERTICAL);
 			qa.setOnActionItemClickListener(this);
 			qa.addActionItem(new ActionItem(0,
-					getString(R.string.multiselect_title), null), true);
+					getString(R.string.menu_multiselect), null), true);
 			qa.addActionItem(new ActionItem(1,
 					getString(R.string.create_new_folder), null), false);
 			qa.show(view);
