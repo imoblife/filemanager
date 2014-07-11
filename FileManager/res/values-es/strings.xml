@@ -183,7 +183,7 @@
     <string name="item_icon">Icono</string>
 
     <!-- list layout -->
-    <string name="scanning">Buscando\u2026</string>
+    <string name="file_scanning">Buscando\u2026</string>
 
     <!-- Dialogs -->
     <string name="delete_success">Borrado con éxito</string>
