@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -33,7 +34,10 @@ public class MultiselectListFragment extends FileListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.filelist_legacy_multiselect, null);
+		View view = inflater.inflate(R.layout.filelist_legacy_multiselect, null);
+		TextView title_tv = (TextView) view.findViewById(R.id.title_tv);
+		title_tv.setText(getString(R.string.menu_multiselect));
+		return view;
 
 	}
 
