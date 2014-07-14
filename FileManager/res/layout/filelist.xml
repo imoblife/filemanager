@@ -40,14 +40,11 @@
 
             <ListView
                 android:id="@android:id/list"
+                style="@style/base_card_listview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:cacheColorHint="#00000000"
-                android:divider="@null"
-                android:fastScrollEnabled="true"
-                android:listSelector="@color/base_transparent"
-                android:paddingLeft="@dimen/list_margin"
-                android:paddingRight="@dimen/list_margin" >
+                android:fastScrollEnabled="true" >
             </ListView>
 
             <TextView
@@ -55,6 +52,7 @@
                 style="@style/base_item_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:text="@string/this_folder_is_empty"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </FrameLayout>
