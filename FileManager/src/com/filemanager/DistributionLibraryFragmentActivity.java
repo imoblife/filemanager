@@ -22,7 +22,6 @@ public class DistributionLibraryFragmentActivity extends BaseTitlebarFragmentAct
 	/** Called when the activity is first created. */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		super.onCreate(savedInstanceState);
 	
 		// mDistribution = new DistributionLibrary(this,
