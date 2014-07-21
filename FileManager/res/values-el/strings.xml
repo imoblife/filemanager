@@ -181,7 +181,7 @@
     <string name="item_icon">Item icon</string>
     
     <!-- list layout -->
-    <string name="scanning">Φόρτωση…</string>
+    <string name="file_scanning">Φόρτωση…</string>
     
     <!-- Dialogs -->
     <string name="delete_success">Διαγραφή επιτυχής</string>

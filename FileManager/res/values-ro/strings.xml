@@ -347,7 +347,7 @@
    <string name="setting_debugsummary">Activaţi pentru a ne ajuta să îmbunătăţim aplicaţia</string>
 
    <!-- 3.6 -->
-   <string name="scanning">scanează</string>
+   <string name="file_scanning">scanează</string>
 
    <!-- 3.7 -->
    <string name="app_leftover">Rămăşiţe Aplicații</string>

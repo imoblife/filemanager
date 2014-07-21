@@ -185,7 +185,7 @@
     <string name="item_icon">Item icon</string>
     
     <!-- list layout -->
-    <string name="scanning">正在扫描…</string>
+    <string name="file_scanning">正在扫描…</string>
     
     <!-- Dialogs -->
     <string name="delete_success">已成功删除</string>
