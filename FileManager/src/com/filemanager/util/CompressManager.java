@@ -158,7 +158,7 @@ public class CompressManager {
 				}
 				try {
 					compressFile(file.getFile(), "");
-				} catch (IOException e) {
+				} catch (Exception e) {
 					Log.e(TAG, "Error while compressing", e);
 					return error;
 				}
