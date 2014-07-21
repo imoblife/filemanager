@@ -39,7 +39,7 @@
     <string name="menu_rename">重命名</string>
     <string name="menu_send">發送</string>
     <string name="menu_open">打開</string>
-    <string name="menu_move">Cut</string>
+    <string name="menu_move">剪切</string>
     <string name="menu_copy">複製</string>
     <string name="menu_details">詳細資訊</string>
     <string name="menu_more">更多</string>
@@ -47,7 +47,7 @@
     <string name="menu_extract">解壓(ZIP)</string>
     <string name="menu_include_in_media_scan">包括在媒體掃描中</string>
     <string name="menu_exclude_from_media_scan">從媒體掃描中排除</string>
-    <string name="menu_bookmark">Bookmark</string>
+    <string name="menu_bookmark">書簽</string>
     
     <string name="create_new_folder">新建資料夾</string>
     <string name="folder_name">資料夾名稱</string>
@@ -150,9 +150,9 @@
     
     <string name="menu_send">發送</string>
     <string name="menu_delete">刪除</string>
-    <string name="menu_move">Cut</string>
+    <string name="menu_move">剪切</string>
     <string name="menu_copy">複製</string>
-    <string name="menu_compress">Compress</string>
+    <string name="menu_compress">壓縮</string>
     <string name="menu_rename">重命名</string>
     
     <string name="menu_extract">解壓</string>
@@ -185,7 +185,7 @@
     <string name="item_icon">Item icon</string>
     
     <!-- list layout -->
-    <string name="file_scanning">正在掃描…</string>
+    <string name="scanning">正在掃描…</string>
     
     <!-- Dialogs -->
     <string name="delete_success">已成功刪除</string>
@@ -210,4 +210,16 @@
     <string name="moved">已成功移動</string>
     <string name="move_error">部分或全部檔無法移動</string>
     <string name="nothing_to_paste">無可粘貼項，請先複製或者剪切 </string>
+    
+     <string name="clipboard_undo">還原</string>
+    <string name="clipboard_dismiss">取消</string>
+   <plurals name="clipboard_info_items_to_copy">
+        <item quantity="one">%1$d 項將被複製</item>
+        <item quantity="other">%1$d 項將被複製</item>
+    </plurals>
+    <plurals name="clipboard_info_items_to_move">
+        <item quantity="one">%1$d 項將被移動</item>
+        <item quantity="other">%1$d 項將被移動</item>
+    </plurals>
+
 </resources>

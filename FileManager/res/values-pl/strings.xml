@@ -189,7 +189,7 @@
     <string name="item_icon">Item icon</string>
     
     <!-- list layout -->
-    <string name="file_scanning">Scanning…</string>
+    <string name="scanning">Scanning…</string>
     
     <!-- Dialogs -->
     <string name="delete_success">Successfully deleted</string>

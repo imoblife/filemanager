@@ -147,7 +147,7 @@
     <string name="menu_search">Search</string>
     <string name="menu_create_folder">Create folder</string>
     <string name="menu_paste">Paste</string>
-    <string name="menu_multiselect">Multiselect</string>
+    <string name="menu_multiselect">Sélect. Multiple</string>
     <string name="menu_settings">Réglages</string>
     
     <string name="menu_send">Envoyer</string>
@@ -187,7 +187,7 @@
     <string name="item_icon">Item icon</string>
     
     <!-- list layout -->
-    <string name="file_scanning">Scanning…</string>
+    <string name="scanning">Scanning…</string>
     
     <!-- Dialogs -->
     <string name="delete_success">Successfully deleted</string>

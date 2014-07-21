@@ -189,7 +189,7 @@
     <string name="item_icon">Значок элемента</string>
     
     <!-- list layout -->
-    <string name="file_scanning">Сканирование...</string>
+    <string name="scanning">Сканирование...</string>
     
     <!-- Dialogs -->
     <string name="delete_success">Успешно удалено</string>

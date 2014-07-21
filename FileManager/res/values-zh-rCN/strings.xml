@@ -39,7 +39,7 @@
     <string name="menu_rename">重命名</string>
     <string name="menu_send">发送</string>
     <string name="menu_open">打开</string>
-    <string name="menu_move">Cut</string>
+    <string name="menu_move">剪切</string>
     <string name="menu_copy">复制</string>
     <string name="menu_details">详细信息</string>
     <string name="menu_more">更多</string>
@@ -47,7 +47,7 @@
     <string name="menu_extract">解压(ZIP)</string>
     <string name="menu_include_in_media_scan">包括在媒体扫描中</string>
     <string name="menu_exclude_from_media_scan">从媒体扫描中排除</string>
-    <string name="menu_bookmark">Bookmark</string>
+    <string name="menu_bookmark">书签</string>
     
     <string name="create_new_folder">新建文件夹</string>
     <string name="folder_name">文件夹名称</string>
@@ -150,9 +150,9 @@
     
     <string name="menu_send">发送</string>
     <string name="menu_delete">删除</string>
-    <string name="menu_move">Cut</string>
+    <string name="menu_move">剪切</string>
     <string name="menu_copy">复制</string>
-    <string name="menu_compress">Compress</string>
+    <string name="menu_compress">压缩</string>
     <string name="menu_rename">重命名</string>
     
     <string name="menu_extract">解压</string>
@@ -185,7 +185,7 @@
     <string name="item_icon">Item icon</string>
     
     <!-- list layout -->
-    <string name="file_scanning">正在扫描…</string>
+    <string name="scanning">正在扫描…</string>
     
     <!-- Dialogs -->
     <string name="delete_success">已成功删除</string>
@@ -210,4 +210,16 @@
     <string name="moved">已成功移动</string>
     <string name="move_error">部分或全部文件无法移动</string>
     <string name="nothing_to_paste">无可粘贴项，请先复制或者剪切 </string>
+    
+     <string name="clipboard_undo">还原</string>
+    <string name="clipboard_dismiss">取消</string>
+   <plurals name="clipboard_info_items_to_copy">
+        <item quantity="one">%1$d 项将被复制</item>
+        <item quantity="other">%1$d 项将被复制</item>
+    </plurals>
+    <plurals name="clipboard_info_items_to_move">
+        <item quantity="one">%1$d 项将被移动</item>
+        <item quantity="other">%1$d 项将被移动</item>
+    </plurals>
+
 </resources>

@@ -182,7 +182,7 @@
     <string name="item_icon">항목 아이콘</string>
 
     <!-- list layout -->
-    <string name="file_scanning">스캐닝…</string>
+    <string name="scanning">스캐닝…</string>
 
     <!-- Dialogs -->
     <string name="delete_success">성공적으로 삭제되었습니다.</string>
