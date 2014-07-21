@@ -53,9 +53,13 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 
 	@Override
 	protected void onNewIntent(Intent intent) {
-		if (intent.getData() != null)
-			mFragment.openInformingPathBar(new FileHolder(FileUtils
-					.getFile(intent.getData()), this));
+		try {
+			if (intent.getData() != null)
+				mFragment.openInformingPathBar(new FileHolder(FileUtils
+						.getFile(intent.getData()), this));
+		} catch (Exception e) {
+			Log.w(getClass().getSimpleName(), e);
+		}
 	}
 
 	/**

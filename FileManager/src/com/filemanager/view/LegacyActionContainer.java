@@ -1,5 +1,7 @@
 package com.filemanager.view;
 
+import base.util.LogUtil;
+
 import com.filemanager.R;
 
 import android.content.Context;
@@ -81,8 +83,12 @@ public class LegacyActionContainer extends LinearLayout {
 			itemView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					if(mListener != null)
-						mListener.actionSelected((MenuItem) v.getTag());
+					try {
+						if(mListener != null)
+							mListener.actionSelected((MenuItem) v.getTag());
+					} catch (Exception e) {
+						LogUtil.w(getClass().getSimpleName(), e);
+					}
 				}
 			});
 			addView(itemView);

@@ -88,11 +88,15 @@ public class SingleDeleteDialog extends DialogFragment {
 
 		@Override
 		protected void onPostExecute(Void result) {
-			Toast.makeText(dialog.getContext(), mResult == 0 ? R.string.delete_failure : R.string.delete_success, Toast.LENGTH_LONG).show();
-			((FileListFragment) getTargetFragment()).refresh();
-			dialog.dismiss();
-			
-			MediaScannerUtils.informFileDeleted(getTargetFragment().getActivity().getApplicationContext(), mFileHolder.getFile());
+			try {
+				Toast.makeText(dialog.getContext(), mResult == 0 ? R.string.delete_failure : R.string.delete_success, Toast.LENGTH_LONG).show();
+				((FileListFragment) getTargetFragment()).refresh();
+				dialog.dismiss();
+				
+				MediaScannerUtils.informFileDeleted(getTargetFragment().getActivity().getApplicationContext(), mFileHolder.getFile());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
