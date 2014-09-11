@@ -42,7 +42,7 @@ public class MimeTypes {
 		MimeTypeParser mtp = null;
 		try {
 			mtp = new MimeTypeParser(c, c.getPackageName());
-		} catch (NameNotFoundException e) {
+		} catch (Exception e) {
 			// Should never happen
 		}
 
