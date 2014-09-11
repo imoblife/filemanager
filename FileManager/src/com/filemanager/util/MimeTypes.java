@@ -31,13 +31,13 @@ import android.webkit.MimeTypeMap;
 
 public class MimeTypes {
 
-	private Map<String, String> mMimeTypes = new HashMap<String,String>();
-	private Map<String, Integer> mIcons = new HashMap<String,Integer>();
+	private Map<String, String> mMimeTypes = new HashMap<String, String>();
+	private Map<String, Integer> mIcons = new HashMap<String, Integer>();
 
 	/**
 	 * Use this instead of the default constructor to get a prefilled object.
 	 */
-	public static MimeTypes newInstance(Context c){
+	public static MimeTypes newInstance(Context c) {
 		MimeTypes mimeTypes = null;
 		MimeTypeParser mtp = null;
 		try {
@@ -46,61 +46,60 @@ public class MimeTypes {
 			// Should never happen
 		}
 
-		XmlResourceParser in = c.getResources().getXml(R.xml.mimetypes);
-
 		try {
+			XmlResourceParser in = c.getResources().getXml(R.xml.mimetypes);
 			mimeTypes = mtp.fromXmlResource(in);
-		} catch (XmlPullParserException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		return mimeTypes;
 	}
-	
+
 	/* I think the type and extension names are switched (type contains .png, extension contains x/y),
 	 * but maybe it's on purpouse, so I won't change it.
 	 */
-	public void put(String type, String extension, int icon){
+	public void put(String type, String extension, int icon) {
 		put(type, extension);
 		mIcons.put(extension, icon);
 	}
-	
+
 	public void put(String type, String extension) {
 		// Convert extensions to lower case letters for easier comparison
 		extension = extension.toLowerCase();
-		
+
 		mMimeTypes.put(type, extension);
 	}
-	
+
 	public String getMimeType(String filename) {
 		String extension = FileUtils.getExtension(filename);
-		
+
 		// Let's check the official map first. Webkit has a nice extension-to-MIME map.
 		// Be sure to remove the first character from the extension, which is the "." character.
 		if (extension.length() > 0) {
-			String webkitMimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.substring(1));
-		
+			String webkitMimeType = MimeTypeMap.getSingleton()
+					.getMimeTypeFromExtension(extension.substring(1));
+
 			if (webkitMimeType != null) {
 				// Found one. Let's take it!
 				return webkitMimeType;
 			}
 		}
-		
+
 		// Convert extensions to lower case letters for easier comparison
 		extension = extension.toLowerCase();
-		
+
 		String mimetype = mMimeTypes.get(extension);
-		
-		if(mimetype==null) mimetype = "*/*";
-		
+
+		if (mimetype == null)
+			mimetype = "*/*";
+
 		return mimetype;
 	}
-	
-	public int getIcon(String mimetype){
+
+	public int getIcon(String mimetype) {
 		Integer iconResId = mIcons.get(mimetype);
-		if(iconResId == null)
+		if (iconResId == null)
 			return 0; // Invalid identifier
 		return iconResId;
 	}
