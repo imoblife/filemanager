@@ -63,10 +63,7 @@ public abstract class FileListFragment extends BaseListFragment {
 			// || PreferenceActivity.PREFS_SORTBY.equals(key)
 			// || PreferenceActivity.PREFS_ASCENDING.equals(key))
 
-			// Prevent NullPointerException caused from this getting called
-			// after we have finish()ed the activity.
-			if (getActivity() != null)
-				refresh();
+			refresh();
 		}
 	};
 
@@ -188,6 +185,11 @@ public abstract class FileListFragment extends BaseListFragment {
 	 * Reloads {@link #mPath}'s contents.
 	 */
 	public void refresh() {
+		// Prevent NullPointerException caused from this getting called
+		// after we have finish()ed the activity.
+		if (getActivity() == null)
+			return;
+
 		// Cancel and GC previous scanner so that it doesn't load on top of the
 		// new list.
 		// Race condition seen if a long list is requested, and a short list is
