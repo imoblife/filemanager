@@ -258,10 +258,11 @@ public class CopyHelper {
 			// Clear as the references have been invalidated.
 			mClipboard.clear();
 
-			mListener.operationFinished(result);
-
-			// Invalidate listener. 
-			mListener = null;
+			if (mListener != null) {
+				mListener.operationFinished(result);
+				// Invalidate listener. 
+				mListener = null;
+			}
 		}
 	}
 
@@ -286,10 +287,11 @@ public class CopyHelper {
 			// Clear as the references have been invalidated.
 			mClipboard.clear();
 
-			mListener.operationFinished(result);
-
-			// Invalidate listener. 
-			mListener = null;
+			if (mListener != null) {
+				mListener.operationFinished(result);
+				// Invalidate listener. 
+				mListener = null;
+			}
 		}
 	}
 
