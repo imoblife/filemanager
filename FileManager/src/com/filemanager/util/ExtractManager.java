@@ -69,7 +69,6 @@ public class ExtractManager {
             if (dir.exists()) {
                 return;
             }
-            Log.i(TAG, "Creating dir " + dir.getName());
             if (!dir.mkdirs()) {
                 throw new RuntimeException("Can not create dir " + dir);
             }
@@ -85,7 +84,6 @@ public class ExtractManager {
             if (!outputFile.getParentFile().exists()) {
                 createDir(outputFile.getParentFile());
             }
-            Log.i(TAG, "Extracting: " + entry);
             BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
             BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             try {

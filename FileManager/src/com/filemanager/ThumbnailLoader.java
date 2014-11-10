@@ -428,7 +428,6 @@ public class ThumbnailLoader {
 				PackageManager.MATCH_DEFAULT_ONLY);
 
 		if (lri != null && lri.size() > 0) {
-			// Log.i(TAG, "lri.size()" + lri.size());
 
             // Actually first element should be "best match",
             // but it seems that more recently installed applications
