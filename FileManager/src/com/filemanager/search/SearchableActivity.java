@@ -1,12 +1,18 @@
 package com.filemanager.search;
 
+import java.io.File;
+
+import base.util.FileUtil;
+import base.util.ui.titlebar.BaseTitlebarListActivity;
 
 import com.filemanager.FileManagerActivity;
 import com.filemanager.R;
 import com.filemanager.compatibility.HomeIconHelper;
+import com.filemanager.util.FileUtils;
 import com.filemanager.util.UIUtils;
 import com.intents.FileManagerIntents;
 
+import android.app.Activity;
 import android.app.ListActivity;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
@@ -20,37 +26,43 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
- * The activity that handles queries and shows search results. 
- * Also handles search-suggestion triggered intents.
+ * The activity that handles queries and shows search results. Also handles
+ * search-suggestion triggered intents.
  * 
  * @author George Venios
  * 
  */
-public class SearchableActivity extends ListActivity {
+public class SearchableActivity extends BaseTitlebarListActivity {
 	private LocalBroadcastManager lbm;
 	private Cursor searchResults;
-	
+	ListView listView;
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		UIUtils.setThemeFor(this);
-		
+	public void onCreate(Bundle savedInstanceState) {
+		// UIUtils.setThemeFor(this);
 		// Presentation settings
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
-//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-//			HomeIconHelper.activity_actionbar_setDisplayHomeAsUpEnabled(this);
-//		}
-
+		this.setTitle(getString(R.string.file_manage));
+		setContentView(R.layout.searchfile);
+		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		// HomeIconHelper.activity_actionbar_setDisplayHomeAsUpEnabled(this);
+		// }
+//		this.setTitle(getString(R.string.file_manage));
 		lbm = LocalBroadcastManager.getInstance(getApplicationContext());
-		
+
 		// Handle the search request.
 		handleIntent();
+
 	}
 
 	@Override
@@ -95,28 +107,26 @@ public class SearchableActivity extends ListActivity {
 					setProgressBarIndeterminateVisibility(false);
 				}
 			}, new IntentFilter(FileManagerIntents.ACTION_SEARCH_FINISHED));
-			
+
 			lbm.registerReceiver(new BroadcastReceiver() {
 				@Override
 				public void onReceive(Context context, Intent intent) {
 					setProgressBarIndeterminateVisibility(true);
 				}
 			}, new IntentFilter(FileManagerIntents.ACTION_SEARCH_STARTED));
-			
+
 			// Set the list adapter.
 			searchResults = getSearchResults();
 			setListAdapter(new SearchListAdapter(this, searchResults));
-			
 			// Start the search service.
 			Intent in = new Intent(this, SearchService.class);
 			in.putExtra(FileManagerIntents.EXTRA_SEARCH_INIT_PATH, path);
 			in.putExtra(FileManagerIntents.EXTRA_SEARCH_QUERY, query);
 			startService(in);
 		} // We're here because of a clicked suggestion
-		else if(Intent.ACTION_VIEW.equals(intent.getAction())){
+		else if (Intent.ACTION_VIEW.equals(intent.getAction())) {
 			browse(intent.getData());
-		}
-		else
+		} else
 			// Intent contents error.
 			setTitle(R.string.query_error);
 	}
@@ -124,10 +134,10 @@ public class SearchableActivity extends ListActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-		
+
 		stopService(new Intent(this, SearchService.class));
 	}
-	
+
 	/**
 	 * Clear the recents' history.
 	 */
@@ -139,23 +149,28 @@ public class SearchableActivity extends ListActivity {
 	}
 
 	private Cursor getSearchResults() {
-		return getContentResolver().query(SearchResultsProvider.CONTENT_URI, null, null, null, SearchResultsProvider.COLUMN_ID + " ASC");
+		return getContentResolver().query(SearchResultsProvider.CONTENT_URI,
+				null, null, null, SearchResultsProvider.COLUMN_ID + " ASC");
 	}
-	
-	@Override
+
+	// @Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Cursor c = new CursorWrapper(searchResults);
 		c.moveToPosition(position);
-		String path = c.getString(c.getColumnIndex(SearchResultsProvider.COLUMN_PATH));
-		
-		browse(Uri.parse(path));
+		String path = c.getString(c
+				.getColumnIndex(SearchResultsProvider.COLUMN_PATH));
+
+		// browse(Uri.parse(path));
+		FileUtils.locateFile(this, new File(path));
+		finish();
 	}
 
 	private void browse(Uri path) {
 		Intent intent = new Intent(this, FileManagerActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+				| Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		intent.setData(path);
-		
+
 		startActivity(intent);
 		finish();
 	}

@@ -24,6 +24,7 @@ import net.londatiga.android.QuickAction.OnActionItemClickListener;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -34,10 +35,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import base.util.PreferenceHelper;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 
 import com.filemanager.bookmarks.BookmarkListActivity;
+import com.filemanager.compatibility.HomeIconHelper;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.SimpleFileListFragment;
 import com.filemanager.util.FileUtils;
@@ -95,11 +98,10 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle icicle) {
-		//	UIUtils.setThemeFor(this);
+		// UIUtils.setThemeFor(this);
 
 		super.onCreate(icicle);
-		this.setTitle(getString(R.string.file_manage));
-
+		this.setTitle(R.string.file_manage);
 		// mDistribution.setFirst(MENU_DISTRIBUTION_START,
 		// DIALOG_DISTRIBUTION_START);
 
@@ -109,7 +111,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		// return;
 		// }
 
-		// Enable home button.
+		// // Enable home button.
 		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 		// HomeIconHelper.activity_actionbar_setHomeButtonEnabled(this);
 
@@ -140,27 +142,29 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 					.commit();
 		} else {
 			// If we didn't rotate and data wasn't null.
+
 			if (icicle == null && data != null)
 				mFragment.openInformingPathBar(new FileHolder(new File(data
 						.toString()), this));
 		}
+
 	}
 
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-		this.setTitle(R.string.file_manage);
+
 		this.setActionVisibility(View.VISIBLE);
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		MenuInflater inflater = new MenuInflater(this);
-//		inflater.inflate(R.menu.main, menu);
-//
-//		// mDistribution.onCreateOptionsMenu(menu);
-//		return true;
-//	}
+	// @Override
+	// public boolean onCreateOptionsMenu(Menu menu) {
+	// MenuInflater inflater = new MenuInflater(this);
+	// inflater.inflate(R.menu.main, menu);
+	//
+	// // mDistribution.onCreateOptionsMenu(menu);
+	// return true;
+	// }
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -254,9 +258,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		Bundle appData = new Bundle();
 		appData.putString(FileManagerIntents.EXTRA_SEARCH_INIT_PATH,
 				mFragment.getPath());
-		Log.i("appdate", mFragment.getPath() + "================");
 		startSearch(null, false, appData, false);
-
 		return true;
 	}
 
@@ -274,13 +276,19 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 			qa.addActionItem(new ActionItem(0,
 					getString(R.string.menu_multiselect), null), true);
 			qa.addActionItem(new ActionItem(1,
-					getString(R.string.create_new_folder), null), false);
+					getString(R.string.create_new_folder), null), true);
+			qa.addActionItem(new ActionItem(2, getString(R.string.search_file),
+					null), false);
 			qa.show(view);
 		}
 
 		public void onItemClick(QuickAction source, int pos, int actionId) {
-			ITitlebarActionMenuListener l = (ITitlebarActionMenuListener) mFragment;
-			l.onTitlebarActionMenuClick(pos);
+			if (pos == 2) {
+				onSearchRequested();
+			} else {
+				ITitlebarActionMenuListener l = (ITitlebarActionMenuListener) mFragment;
+				l.onTitlebarActionMenuClick(pos);
+			}
 		}
 	}
 }
