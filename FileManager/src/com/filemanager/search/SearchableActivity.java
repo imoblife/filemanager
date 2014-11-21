@@ -57,7 +57,7 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 		// HomeIconHelper.activity_actionbar_setDisplayHomeAsUpEnabled(this);
 		// }
-//		this.setTitle(getString(R.string.file_manage));
+		//		this.setTitle(getString(R.string.file_manage));
 		lbm = LocalBroadcastManager.getInstance(getApplicationContext());
 
 		// Handle the search request.
@@ -160,8 +160,8 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		String path = c.getString(c
 				.getColumnIndex(SearchResultsProvider.COLUMN_PATH));
 
-		// browse(Uri.parse(path));
-		FileUtils.locateFile(this, new File(path));
+		//		FileUtils.locateFile(this, new File(path));
+		browse(Uri.parse(path));
 		finish();
 	}
 
