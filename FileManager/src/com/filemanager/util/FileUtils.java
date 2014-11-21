@@ -368,9 +368,11 @@ public class FileUtils {
 
 		Uri data = FileUtils.getUri(fileholder.getFile());
 		String type = fileholder.getMimeType();
-
+		
+		Log.i(TAG, "openFile(): type=" + type);
 		if ("*/*".equals(type)) {
-			intent.setData(data);
+			//if it's unknown mime type file, directly open it with other text editors.
+			intent.setDataAndType(data, type);
 			intent.putExtra(FileManagerIntents.EXTRA_FROM_OI_FILEMANAGER, true);
 		} else {
 			intent.setDataAndType(data, type);
