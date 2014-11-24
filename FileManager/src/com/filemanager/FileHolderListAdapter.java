@@ -33,7 +33,7 @@ public class FileHolderListAdapter extends BaseAdapter {
 	private boolean scrolling = false;
 	private Handler mHandler;
 
-//	private ExecutorService executorService = Executors.newFixedThreadPool(3);
+	//	private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
 	public FileHolderListAdapter(List<FileHolder> files, Context c) {
 		mItems = files;
@@ -120,13 +120,12 @@ public class FileHolderListAdapter extends BaseAdapter {
 		if (files != null) {
 			holder.tertiaryInfo
 					.setText(item.getFile().isDirectory() ? files.length + " "
-							+ mContext
-									.getString(R.string.installer_status_amount)
-							: item.getFormattedSize(mContext, false));
+							+ mContext.getString(R.string.items) : item
+							.getFormattedSize(mContext, false));
 		} else {
-			holder.tertiaryInfo.setText(item.getFile().isDirectory() ? "0" + " "
-					+ mContext.getString(R.string.installer_status_amount)
-					: item.getFormattedSize(mContext, false));
+			holder.tertiaryInfo.setText(item.getFile().isDirectory() ? "0"
+					+ " " + mContext.getString(R.string.items) : item
+					.getFormattedSize(mContext, false));
 		}
 
 		// loadSize(item);
@@ -152,41 +151,41 @@ public class FileHolderListAdapter extends BaseAdapter {
 		String size;
 	}
 
-//	public String loadSize(final FileHolder item) {
-//		// Log.i("...", "" + item.getName() + " = " + tx.getText());
-//
-//		// if (TextUtils.isEmpty(tx.getText()))
-//		executorService.submit(new Runnable() {
-//			public void run() {
-//				String res = "loading";
-//				if (item.getFile().isDirectory()) {
-//					res = (item.getFormattedSize(mContext, false));
-//					item.setmSize(res);
-//					Log.i("...", "1 " + item.getName() + " = " + res);
-//				} else {
-//					res = (item.getFormattedSize(mContext, false));
-//					Log.i("...", "2 " + item.getName() + " = " + res);
-//					item.setmSize(res);
-//				}
-//
-//				Activity activity = ((Activity) mContext);
-//				activity.runOnUiThread(new Runnable() {
-//					public void run() {
-//						// notifyDataSetChanged();
-//					}
-//				});
-//				// tx.setText(res);
-//				// Message msg = handler.obtainMessage();
-//				// FileSize fs = new FileSize();
-//				// fs.tx = tx;
-//				// fs.size = res;
-//				// msg.obj = fs;
-//				// handler.sendMessage(msg);
-//			}
-//		});
-//		return null;
-//
-//	}
+	//	public String loadSize(final FileHolder item) {
+	//		// Log.i("...", "" + item.getName() + " = " + tx.getText());
+	//
+	//		// if (TextUtils.isEmpty(tx.getText()))
+	//		executorService.submit(new Runnable() {
+	//			public void run() {
+	//				String res = "loading";
+	//				if (item.getFile().isDirectory()) {
+	//					res = (item.getFormattedSize(mContext, false));
+	//					item.setmSize(res);
+	//					Log.i("...", "1 " + item.getName() + " = " + res);
+	//				} else {
+	//					res = (item.getFormattedSize(mContext, false));
+	//					Log.i("...", "2 " + item.getName() + " = " + res);
+	//					item.setmSize(res);
+	//				}
+	//
+	//				Activity activity = ((Activity) mContext);
+	//				activity.runOnUiThread(new Runnable() {
+	//					public void run() {
+	//						// notifyDataSetChanged();
+	//					}
+	//				});
+	//				// tx.setText(res);
+	//				// Message msg = handler.obtainMessage();
+	//				// FileSize fs = new FileSize();
+	//				// fs.tx = tx;
+	//				// fs.size = res;
+	//				// msg.obj = fs;
+	//				// handler.sendMessage(msg);
+	//			}
+	//		});
+	//		return null;
+	//
+	//	}
 
 	/**
 	 * Inform this adapter about scrolling state of list so that lists don't lag
