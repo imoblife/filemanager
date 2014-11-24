@@ -152,7 +152,6 @@ public class FileHolderListAdapter extends BaseAdapter {
 	}
 
 	//	public String loadSize(final FileHolder item) {
-	//		// Log.i("...", "" + item.getName() + " = " + tx.getText());
 	//
 	//		// if (TextUtils.isEmpty(tx.getText()))
 	//		executorService.submit(new Runnable() {
@@ -161,10 +160,8 @@ public class FileHolderListAdapter extends BaseAdapter {
 	//				if (item.getFile().isDirectory()) {
 	//					res = (item.getFormattedSize(mContext, false));
 	//					item.setmSize(res);
-	//					Log.i("...", "1 " + item.getName() + " = " + res);
 	//				} else {
 	//					res = (item.getFormattedSize(mContext, false));
-	//					Log.i("...", "2 " + item.getName() + " = " + res);
 	//					item.setmSize(res);
 	//				}
 	//
