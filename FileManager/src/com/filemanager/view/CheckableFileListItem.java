@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Checkable;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 /**
@@ -39,12 +40,13 @@ public class CheckableFileListItem extends RelativeLayout implements Checkable{
 		mCheckbox.setLayoutParams(params);
 		
 		View item = inflate(getContext(), R.layout.item_filelist, null);
+		LinearLayout item_ll = (LinearLayout) item.findViewById(R.id.item_ll);
 		LayoutParams p = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		p.addRule(LEFT_OF, 10);
 		p.addRule(ALIGN_PARENT_LEFT);
 		item.setLayoutParams(p);
 		
-		addView(mCheckbox);
+		item_ll.addView(mCheckbox);
 		addView(item);
 	}
 
