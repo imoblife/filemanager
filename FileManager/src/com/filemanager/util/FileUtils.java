@@ -368,7 +368,7 @@ public class FileUtils {
 
 		Uri data = FileUtils.getUri(fileholder.getFile());
 		String type = fileholder.getMimeType();
-		
+
 		if ("*/*".equals(type)) {
 			//if it's unknown mime type file, directly open it with other text editors.
 			intent.setDataAndType(data, type);
@@ -408,15 +408,23 @@ public class FileUtils {
 						- getExtension(getUri(f).toString()).length());
 	}
 
-	public static void locateFile(Context context, String uri) {
-		locateFile(context, new File(uri));
+	public static void locateFile(Context context, String uri, String title) {
+		locateFile(context, new File(uri), title);
 	}
 
-	public static void locateFile(Context context, File file) {
+	public static void locateFile(Context context, String uri) {
+		locateFile(context, new File(uri), null);
+	}
+
+	public static void locateFile(Context context, File file, String title) {
 		try {
 			File path = FileUtils.getPathWithoutFilename(file);
 			Bundle bundle = new Bundle();
-			bundle.putString("fileUri", path.getAbsolutePath());
+			bundle.putString(FileManagerActivity.EXTRA_FILE_URI,
+					path.getAbsolutePath());
+			if (title != null) {
+				bundle.putString(FileManagerActivity.EXTRA_CHANGE_TITLE, title);
+			}
 			Intent intent = new Intent(context, FileManagerActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtras(bundle);

@@ -48,7 +48,10 @@ import com.intents.FileManagerIntents;
 import com.util.MenuIntentOptionsWithIcons;
 
 public class FileManagerActivity extends DistributionLibraryFragmentActivity {
-	private static final String FRAGMENT_TAG = "ListFragment";
+	public static final String EXTRA_CHANGE_TITLE = "changeTitle";
+	public static final String EXTRA_FILE_URI = "fileUri";
+
+	public static final String FRAGMENT_TAG = "ListFragment";
 
 	protected static final int REQUEST_CODE_BOOKMARKS = 1;
 
@@ -73,13 +76,6 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	 * @return The folder to navigate to, if applicable. Null otherwise.
 	 */
 	private File resolveIntentData() {
-
-		//
-		if (getIntent().getStringExtra("fileUri") != null) {
-			return FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
-					"fileUri")));
-		}
-
 		File data = FileUtils.getFile(getIntent().getData());
 		if (data == null)
 			return null;
@@ -118,8 +114,17 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		// Search when the user types.
 		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
-		// If not called by name, open on the requested location.
-		File data = resolveIntentData();
+		File data = null;
+		if (getIntent().getStringExtra(EXTRA_FILE_URI) != null) {
+			data = FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
+					EXTRA_FILE_URI)));
+			if (getIntent().getStringExtra(EXTRA_CHANGE_TITLE) != null) {
+				setTitle(getIntent().getStringExtra(EXTRA_CHANGE_TITLE));
+			}
+		} else {
+			// If not called by name, open on the requested location.
+			data = resolveIntentData();
+		}
 
 		// Add fragment only if it hasn't already been added.
 		mFragment = (SimpleFileListFragment) getSupportFragmentManager()
