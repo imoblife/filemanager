@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -333,6 +334,7 @@ public abstract class FileListFragment extends BaseListFragment {
 	}
 
 	private void pathCheckAndFix() {
+		Log.i(TAG, "pathCheckAndFix " + mPath);
 		File dir = new File(mPath);
 		// Sanity check that the path (coming from extras_dir_path) is indeed a
 		// directory
@@ -346,5 +348,9 @@ public abstract class FileListFragment extends BaseListFragment {
 
 	public String getFilename() {
 		return mFilename;
+	}
+
+	public File getCurrentDirectory() {
+		return mCurrentDirectory;
 	}
 }

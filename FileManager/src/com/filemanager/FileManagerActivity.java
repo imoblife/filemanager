@@ -24,7 +24,6 @@ import net.londatiga.android.QuickAction.OnActionItemClickListener;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -32,15 +31,12 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import base.util.PreferenceHelper;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 
 import com.filemanager.bookmarks.BookmarkListActivity;
-import com.filemanager.compatibility.HomeIconHelper;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.SimpleFileListFragment;
 import com.filemanager.util.FileUtils;
@@ -48,11 +44,13 @@ import com.intents.FileManagerIntents;
 import com.util.MenuIntentOptionsWithIcons;
 
 public class FileManagerActivity extends DistributionLibraryFragmentActivity {
-	private static final String FRAGMENT_TAG = "ListFragment";
-
+	public static final String FRAGMENT_TAG = "ListFragment";
+	public static final String INTENT_FILE_URI = "fileUri";
+	public static final String INTENT_SHOW_MULTI = "showMultiselect";
 	protected static final int REQUEST_CODE_BOOKMARKS = 1;
 
 	private SimpleFileListFragment mFragment;
+	private boolean showMulti;
 
 	@Override
 	protected void onNewIntent(Intent intent) {
@@ -73,13 +71,6 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	 * @return The folder to navigate to, if applicable. Null otherwise.
 	 */
 	private File resolveIntentData() {
-
-		//
-		if (getIntent().getStringExtra("fileUri") != null) {
-			return FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
-					"fileUri")));
-		}
-
 		File data = FileUtils.getFile(getIntent().getData());
 		if (data == null)
 			return null;
@@ -118,8 +109,15 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		// Search when the user types.
 		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
-		// If not called by name, open on the requested location.
-		File data = resolveIntentData();
+		File data = null;
+		if (getIntent().getStringExtra(INTENT_FILE_URI) != null) {
+			data = FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
+					INTENT_FILE_URI)));
+			showMulti = getIntent().getBooleanExtra(INTENT_SHOW_MULTI, false);
+		} else {
+			// If not called by name, open on the requested location.
+			data = resolveIntentData();
+		}
 
 		// Add fragment only if it hasn't already been added.
 		mFragment = (SimpleFileListFragment) getSupportFragmentManager()
@@ -153,8 +151,11 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState) {
 		super.onPostCreate(savedInstanceState);
-
 		this.setActionVisibility(View.VISIBLE);
+		if (showMulti) {
+			handleActionMenu(QuickActionMenu.MENU_MULTISELECT);
+			finish();
+		}
 	}
 
 	// @Override
@@ -269,16 +270,20 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 	}
 
 	private class QuickActionMenu implements OnActionItemClickListener {
+		private static final int MENU_MULTISELECT = 0;
+		private static final int MENU_NEWFOLDER = 1;
+		private static final int MENU_SEARCH = 2;
+
 		public QuickActionMenu(View view) {
 			QuickAction qa = new QuickAction(FileManagerActivity.this,
 					QuickAction.VERTICAL);
 			qa.setOnActionItemClickListener(this);
-			qa.addActionItem(new ActionItem(0,
+			qa.addActionItem(new ActionItem(MENU_MULTISELECT,
 					getString(R.string.menu_multiselect), null), true);
-			qa.addActionItem(new ActionItem(1,
+			qa.addActionItem(new ActionItem(MENU_NEWFOLDER,
 					getString(R.string.create_new_folder), null), true);
-			qa.addActionItem(new ActionItem(2, getString(R.string.search_file),
-					null), false);
+			qa.addActionItem(new ActionItem(MENU_SEARCH,
+					getString(R.string.search_file), null), false);
 			qa.show(view);
 		}
 
@@ -286,9 +291,14 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 			if (pos == 2) {
 				onSearchRequested();
 			} else {
-				ITitlebarActionMenuListener l = (ITitlebarActionMenuListener) mFragment;
-				l.onTitlebarActionMenuClick(pos);
+				handleActionMenu(pos);
 			}
 		}
+
+	}
+
+	public void handleActionMenu(int pos) {
+		ITitlebarActionMenuListener l = (ITitlebarActionMenuListener) mFragment;
+		l.onTitlebarActionMenuClick(pos);
 	}
 }

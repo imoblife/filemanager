@@ -6,6 +6,7 @@ import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.MenuUtils;
 import com.filemanager.view.LegacyActionContainer;
+import com.filemanager.view.PathBar;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,11 +35,11 @@ public class MultiselectListFragment extends FileListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		View view = inflater.inflate(R.layout.filelist_legacy_multiselect, null);
+		View view = inflater
+				.inflate(R.layout.filelist_legacy_multiselect, null);
 		TextView title_tv = (TextView) view.findViewById(R.id.title_tv);
 		title_tv.setText(getString(R.string.menu_multiselect));
 		return view;
-
 	}
 
 	@Override
@@ -46,7 +47,6 @@ public class MultiselectListFragment extends FileListFragment {
 		super.onCreate(savedInstanceState);
 		getActivity().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		//		setHasOptionsMenu(true);
-
 	}
 
 	@Override
@@ -92,10 +92,10 @@ public class MultiselectListFragment extends FileListFragment {
 				});
 	}
 
-//	@Override
-//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//		inflater.inflate(R.menu.options_multiselect, menu);
-//	}
+	//	@Override
+	//	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	//		inflater.inflate(R.menu.options_multiselect, menu);
+	//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {

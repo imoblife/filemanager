@@ -25,6 +25,7 @@ import com.filemanager.FileManagerActivity;
 import com.filemanager.IntentFilterActivity;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
+import com.filemanager.lists.SimpleFileListFragment;
 import com.intents.FileManagerIntents;
 
 import android.content.ActivityNotFoundException;
@@ -368,7 +369,7 @@ public class FileUtils {
 
 		Uri data = FileUtils.getUri(fileholder.getFile());
 		String type = fileholder.getMimeType();
-		
+
 		if ("*/*".equals(type)) {
 			//if it's unknown mime type file, directly open it with other text editors.
 			intent.setDataAndType(data, type);
@@ -408,19 +409,30 @@ public class FileUtils {
 						- getExtension(getUri(f).toString()).length());
 	}
 
-	public static void locateFile(Context context, String uri) {
-		locateFile(context, new File(uri));
+	public static void locateFile(Context context, String uri, boolean showMulti) {
+		locateFile(context, new File(uri), showMulti);
 	}
 
-	public static void locateFile(Context context, File file) {
+	public static void locateFile(Context context, String uri) {
+		locateFile(context, new File(uri), false);
+	}
+
+	public static void locateFile(Context context, File file, boolean showMulti) {
 		try {
 			File path = FileUtils.getPathWithoutFilename(file);
 			Bundle bundle = new Bundle();
-			bundle.putString("fileUri", path.getAbsolutePath());
+			bundle.putString(FileManagerActivity.INTENT_FILE_URI,
+					path.getAbsolutePath());
+			//			bundle.putBoolean(FileManagerActivity.INTENT_SHOW_MULTI, showMulti);
 			Intent intent = new Intent(context, FileManagerActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtras(bundle);
 			context.startActivity(intent);
+
+			//			Intent intent = new Intent(FileManagerIntents.ACTION_MULTI_SELECT);
+			//			intent.putExtra(FileManagerIntents.EXTRA_DIR_PATH, path);
+			//			intent.setFlags(intent.FLAG_ACTIVITY_NEW_TASK);
+			//			context.startActivity(intent);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
