@@ -11,7 +11,8 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.LinearLayout;
 
-public class DistributionLibraryFragmentActivity extends BaseTitlebarFragmentActivity {
+public class DistributionLibraryFragmentActivity extends
+		BaseTitlebarFragmentActivity {
 
 	static final int MENU_DISTRIBUTION_START = Menu.FIRST;
 
@@ -23,17 +24,17 @@ public class DistributionLibraryFragmentActivity extends BaseTitlebarFragmentAct
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-	
+
 		// mDistribution = new DistributionLibrary(this,
 		// MENU_DISTRIBUTION_START, DIALOG_DISTRIBUTION_START);
 	}
 
-//	@Override
-//	public boolean onCreateOptionsMenu(Menu menu) {
-//		super.onCreateOptionsMenu(menu);
-//		// mDistribution.onCreateOptionsMenu(menu);
-//		return true;
-//	}
+	//	@Override
+	//	public boolean onCreateOptionsMenu(Menu menu) {
+	//		super.onCreateOptionsMenu(menu);
+	//		// mDistribution.onCreateOptionsMenu(menu);
+	//		return true;
+	//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -53,4 +54,8 @@ public class DistributionLibraryFragmentActivity extends BaseTitlebarFragmentAct
 	// super.onPrepareDialog(id, dialog);
 	// mDistribution.onPrepareDialog(id, dialog);
 	// }
+
+	public String getTrackModule() {
+		return getClass().getSimpleName();
+	}
 }

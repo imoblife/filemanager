@@ -296,4 +296,8 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 			}
 		}
 	}
+
+	public String getTrackModule() {
+		return getClass().getSimpleName();
+	}
 }

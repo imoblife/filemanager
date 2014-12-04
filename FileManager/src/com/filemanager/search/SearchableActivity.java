@@ -174,4 +174,8 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		startActivity(intent);
 		finish();
 	}
+
+	public String getTrackModule() {
+		return getClass().getSimpleName();
+	}
 }
