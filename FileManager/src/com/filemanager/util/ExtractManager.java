@@ -1,5 +1,7 @@
 package com.filemanager.util;
 
+import imoblife.android.os.ModernAsyncTask;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -13,7 +15,6 @@ import com.filemanager.R;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -36,7 +37,7 @@ public class ExtractManager {
             new ExtractTask().execute(f, destinationPath);
     }
 
-    private class ExtractTask extends AsyncTask<Object, Void, Integer> {
+    private class ExtractTask extends ModernAsyncTask<Object, Void, Integer> {
         private static final int success = 0;
         private static final int error = 1;
 

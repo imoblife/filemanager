@@ -1,5 +1,7 @@
 package com.filemanager.dialogs;
 
+import imoblife.android.os.ModernAsyncTask;
+
 import java.io.File;
 
 
@@ -12,7 +14,6 @@ import com.intents.FileManagerIntents;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -74,7 +75,7 @@ public class DetailsDialog extends DialogFragment {
 	 * @author George Venios
 	 *
 	 */
-	private class SizeRefreshTask extends AsyncTask<Void, Void, String> {
+	private class SizeRefreshTask extends ModernAsyncTask<Void, Void, String> {
 
 		@Override
 		protected void onPreExecute() {

@@ -1,5 +1,7 @@
 package com.filemanager.util;
 
+import imoblife.android.os.ModernAsyncTask;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -19,7 +21,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -60,7 +61,7 @@ public class CompressManager {
 	}
 
 	private class CompressTask extends
-			AsyncTask<List<FileHolder>, Void, Integer> {
+	ModernAsyncTask<List<FileHolder>, Void, Integer> {
 		private static final int success = 0;
 		private static final int error = 1;
 		private ZipOutputStream zos;

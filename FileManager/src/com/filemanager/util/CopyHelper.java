@@ -1,9 +1,10 @@
 package com.filemanager.util;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
+
+import imoblife.android.os.ModernAsyncTask;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -237,7 +238,7 @@ public class CopyHelper {
 		}
 	}
 
-	private class CopyAsync extends AsyncTask<File, Void, Boolean> {
+	private class CopyAsync extends ModernAsyncTask<File, Void, Boolean> {
 		@Override
 		protected void onPreExecute() {
 			Toast.makeText(mContext, R.string.copying, Toast.LENGTH_SHORT)
@@ -266,7 +267,7 @@ public class CopyHelper {
 		}
 	}
 
-	private class MoveAsync extends AsyncTask<File, Void, Boolean> {
+	private class MoveAsync extends ModernAsyncTask<File, Void, Boolean> {
 		@Override
 		protected void onPreExecute() {
 			Toast.makeText(mContext, R.string.moving, Toast.LENGTH_SHORT)

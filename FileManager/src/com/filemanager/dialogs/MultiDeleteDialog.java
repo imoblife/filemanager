@@ -1,5 +1,7 @@
 package com.filemanager.dialogs;
 
+import imoblife.android.os.ModernAsyncTask;
+
 import java.io.File;
 import java.util.List;
 
@@ -16,7 +18,6 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
@@ -47,7 +48,7 @@ public class MultiDeleteDialog extends DialogFragment {
 				.create();
 	}
 	
-	private class RecursiveDeleteTask extends AsyncTask<Void, Void, Void> {
+	private class RecursiveDeleteTask extends ModernAsyncTask<Void, Void, Void> {
 		private Context mContext;
 		
 		public RecursiveDeleteTask() {
