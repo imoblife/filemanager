@@ -62,7 +62,7 @@
 
                 <TextView
                     android:id="@+id/secondary_info"
-                    style="@style/base_item_text"
+                    style="@style/base_item_detail"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignLeft="@+id/primary_info"
@@ -73,7 +73,7 @@
 
                 <TextView
                     android:id="@+id/tertiary_info"
-                    style="@style/base_item_text"
+                    style="@style/base_item_detail"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/secondary_info"
