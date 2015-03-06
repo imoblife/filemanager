@@ -42,16 +42,16 @@ public class FileManagerProvider extends ContentProvider {
 		} catch (NameNotFoundException e) {
 			//Should never get here
 		}
-		XmlResourceParser in = 
-			getContext().getResources().getXml(R.xml.mimetypes);
 
 		try {
+			XmlResourceParser in = 
+					getContext().getResources().getXml(R.xml.mimetypes);
 			mMimeTypes = mtp.fromXmlResource(in);
 		} catch (XmlPullParserException e) {
 			Log.e(TAG, "PreselectedChannelsActivity: XmlPullParserException", e);
 			throw new RuntimeException(
 					"PreselectedChannelsActivity: XmlPullParserException");
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Log.e(TAG, "PreselectedChannelsActivity: IOException", e);
 			throw new RuntimeException(
 					"PreselectedChannelsActivity: IOException");
