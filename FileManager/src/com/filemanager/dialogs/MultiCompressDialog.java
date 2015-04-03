@@ -39,9 +39,13 @@ public class MultiCompressDialog extends DialogFragment implements Overwritable 
 			
 			@Override
 			public void compressFinished() {
-				((FileListFragment) getTargetFragment()).refresh();
-				
-				MediaScannerUtils.informFileAdded(getTargetFragment().getActivity().getApplicationContext(), tbcreated);
+				try {
+					((FileListFragment) getTargetFragment()).refresh();
+					
+					MediaScannerUtils.informFileAdded(getTargetFragment().getActivity().getApplicationContext(), tbcreated);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
