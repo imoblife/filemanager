@@ -68,7 +68,7 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
 	}
 
 	private void createFolder(final CharSequence text, Context c) {
-		if (text.length() != 0) {
+		if (text != null && text.length() != 0) {
 			tbcreated = new File(mIn + File.separator + text.toString());
 			if (tbcreated.exists()) {
 				this.text = text;
