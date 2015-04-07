@@ -126,6 +126,10 @@ public class SearchCore {
 	 *            The starting dir for the search. Callers outside of this class are highly encouraged to use the same as {@link #root}.
 	 */
 	public void search(File dir) {
+		if(dir == null) {
+			return;
+		}
+		
 		// Results in root pass
 		for (File f : dir.listFiles(filter)) {
 			insertResult(f);
