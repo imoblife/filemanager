@@ -32,18 +32,22 @@ public class SingleDeleteDialog extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		return new AlertDialog.Builder(getActivity())
-				.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(getActivity()))
-				.setTitle(getString(R.string.really_delete, mFileHolder.getName()))
-				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-							new RecursiveDeleteTask().execute(mFileHolder.getFile());
-					}
-				})
-				.setIcon(mFileHolder.getIcon())
-				.setNegativeButton(android.R.string.cancel, null)
-				.create();
+		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
+		try {
+			adb.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(getActivity()))
+			.setTitle(getString(R.string.really_delete, mFileHolder.getName()))
+			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int which) {
+					new RecursiveDeleteTask().execute(mFileHolder.getFile());
+				}
+			})
+			.setIcon(mFileHolder.getIcon())
+			.setNegativeButton(android.R.string.cancel, null);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return adb.create();
 	}
 	
 	private class RecursiveDeleteTask extends ModernAsyncTask<File, Void, Void> {
