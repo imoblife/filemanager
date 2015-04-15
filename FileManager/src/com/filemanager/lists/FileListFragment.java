@@ -150,9 +150,9 @@ public abstract class FileListFragment extends BaseListFragment {
 				CopyHelper.get(getActivity()).clear();
 				updateClipboardInfo();
 
-				//				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-				//					ActionbarRefreshHelper
-				//							.activity_invalidateOptionsMenu(getActivity());
+				// if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+				// ActionbarRefreshHelper
+				// .activity_invalidateOptionsMenu(getActivity());
 			}
 		});
 
@@ -251,30 +251,33 @@ public abstract class FileListFragment extends BaseListFragment {
 	private class FileListMessageHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
+			try {
+				switch (msg.what) {
+				case DirectoryScanner.MESSAGE_SHOW_DIRECTORY_CONTENTS:
+					DirectoryContents c = (DirectoryContents) msg.obj;
+					mFiles.clear();
+					mFiles.addAll(c.listSdCard);
+					mFiles.addAll(c.listDir);
+					mFiles.addAll(c.listFile);
 
-			switch (msg.what) {
-			case DirectoryScanner.MESSAGE_SHOW_DIRECTORY_CONTENTS:
-				DirectoryContents c = (DirectoryContents) msg.obj;
-				mFiles.clear();
-				mFiles.addAll(c.listSdCard);
-				mFiles.addAll(c.listDir);
-				mFiles.addAll(c.listFile);
+					mAdapter.notifyDataSetChanged();
 
-				mAdapter.notifyDataSetChanged();
-
-				if (mPreviousDirectory != null) {
-					selectInList(mPreviousDirectory);
-				} else {
-					// Reset list position.
-					if (mFiles.size() > 0)
-						getListView().setSelection(0);
+					if (mPreviousDirectory != null) {
+						selectInList(mPreviousDirectory);
+					} else {
+						// Reset list position.
+						if (mFiles.size() > 0)
+							getListView().setSelection(0);
+					}
+					setLoading(false);
+					updateClipboardInfo();
+					break;
+				case DirectoryScanner.MESSAGE_SET_PROGRESS:
+					// Irrelevant.
+					break;
 				}
-				setLoading(false);
-				updateClipboardInfo();
-				break;
-			case DirectoryScanner.MESSAGE_SET_PROGRESS:
-				// Irrelevant.
-				break;
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
