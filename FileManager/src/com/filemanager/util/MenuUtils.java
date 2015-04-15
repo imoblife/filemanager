@@ -70,41 +70,45 @@ public abstract class MenuUtils {
 	 */
 	static public void fillContextMenu(FileHolder item, Menu m,
 			int menuResource, MenuInflater mi, Context context) {
-		// Inflate all actions
-		mi.inflate(menuResource, m);
+		try {
+			// Inflate all actions
+			mi.inflate(menuResource, m);
 
-		if (m instanceof ContextMenu) {
-			((ContextMenu) m).setHeaderTitle(item.getName());
-			((ContextMenu) m).setHeaderIcon(item.getIcon());
-		}
+			if (m instanceof ContextMenu) {
+				((ContextMenu) m).setHeaderTitle(item.getName());
+				((ContextMenu) m).setHeaderIcon(item.getIcon());
+			}
 
-		// Get the selected file
-		File file = item.getFile();
+			// Get the selected file
+			File file = item.getFile();
 
-		// If selected item is a directory
-		if (file.isDirectory()) {
-			m.removeItem(R.id.menu_send);
-		}
+			// If selected item is a directory
+			if (file.isDirectory()) {
+				m.removeItem(R.id.menu_send);
+			}
 
-		// If selected item is a zip archive
-		if (!FileUtils.checkIfZipArchive(file)) {
-			m.removeItem(R.id.menu_extract);
-		} else {
-			m.removeItem(R.id.menu_compress);
-		}
+			// If selected item is a zip archive
+			if (!FileUtils.checkIfZipArchive(file)) {
+				m.removeItem(R.id.menu_extract);
+			} else {
+				m.removeItem(R.id.menu_compress);
+			}
 
-		// Add CATEGORY_SELECTED_ALTERNATIVE intent options
-		Uri data = Uri.fromFile(file);
-		Intent intent = new Intent(null, data);
+			// Add CATEGORY_SELECTED_ALTERNATIVE intent options
+			Uri data = Uri.fromFile(file);
+			Intent intent = new Intent(null, data);
 
-		intent.setDataAndType(data, item.getMimeType());
-		intent.addCategory(Intent.CATEGORY_SELECTED_ALTERNATIVE);
+			intent.setDataAndType(data, item.getMimeType());
+			intent.addCategory(Intent.CATEGORY_SELECTED_ALTERNATIVE);
 
-		if (item.getMimeType() != null) {
-			// Add additional options for the MIME type of the selected file.
-			m.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-					new ComponentName(context, FileManagerActivity.class),
-					null, intent, 0, null);
+			if (item.getMimeType() != null) {
+				// Add additional options for the MIME type of the selected file.
+				m.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
+						new ComponentName(context, FileManagerActivity.class),
+						null, intent, 0, null);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
