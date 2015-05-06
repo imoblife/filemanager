@@ -30,34 +30,43 @@ public class SearchService extends IntentService {
 		super.onCreate();
 
 		lbm = LocalBroadcastManager.getInstance(getApplicationContext());
-		
+
 		searcher = new SearchCore(this);
 		searcher.setURI(SearchResultsProvider.CONTENT_URI);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		// The search query
-		searcher.setQuery(intent.getStringExtra(FileManagerIntents.EXTRA_SEARCH_QUERY));
+		try {
 
-		// Set initial path. To be searched first!
-		String path = intent
-				.getStringExtra(FileManagerIntents.EXTRA_SEARCH_INIT_PATH);
-		File root = null;
-		if (path != null)
-			root = new File(path);
-		else
-			root = new File("/");
+			// The search query
+			searcher.setQuery(intent
+					.getStringExtra(FileManagerIntents.EXTRA_SEARCH_QUERY));
 
-		// Search started, let Receivers know.
-		lbm.sendBroadcast(new Intent(FileManagerIntents.ACTION_SEARCH_STARTED));
+			// Set initial path. To be searched first!
+			String path = intent
+					.getStringExtra(FileManagerIntents.EXTRA_SEARCH_INIT_PATH);
+			File root = null;
+			if (path != null)
+				root = new File(path);
+			else
+				root = new File("/");
 
-		// Search in current path.
-		searcher.dropPreviousResults();
-		searcher.setRoot(root);
-		searcher.search(root);
+			// Search started, let Receivers know.
+			lbm.sendBroadcast(new Intent(
+					FileManagerIntents.ACTION_SEARCH_STARTED));
 
-		// Search is over, let Receivers know.
-		lbm.sendBroadcast(new Intent(FileManagerIntents.ACTION_SEARCH_FINISHED));
+			// Search in current path.
+			searcher.dropPreviousResults();
+			searcher.setRoot(root);
+			searcher.search(root);
+
+			// Search is over, let Receivers know.
+			lbm.sendBroadcast(new Intent(
+					FileManagerIntents.ACTION_SEARCH_FINISHED));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
