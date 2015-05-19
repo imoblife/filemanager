@@ -44,7 +44,6 @@ import android.widget.AdapterView.OnItemClickListener;
 public class SearchableActivity extends BaseTitlebarListActivity {
 	private LocalBroadcastManager lbm;
 	private Cursor searchResults;
-	ListView listView;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {

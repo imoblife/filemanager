@@ -7,6 +7,7 @@ import com.intents.FileManagerIntents;
 import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 /**
  * Service that asynchronously executes file searches.
@@ -33,6 +34,7 @@ public class SearchService extends IntentService {
 
 		searcher = new SearchCore(this);
 		searcher.setURI(SearchResultsProvider.CONTENT_URI);
+		searcher.setRun(true);
 	}
 
 	@Override
@@ -68,5 +70,10 @@ public class SearchService extends IntentService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void onDestroy() {
+		super.onDestroy();
+		searcher.setRun(false);
 	}
 }

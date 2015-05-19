@@ -10,6 +10,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
+import android.util.Log;
 
 /**
  * Provides the search core, used by every search subsystem that provides results.
@@ -29,6 +30,7 @@ public class SearchCore {
 	
 	private long mMaxNanos = -1;
 	private long mStart;
+	private boolean isRun;
 	
 	public SearchCore(Context context) {
 		mContext = context;
@@ -126,6 +128,10 @@ public class SearchCore {
 	 *            The starting dir for the search. Callers outside of this class are highly encouraged to use the same as {@link #root}.
 	 */
 	public void search(File dir) {
+		if(!isRun()) {
+			return;
+		}
+		
 		if(dir == null) {
 			return;
 		}
@@ -160,5 +166,13 @@ public class SearchCore {
 	 */
 	private boolean isChildOf(File f1, File f2) {
 		return f2.getAbsolutePath().startsWith(f1.getAbsolutePath());
+	}
+
+	public boolean isRun() {
+		return isRun;
+	}
+
+	public void setRun(boolean isRun) {
+		this.isRun = isRun;
 	}
 }
