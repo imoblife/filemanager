@@ -127,7 +127,7 @@ public class PathBar extends ViewFlipper {
 			cdToRootButton.setLayoutParams(layoutParams);
 			cdToRootButton.setId(11);
 			// cdToRootButton.setBackgroundDrawable(getResources().getDrawable(R.drawable.base_card_selector));
-			cdToRootButton.setImageResource(R.drawable.notificaion_verline);
+			cdToRootButton.setImageResource(R.drawable.notifier_divider);
 			cdToRootButton.setScaleType(ScaleType.CENTER_INSIDE);
 			cdToRootButton.setOnClickListener(new View.OnClickListener() {
 				@Override

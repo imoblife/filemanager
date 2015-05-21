@@ -108,7 +108,7 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 				this.addView(PathButtonFactory.newButton(cPath.toString(),
 						mPathBar));
 				ImageView iv = new ImageView(getContext());
-				iv.setImageResource(R.drawable.notificaion_verline);
+				iv.setImageResource(R.drawable.notifier_divider);
 				this.addView(iv);
 			}
 		}

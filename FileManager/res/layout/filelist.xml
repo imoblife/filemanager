@@ -78,7 +78,7 @@
             <LinearLayout
                 android:layout_width="1dp"
                 android:layout_height="45dp"
-                android:background="@drawable/notificaion_verline" >
+                android:background="@drawable/notifier_divider" >
             </LinearLayout>
 
             <TextView
