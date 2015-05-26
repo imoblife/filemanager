@@ -15,11 +15,6 @@
  * limitations under the License.
  -->
 <resources>
-	<!-- ***************************
-	     About information
-	     *************************** -->
-
-	<!-- Automatically filled in by Launchpad: -->
 	<string name="about_translators">Launchpad Contributions:
   Adolfo Jayme Barrientos https://launchpad.net/~fitoschido
   Alfredo Hernández https://launchpad.net/~aldomann
@@ -33,13 +28,8 @@
   miwie https://launchpad.net/~mw-miwie
   simon https://launchpad.net/~sianhulo</string>
 
-    <!-- Short explanation of the application (max. 80 characters) -->
-    <string name="about_comments">Administrar archivos de la memoria con File Manager</string>
+     <string name="about_comments">Administrar archivos de la memoria con File Manager</string>
 
-	<!-- ***************************
-	     Applicatio-specific strings
-	     *************************** -->
-	<!-- Name of application. Can be localized. OI = OpenIntents should stay unmodified. -->
     <string name="app_name">File Manager</string>
 
     <string name="menu_delete">Borrar</string>
@@ -64,13 +54,11 @@
     <string name="warning_some_may_not_work">Algunas de las siguientes opciones pueden no funcionar</string>
     <string name="show_warning_again">Mostrar advertencia nuevamente</string>
 
-    <!-- Strings for a multi select feature -->
 	<string name="really_delete_multiselect">¿Borrar %d archivos?</string>
 
     <string name="multiselect_title">Seleccionar varios archivos</string>
     <string name="pick_title">Selector de archivos</string>
 
-    <!-- Strings for details table -->
     <string name="details_type">Tipo</string>
     <string name="details_type_folder">Carpeta</string>
     <string name="details_type_file">Archivo</string>
@@ -82,10 +70,8 @@
     <string name="details_yes">Sí</string>
     <string name="details_no">No</string>
 
-    <!-- Construct a unique file name of a file called %s. -->
     <string name="copied_file_name">Copia de %s</string>
 
-    <!-- Construct a unique file name with number %1$d of a file called %2$s. -->
     <string name="copied_file_name_2">Copiar %1$d de %2$s</string>
 
     <string name="media_scan_included">Esta carpeta se incluirá en la siguiente exploración de archivos multimedia</string>
@@ -98,13 +84,7 @@
 
     <string name="application_not_available">Aplicación no disponible</string>
 
-	<!-- ***************************
-	     Preferences
-	     *************************** -->
-    <!-- Menu item for Settings -->
 	<string name="settings">Configuración</string>
-
-    <!-- Category for preferences. -->
     <string name="preference_advanced_features">Características avanzadas</string>
 	<string name="preference_mediascan_title">Excluir de la exploración de archivos multimedia</string>
     <string name="preference_mediascan_summary_on">Mostrar la opción para excluir carpetas de la exploración de archivos multimedia</string>
@@ -129,17 +109,9 @@
         <item>Última modificación</item>
     </string-array>
 
-
-    <!-- ***************************
-         Strings for the \'Save as\' feature
-         *************************** -->
     <string name="saveas_no_file_picked">No se ha elegido ningún archivo</string>
     <string name="saveas_error">Ocurrió un error</string>
     <string name="saveas_file_saved">El archivo se guardó con éxito</string>
-
-    <!-- ***************************
-         Strings for the \'Compressing\' and \'Extracting\' feature
-         *************************** -->
     <string name="compressing_success">Archivo comprimido con éxito</string>
     <string name="compressing_error">No se puede comprimir el archivo</string>
     <string name="extracting_success">Archivo extraído con éxito</string>
@@ -147,7 +119,6 @@
     <string name="extracting">Extrayendo\u2026</string>
     <string name="compressing">Comprimiendo\u2026</string>
 
-    <!-- new menu strings -->
     <string name="menu_bookmarks">Marcadores</string>
     <string name="menu_search">Buscar</string>
     <string name="menu_create_folder">Crear carpeta</string>
@@ -161,7 +132,6 @@
     <string name="menu_check_all">Marcar todo</string>
     <string name="menu_uncheck_all">Desmarcar todo</string>
 
-    <!-- Multi selection action strings -->
     <string name="selected">seleccionado</string>
     <string name="no_selection">No hay elementos seleccionados</string>
 
@@ -170,7 +140,6 @@
     <string name="bookmark_already_exists">Este archivo ya está en marcadores</string>
     <string name="bookmarks">Marcadores</string>
 
-    <!-- Search related -->
     <string name="search_hint">Buscar archivos</string>
     <string name="query_error">Consultar error</string>
     <string name="search_settings_descr">Archivos y carpetas en almacenamiento</string>
@@ -178,14 +147,11 @@
     <string name="preference_search_category">Buscar</string>
     <string name="preference_search_dialog_message">¿Borrar historial de búsqueda?</string>
     <string name="search_history_cleared">Historial de búsqueda borrado</string>
-
-    <!-- icon content description -->
     <string name="item_icon">Icono</string>
 
-    <!-- list layout -->
+
     <string name="file_scanning">Buscando\u2026</string>
 
-    <!-- Dialogs -->
     <string name="delete_success">Borrado con éxito</string>
     <string name="delete_failure">¡Algunos archivos no pudieron ser borrados!</string>
     <string name="deleting">Borrando\u2026</string>
@@ -200,7 +166,6 @@
 
     <string name="directory_pick">Seleccionar carpeta actual</string>
 
-    <!-- CopyHelper statuses -->
     <string name="copying">Copiando\u2026</string>
     <string name="copied">Copiado con éxito</string>
     <string name="copy_error">¡Algunos elementos no pudieron ser copiados!</string>
