@@ -288,8 +288,9 @@ public abstract class FileListFragment extends BaseListFragment {
 			int count = CopyHelper.get(getActivity()).getItemsCount();
 			if (CopyHelper.Operation.COPY.equals(CopyHelper.get(getActivity())
 					.getOperationType())) {
-				mClipboardContent.setText(getResources().getQuantityString(
-						R.plurals.clipboard_info_items_to_copy, count, count));
+				// mClipboardContent.setText(getResources().getQuantityString(
+				// R.plurals.clipboard_info_items_to_copy, count, count));
+				mClipboardContent.setText(getString(R.string.paste));
 				mClipboardAction.setText(getString(R.string.clipboard_dismiss));
 			} else if (CopyHelper.Operation.CUT.equals(CopyHelper.get(
 					getActivity()).getOperationType())) {
