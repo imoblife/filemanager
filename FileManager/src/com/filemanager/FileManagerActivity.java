@@ -283,8 +283,10 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 			qa.addActionItem(new ActionItem(1,
 					getString(R.string.create_new_folder), null), true);
 			qa.addActionItem(new ActionItem(2, getString(R.string.search_file),
-					null), false);
-			qa.show(view);
+					null), true);
+            qa.addActionItem(new ActionItem(3, getString(R.string.file_sort),
+                    null), false);
+            qa.show(view);
 		}
 
 		public void onItemClick(QuickAction source, int pos, int actionId) {
