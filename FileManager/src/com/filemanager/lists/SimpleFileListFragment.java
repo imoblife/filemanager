@@ -1,14 +1,20 @@
 package com.filemanager.lists;
 
-import java.io.File;
-import java.io.IOException;
-
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.*;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.ListView;
+import android.widget.Toast;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
-
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
-import com.filemanager.compatibility.ActionbarRefreshHelper;
-import com.filemanager.compatibility.FileMultiChoiceModeHelper;
 import com.filemanager.dialogs.CreateDirectoryDialog;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.CopyHelper;
@@ -19,26 +25,10 @@ import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
 import com.intents.FileManagerIntents;
 
-import android.content.Intent;
-import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.Toast;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * A file list fragment that supports context menu and CAB selection.
@@ -49,13 +39,23 @@ public class SimpleFileListFragment extends FileListFragment implements
 		ITitlebarActionMenuListener {
 	private static final String INSTANCE_STATE_PATHBAR_MODE = "pathbar_mode";
 
-	protected static final int REQUEST_CODE_MULTISELECT = 2;
+    private static final int MENU_ID_SORT = 253;
 
-	private PathBar mPathBar;
+    private static final int SORT_BY_DEFAULT = 0;
+    private static final int SORT_BY_NAME = 1;
+    private static final int SORT_BY_TIME = 2;
+
+    protected static final int REQUEST_CODE_MULTISELECT = 2;
+
+    private int mCurrentSort = SORT_BY_DEFAULT;
+
+    private PathBar mPathBar;
 	private boolean mActionsEnabled = true;
 
 	private int mSingleSelectionMenu = R.menu.context;
 	private int mMultiSelectionMenu = R.menu.multiselect;
+
+    private Handler mHandler;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -99,7 +99,33 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 		initContextualActions();
 
-	}
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case SORT_BY_NAME:
+                        if (mFiles != null && !mFiles.isEmpty()) {
+                            mCurrentSort = SORT_BY_NAME;
+                            Collections.sort(mFiles, new ComparatorByAlphabet());
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                    case SORT_BY_TIME:
+                        if (mFiles != null && !mFiles.isEmpty()) {
+                            mCurrentSort = SORT_BY_TIME;
+                            Collections.sort(mFiles, new ComparatorByLastModified());
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        break;
+                    default:
+                        if (mFiles != null && !mFiles.isEmpty() && mCurrentSort != SORT_BY_DEFAULT) {
+                            refresh();
+                        }
+                        break;
+                }
+            }
+        };
+    }
 
 	/**
 	 * Override this to handle initialization of list item long clicks.
@@ -136,7 +162,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 		}
 
 		MenuUtils.fillContextMenu((FileHolder) mAdapter.getItem(info.position),
-				menu, mSingleSelectionMenu, inflater, getActivity());
+                menu, mSingleSelectionMenu, inflater, getActivity());
 	}
 
 	@Override
@@ -253,7 +279,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 			args.putString(FileManagerIntents.EXTRA_DIR_PATH, getPath());
 			dialog.setArguments(args);
 			dialog.show(getActivity().getSupportFragmentManager(),
-					CreateDirectoryDialog.class.getName());
+                    CreateDirectoryDialog.class.getName());
 			return true;
 		} else if (id == R.id.menu_media_scan_include) {
 			includeInMediaScan();
@@ -278,13 +304,44 @@ public class SimpleFileListFragment extends FileListFragment implements
 			Intent intent = new Intent(FileManagerIntents.ACTION_MULTI_SELECT);
 			intent.putExtra(FileManagerIntents.EXTRA_DIR_PATH, getPath());
 			startActivityForResult(intent, REQUEST_CODE_MULTISELECT);
-			return true;
-		} else {
-			return false;
-		}
-	}
+            return true;
+        } else if (id == MENU_ID_SORT) {
+            new SortDialog();
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	@Override
+    static class ComparatorByLastModified implements Comparator<FileHolder> {
+        public int compare(FileHolder f1, FileHolder f2) {
+            long diff = f1.getFile().lastModified() - f2.getFile().lastModified();
+            if (diff > 0)
+                return -1;
+            else if (diff == 0)
+                return 0;
+            else
+                return 1;
+        }
+
+        public boolean equals(Object obj) {
+            return true;
+        }
+    }
+
+    static class ComparatorByAlphabet implements Comparator<FileHolder> {
+        public int compare(FileHolder f1, FileHolder f2) {
+            return String.CASE_INSENSITIVE_ORDER.compare(f1.getName(), f2.getName());
+        }
+    }
+
+    @Override
+    public void refresh() {
+        super.refresh();
+        mCurrentSort = SORT_BY_DEFAULT;
+    }
+
+    @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Automatically refresh to display possible changes done through the
 		// multiselect fragment.
@@ -363,6 +420,38 @@ public class SimpleFileListFragment extends FileListFragment implements
 			handleOptionMenu(R.id.menu_multiselect);
 		} else if (position == 1) {
 			handleOptionMenu(R.id.menu_create_folder);
-		}
-	}
+        } else if (position == 3) {
+            handleOptionMenu(MENU_ID_SORT);
+        }
+    }
+
+    private class SortDialog implements
+            android.content.DialogInterface.OnClickListener {
+        private AlertDialog alertDialog;
+
+        public SortDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.file_sort_dialog_title));
+            String[] items = new String[]{getString(R.string.file_sort_by_default)
+                    , getString(R.string.file_sort_by_name),
+                    getString(R.string.file_sort_by_time)};
+
+            builder.setSingleChoiceItems(items, mCurrentSort, this);
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        public void onClick(DialogInterface dialog, int actionId) {
+            Message msg = null;
+            if (actionId == 0) {
+                msg = mHandler.obtainMessage(SORT_BY_DEFAULT);
+            } else if (actionId == 1) {
+                msg = mHandler.obtainMessage(SORT_BY_NAME);
+            } else if (actionId == 2) {
+                msg = mHandler.obtainMessage(SORT_BY_TIME);
+            }
+            mHandler.sendMessage(msg);
+            alertDialog.dismiss();
+        }
+    }
 }

@@ -175,5 +175,11 @@
     <string name="preference_usebestmatch_summary_on">use most suitable app</string>
     
     <string name="paste">Paste</string>
-  
+
+    <!--5.2.0 for filemanager menu-->
+    <string name="file_sort">Sort by</string>
+    <string name="file_sort_dialog_title">Sort by</string>
+    <string name="file_sort_by_name">Sort by file name</string>
+    <string name="file_sort_by_time">Sort by file date</string>
+    <string name="file_sort_by_default">Sort by default</string>
 </resources>
