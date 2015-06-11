@@ -182,4 +182,8 @@
     <string name="file_sort_by_name">Sort by file name</string>
     <string name="file_sort_by_time">Sort by file date</string>
     <string name="file_sort_by_default">Sort by default</string>
+
+    <!--5.2.0 file search dialog text-->
+    <string name="file_search_message">processing</string>
+    <string name="file_search_no_result">(No matching results found)</string>
 </resources>

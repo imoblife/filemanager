@@ -10,7 +10,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
 
 /**
  * Provides the search core, used by every search subsystem that provides results.
@@ -31,7 +30,7 @@ public class SearchCore {
 	private long mMaxNanos = -1;
 	private long mStart;
 	private boolean isRun;
-	
+
 	public SearchCore(Context context) {
 		mContext = context;
 	}
@@ -91,24 +90,23 @@ public class SearchCore {
 	}
 
 	private void insertResult(File f) {
-		mResultCount++;
-
+        mResultCount++;
 		ContentValues values = new ContentValues();
 
 		if (mContentURI == SearchResultsProvider.CONTENT_URI) {
-			values.put(SearchResultsProvider.COLUMN_NAME, f.getName());
-			values.put(SearchResultsProvider.COLUMN_PATH, f.getAbsolutePath());
-		} else if (mContentURI == SearchSuggestionsProvider.CONTENT_URI) {
+            // for 5.2.0 use no db to notify activity update ui
+            SearchResultContainer.getInstance().setResult(mResultCount);
+            SearchResultContainer.getInstance().addFilePath(f.getAbsolutePath());
+        } else if (mContentURI == SearchSuggestionsProvider.CONTENT_URI) {
 			values.put(SearchManager.SUGGEST_COLUMN_ICON_1,
 					f.isDirectory() ? R.drawable.file_ic_launcher
 							: R.drawable.ic_launcher_file);
 			values.put(SearchManager.SUGGEST_COLUMN_TEXT_1, f.getName());
 			values.put(SearchManager.SUGGEST_COLUMN_TEXT_2, f.getAbsolutePath());
 			values.put(SearchManager.SUGGEST_COLUMN_INTENT_DATA,
-					f.getAbsolutePath());
-		}
-
-		mContext.getContentResolver().insert(mContentURI, values);
+                    f.getAbsolutePath());
+            mContext.getContentResolver().insert(mContentURI, values);
+        }
 	}
 
 	/**
@@ -128,36 +126,63 @@ public class SearchCore {
 	 *            The starting dir for the search. Callers outside of this class are highly encouraged to use the same as {@link #root}.
 	 */
 	public void search(File dir) {
-		if(!isRun()) {
-			return;
-		}
-		
-		if(dir == null) {
-			return;
-		}
-		
-		// Results in root pass
-		for (File f : dir.listFiles(filter)) {
-			insertResult(f);
-			
-			// Break search on result count and search time conditions.
-			if ((mMaxResults > 0 && mResultCount >= mMaxResults) || (mMaxNanos > 0 && System.nanoTime()-mStart > mMaxNanos)) {
-				return;
-			}
-		}
 
-		// Recursion pass
-		for (File f : dir.listFiles()) {
-			// Prevent us from re-searching the root directory, or trying to search invalid Files.
-			if (f.isDirectory() && f.canRead() && !isChildOf(f, root))
-				search(f);
-		}
+        if (!isRun()) {
+            throw new RuntimeException();
+        }
 
-		// If we're on the parent of the recursion, and we're done searching, start searching the rest of the FS.
-		if (dir.equals(root) && !root.equals(Environment.getExternalStorageDirectory())) {
-			search(Environment.getExternalStorageDirectory());
-		}
-	}
+        if (dir == null) {
+            return;
+        }
+
+
+        // Results in root pass
+        for (File f : dir.listFiles(filter)) {
+            if (!isRun()) {
+                throw new RuntimeException();
+            }
+            insertResult(f);
+
+            if (!isRun()) {
+                throw new RuntimeException();
+            }
+            // Break search on result count and search time conditions.
+            if ((mMaxResults > 0 && mResultCount >= mMaxResults) || (mMaxNanos > 0 && System.nanoTime() - mStart > mMaxNanos)) {
+                return;
+            }
+
+            if (!isRun()) {
+                throw new RuntimeException();
+            }
+        }
+
+        // Recursion pass
+        for (File f : dir.listFiles()) {
+            if (!isRun()) {
+                throw new RuntimeException();
+            }
+
+            // Prevent us from re-searching the root directory, or trying to search invalid Files.
+            if (f.isDirectory() && f.canRead() && !isChildOf(f, root)) {
+                search(f);
+            }
+
+            if (!isRun()) {
+                throw new RuntimeException();
+            }
+        }
+
+        // If we're on the parent of the recursion, and we're done searching, start searching the rest of the FS.
+        if (dir.equals(root) && !root.equals(Environment.getExternalStorageDirectory())) {
+            if (!isRun()) {
+                throw new RuntimeException();
+            }
+            search(Environment.getExternalStorageDirectory());
+            if (!isRun()) {
+                throw new RuntimeException();
+            }
+        }
+    }
 
 	/**
 	 * @param f1
@@ -175,4 +200,8 @@ public class SearchCore {
 	public void setRun(boolean isRun) {
 		this.isRun = isRun;
 	}
+
+    public int getResultCount() {
+        return mResultCount;
+    }
 }

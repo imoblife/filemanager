@@ -1,21 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
 
-    <include layout="@layout/base_titlebar2" />
+    <include
+            android:id="@+id/search_title"
+            layout="@layout/base_titlebar2"/>
 
     <ListView
-        android:id="@id/android:list"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_weight="1"
-        android:cacheColorHint="#00000000"
-        android:divider="@null"
-        android:drawSelectorOnTop="false"
-        android:footerDividersEnabled="true"
-        android:headerDividersEnabled="false"
-        android:listSelector="@color/transparent" />
+            android:id="@id/android:list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_below="@+id/search_title"
+            android:layout_weight="1"
+            android:cacheColorHint="#00000000"
+            android:fastScrollEnabled="true"
+            android:divider="@null"
+            android:drawSelectorOnTop="false"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="false"
+            android:listSelector="@color/transparent"/>
 
-</LinearLayout>
+    <TextView
+            android:id="@+id/tv_empty"
+            android:textColor="@color/holo_grey_dark"
+            android:layout_below="@+id/search_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="30dp"
+            android:singleLine="true"
+            android:text="@string/file_search_no_result"
+            android:visibility="gone"/>
+
+</RelativeLayout>

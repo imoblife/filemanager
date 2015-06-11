@@ -8,6 +8,7 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import de.greenrobot.event.EventBus;
 
 /**
  * Service that asynchronously executes file searches.
@@ -26,7 +27,13 @@ public class SearchService extends IntentService {
 		super("SearchService");
 	}
 
-	@Override
+    @Override
+    public void onStart(Intent intent, int startId) {
+        super.onStart(intent, startId);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
 	public void onCreate() {
 		super.onCreate();
 
@@ -34,7 +41,6 @@ public class SearchService extends IntentService {
 
 		searcher = new SearchCore(this);
 		searcher.setURI(SearchResultsProvider.CONTENT_URI);
-		searcher.setRun(true);
 	}
 
 	@Override
@@ -54,26 +60,53 @@ public class SearchService extends IntentService {
 			else
 				root = new File("/");
 
+
+            // Search in current path.
+            searcher.dropPreviousResults();
+            SearchResultContainer.getInstance().initContext(this);
+            SearchResultContainer.getInstance().clear();
+
 			// Search started, let Receivers know.
 			lbm.sendBroadcast(new Intent(
 					FileManagerIntents.ACTION_SEARCH_STARTED));
 
-			// Search in current path.
-			searcher.dropPreviousResults();
-			searcher.setRoot(root);
-			searcher.search(root);
+            searcher.setRoot(root);
+            try {
+                searcher.search(root);
+            } catch (Exception e) {
+                //Exception use for exit loop
+                //do noting
+            }
 
-			// Search is over, let Receivers know.
-			lbm.sendBroadcast(new Intent(
-					FileManagerIntents.ACTION_SEARCH_FINISHED));
+            // Search is over, let Receivers know.
+            lbm.sendBroadcast(new Intent(
+                    FileManagerIntents.ACTION_SEARCH_FINISHED).putExtra(SearchableActivity.KEY_FILE_RESULT_COUNT, searcher.getResultCount()));
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public void onDestroy() {
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        startTask();
+        return super.onStartCommand(intent, flags, startId);
+    }
+
+    public void onDestroy() {
+        EventBus.getDefault().unregister(this);
 		super.onDestroy();
-		searcher.setRun(false);
 	}
+
+    private void startTask() {
+        searcher.setRun(true);
+    }
+
+    private void cancelAllTask() {
+        searcher.setRun(false);
+    }
+
+    public void onEvent(CancelTaskEvent event){
+        cancelAllTask();
+    }
 }

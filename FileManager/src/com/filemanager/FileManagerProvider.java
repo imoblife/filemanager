@@ -49,12 +49,10 @@ public class FileManagerProvider extends ContentProvider {
 			mMimeTypes = mtp.fromXmlResource(in);
 		} catch (XmlPullParserException e) {
 			Log.e(TAG, "PreselectedChannelsActivity: XmlPullParserException", e);
-			throw new RuntimeException(
-					"PreselectedChannelsActivity: XmlPullParserException");
+            mMimeTypes = new MimeTypes();
 		} catch (Exception e) {
 			Log.e(TAG, "PreselectedChannelsActivity: IOException", e);
-			throw new RuntimeException(
-					"PreselectedChannelsActivity: IOException");
+            mMimeTypes = new MimeTypes();
 		}
 	}
 

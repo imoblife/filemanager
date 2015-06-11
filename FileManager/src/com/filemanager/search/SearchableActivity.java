@@ -1,38 +1,28 @@
 package com.filemanager.search;
 
-import java.io.File;
-
-import base.util.FileUtil;
-import base.util.ui.titlebar.BaseTitlebarListActivity;
-
-import com.filemanager.FileManagerActivity;
-import com.filemanager.R;
-import com.filemanager.compatibility.HomeIconHelper;
-import com.filemanager.util.FileUtils;
-import com.filemanager.util.UIUtils;
-import com.intents.FileManagerIntents;
-
-import android.app.Activity;
-import android.app.ListActivity;
+import android.app.ProgressDialog;
 import android.app.SearchManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.database.Cursor;
-import android.database.CursorWrapper;
+import android.content.*;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.SearchRecentSuggestions;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView;
+import base.util.ui.titlebar.BaseTitlebarListActivity;
+import com.filemanager.FileManagerActivity;
+import com.filemanager.R;
+import com.filemanager.compatibility.HomeIconHelper;
+import com.filemanager.files.FileHolder;
+import com.filemanager.util.UIUtils;
+import com.intents.FileManagerIntents;
+import de.greenrobot.event.EventBus;
+
+import java.util.ArrayList;
 
 /**
  * The activity that handles queries and shows search results. Also handles
@@ -42,8 +32,18 @@ import android.widget.AdapterView.OnItemClickListener;
  * 
  */
 public class SearchableActivity extends BaseTitlebarListActivity {
+    public static final String KEY_FILE_RESULT_COUNT = "result_count";
+
+    private static final int MIN_REFRESH_LIST_COUNT = 1000;
+
 	private LocalBroadcastManager lbm;
-	private Cursor searchResults;
+    private ProgressDialog mProgressDialog;
+    private SearchListResultAdapter mAdapter;
+    private TextView mEmptyTextView;
+    private String mTitle;
+
+    private Handler mHandler = new Handler();
+    private boolean mFileSearchFinished = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -58,8 +58,21 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		// }
 		//		this.setTitle(getString(R.string.file_manage));
 		lbm = LocalBroadcastManager.getInstance(getApplicationContext());
+        mEmptyTextView = (TextView) findViewById(R.id.tv_empty);
+        hideEmptyView();
+        mProgressDialog = new ProgressDialog(this);
+        mProgressDialog.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(this));
+        mProgressDialog.setMessage(getString(R.string.file_search_message));
+        mProgressDialog.setCancelable(true);
+        mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                stopSearchFileTask();
+            }
+        });
+        mAdapter = new SearchListResultAdapter(this);
 
-		// Handle the search request.
+        // Handle the search request.
 		handleIntent();
 
 	}
@@ -85,7 +98,8 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 			// Get the query.
 			String query = intent.getStringExtra(SearchManager.QUERY);
-			setTitle(query);
+            mTitle = query;
+            setTitle(query);
 
 			// Get the current path, which allows us to refine the search.
 			String path = null;
@@ -98,25 +112,28 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 					this, RecentsSuggestionsProvider.AUTHORITY,
 					RecentsSuggestionsProvider.MODE);
 			suggestions.saveRecentQuery(query, null);
-
+            setListAdapter(mAdapter);
 			// Register broadcast receivers
 			lbm.registerReceiver(new BroadcastReceiver() {
-				@Override
-				public void onReceive(Context context, Intent intent) {
-					setProgressBarIndeterminateVisibility(false);
-				}
-			}, new IntentFilter(FileManagerIntents.ACTION_SEARCH_FINISHED));
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    setProgressBarIndeterminateVisibility(false);
+                    if (mProgressDialog.isShowing()) {
+                        mProgressDialog.dismiss();
+                    }
+                    mFileSearchFinished = true;
+                }
+            }, new IntentFilter(FileManagerIntents.ACTION_SEARCH_FINISHED));
 
 			lbm.registerReceiver(new BroadcastReceiver() {
 				@Override
 				public void onReceive(Context context, Intent intent) {
-					setProgressBarIndeterminateVisibility(true);
-				}
+                    setProgressBarIndeterminateVisibility(true);
+                    mHandler.post(new UpdateRunnable());
+                }
 			}, new IntentFilter(FileManagerIntents.ACTION_SEARCH_STARTED));
 
-			// Set the list adapter.
-			searchResults = getSearchResults();
-			setListAdapter(new SearchListAdapter(this, searchResults));
+            mProgressDialog.show();
 			// Start the search service.
 			Intent in = new Intent(this, SearchService.class);
 			in.putExtra(FileManagerIntents.EXTRA_SEARCH_INIT_PATH, path);
@@ -133,7 +150,13 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-
+        if (mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        stopSearchFileTask();
+        lbm = null;
+        mAdapter = null;
+        setListAdapter(null);
 		stopService(new Intent(this, SearchService.class));
 	}
 
@@ -147,20 +170,14 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		suggestions.clearHistory();
 	}
 
-	private Cursor getSearchResults() {
-		return getContentResolver().query(SearchResultsProvider.CONTENT_URI,
-				null, null, null, SearchResultsProvider.COLUMN_ID + " ASC");
-	}
-
 	// @Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
-		Cursor c = new CursorWrapper(searchResults);
-		c.moveToPosition(position);
-		String path = c.getString(c
-				.getColumnIndex(SearchResultsProvider.COLUMN_PATH));
+        FileHolder fileHolder = (FileHolder) mAdapter.getItem(position);
 
 		//		FileUtils.locateFile(this, new File(path));
-		browse(Uri.parse(path));
+        if(fileHolder != null) {
+            browse(Uri.parse(fileHolder.getFile().getAbsolutePath()));
+        }
 		finish();
 	}
 
@@ -174,7 +191,48 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		finish();
 	}
 
-	public String getTrackModule() {
-		return getClass().getSimpleName();
-	}
+    public String getTrackModule() {
+        return getClass().getSimpleName();
+    }
+
+    private void stopSearchFileTask() {
+        CancelTaskEvent event = new CancelTaskEvent();
+        event.isCancelTask = true;
+        EventBus.getDefault().post(event);
+    }
+
+    private void showEmptyView() {
+        mEmptyTextView.setVisibility(View.VISIBLE);
+    }
+
+    private void hideEmptyView() {
+        mEmptyTextView.setVisibility(View.GONE);
+    }
+
+    private class UpdateRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            updateTitle(mTitle + "(" + SearchResultContainer.getInstance().getResult() + ")");
+            ArrayList<FileHolder> path = SearchResultContainer.getInstance().getPaths();
+
+            if (mAdapter == null || path == null) {
+                return;
+            }
+            if (mFileSearchFinished) {
+                if (path.size() == 0) {
+                    showEmptyView();
+                }
+                //finally refresh the listView
+                mAdapter.setData(path);
+                return;
+            }
+
+            // refresh the listView
+            if (path.size() <= MIN_REFRESH_LIST_COUNT) {
+                mAdapter.setData(path);
+            }
+            mHandler.postDelayed(this, 1);
+        }
+    }
 }

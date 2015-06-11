@@ -8,10 +8,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.widget.AdapterView;
+import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ListView;
-import android.widget.Toast;
+import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
@@ -54,6 +53,8 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 	private int mSingleSelectionMenu = R.menu.context;
 	private int mMultiSelectionMenu = R.menu.multiselect;
+
+    private LinearLayout mSearchActionBarLayout;
 
     private Handler mHandler;
 
@@ -99,6 +100,8 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 		initContextualActions();
 
+        initSearchActionBar(view);
+
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -120,11 +123,30 @@ public class SimpleFileListFragment extends FileListFragment implements
                     default:
                         if (mFiles != null && !mFiles.isEmpty() && mCurrentSort != SORT_BY_DEFAULT) {
                             refresh();
+                            mAdapter.notifyDataSetChanged();
                         }
                         break;
                 }
             }
         };
+    }
+
+    private void initSearchActionBar(View root) {
+        mSearchActionBarLayout = (LinearLayout) root.findViewById(R.id.titlebar_ad_ll);
+        mSearchActionBarLayout.setVisibility(View.VISIBLE);
+        ImageView search = (ImageView) mSearchActionBarLayout.findViewById(R.id.titlebar_ad_iv);
+        search.setImageResource(R.drawable.ic_action_search);
+        mSearchActionBarLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() == null) {
+                    return;
+                }
+                if (getActivity() instanceof ISearchBarActionListener) {
+                    ((ISearchBarActionListener) getActivity()).onSearch();
+                }
+            }
+        });
     }
 
 	/**
@@ -416,11 +438,11 @@ public class SimpleFileListFragment extends FileListFragment implements
 	}
 
 	public void onTitlebarActionMenuClick(int position) {
-		if (position == 0) {
-			handleOptionMenu(R.id.menu_multiselect);
-		} else if (position == 1) {
-			handleOptionMenu(R.id.menu_create_folder);
-        } else if (position == 3) {
+        if (position == 0) {
+            handleOptionMenu(R.id.menu_multiselect);
+        } else if (position == 1) {
+            handleOptionMenu(R.id.menu_create_folder);
+        } else if (position == 2) {
             handleOptionMenu(MENU_ID_SORT);
         }
     }

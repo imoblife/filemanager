@@ -18,13 +18,13 @@ package com.filemanager;
 
 import java.io.File;
 
+import base.util.ui.titlebar.ISearchBarActionListener;
 import net.londatiga.android.ActionItem;
 import net.londatiga.android.QuickAction;
 import net.londatiga.android.QuickAction.OnActionItemClickListener;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Build.VERSION;
 import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
@@ -32,22 +32,19 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import base.util.PreferenceHelper;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 
 import com.filemanager.bookmarks.BookmarkListActivity;
-import com.filemanager.compatibility.HomeIconHelper;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.SimpleFileListFragment;
 import com.filemanager.util.FileUtils;
 import com.intents.FileManagerIntents;
 import com.util.MenuIntentOptionsWithIcons;
 
-public class FileManagerActivity extends DistributionLibraryFragmentActivity {
+public class FileManagerActivity extends DistributionLibraryFragmentActivity implements ISearchBarActionListener {
 	public static final String EXTRA_CHANGE_TITLE = "changeTitle";
 	public static final String EXTRA_FILE_URI = "fileUri";
 
@@ -273,7 +270,12 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 		new QuickActionMenu(view);
 	}
 
-	private class QuickActionMenu implements OnActionItemClickListener {
+    @Override
+    public void onSearch() {
+        onSearchRequested();
+    }
+
+    private class QuickActionMenu implements OnActionItemClickListener {
 		public QuickActionMenu(View view) {
 			QuickAction qa = new QuickAction(FileManagerActivity.this,
 					QuickAction.VERTICAL);
@@ -282,24 +284,30 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity {
 					getString(R.string.menu_multiselect), null), true);
 			qa.addActionItem(new ActionItem(1,
 					getString(R.string.create_new_folder), null), true);
-			qa.addActionItem(new ActionItem(2, getString(R.string.search_file),
-					null), true);
-            qa.addActionItem(new ActionItem(3, getString(R.string.file_sort),
+            qa.addActionItem(new ActionItem(2, getString(R.string.file_sort),
                     null), false);
             qa.show(view);
 		}
 
 		public void onItemClick(QuickAction source, int pos, int actionId) {
-			if (pos == 2) {
-				onSearchRequested();
-			} else {
-				ITitlebarActionMenuListener l = (ITitlebarActionMenuListener) mFragment;
-				l.onTitlebarActionMenuClick(pos);
-			}
-		}
-	}
+            ITitlebarActionMenuListener l = (ITitlebarActionMenuListener) mFragment;
+            l.onTitlebarActionMenuClick(pos);
+        }
+    }
 
 	public String getTrackModule() {
 		return getClass().getSimpleName();
 	}
+
+    @Override
+    public boolean onTitlebarBackClick(View view) {
+        if (VERSION.SDK_INT > VERSION_CODES.DONUT) {
+            if (mFragment.pressBack()) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        return true;
+    }
 }
