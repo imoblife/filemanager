@@ -4,15 +4,13 @@
                 android:layout_height="fill_parent"
                 android:orientation="vertical">
 
-    <include
-            android:id="@+id/search_title"
-            layout="@layout/base_titlebar2"/>
+    <include layout="@layout/base_titlebar2"/>
 
     <ListView
             android:id="@id/android:list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_below="@+id/search_title"
+            android:layout_below="@+id/titlebar"
             android:layout_weight="1"
             android:cacheColorHint="#00000000"
             android:fastScrollEnabled="true"
@@ -25,7 +23,7 @@
     <TextView
             android:id="@+id/tv_empty"
             android:textColor="@color/holo_grey_dark"
-            android:layout_below="@+id/search_title"
+            android:layout_below="@+id/titlebar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
