@@ -1,6 +1,10 @@
 package com.filemanager.search;
 
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +18,7 @@ import java.util.ArrayList;
 
 public class SearchListResultAdapter extends BaseAdapter {
     private Context context;
+    private String mQueryWord;
     private ArrayList<FileHolder> arrayList = new ArrayList<>();
 
     public SearchListResultAdapter(Context context) {
@@ -23,6 +28,12 @@ public class SearchListResultAdapter extends BaseAdapter {
     public void setData(ArrayList<FileHolder> list) {
         arrayList = new ArrayList<>(list);
         notifyDataSetChanged();
+    }
+
+    public void setQueryWord(String query) {
+        if (!TextUtils.isEmpty(query)) {
+            mQueryWord = query;
+        }
     }
 
     @Override
@@ -63,7 +74,16 @@ public class SearchListResultAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        holder.primaryInfo.setText(arrayList.get(position).getName());
+        String name = arrayList.get(position).getName();
+        SpannableStringBuilder style = new SpannableStringBuilder(name);
+        if (!TextUtils.isEmpty(mQueryWord)) {
+            int start = (name.toLowerCase()).indexOf(mQueryWord.toLowerCase());
+            int end = start + mQueryWord.length();
+            style.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.search_highlight)), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+            holder.primaryInfo.setText(style);
+        } else {
+            holder.primaryInfo.setText(name);
+        }
         holder.secondaryInfo.setText(arrayList.get(position).getFile().getPath());
         return convertView;
     }

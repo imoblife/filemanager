@@ -99,6 +99,7 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 			// Get the query.
 			String query = intent.getStringExtra(SearchManager.QUERY);
             mTitle = query;
+            mAdapter.setQueryWord(mTitle);
             setTitle(query);
 
 			// Get the current path, which allows us to refine the search.

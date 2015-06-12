@@ -5,4 +5,5 @@
         <!-- Borderless button colors -->
         <color name="press">#400099CC</color>
         <color name="focus">#800099CC</color>
+        <color name="search_highlight">#FFF5633a</color>
     </resources>
