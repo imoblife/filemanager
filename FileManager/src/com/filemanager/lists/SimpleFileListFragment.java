@@ -1,6 +1,7 @@
 package com.filemanager.lists;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import com.filemanager.files.FileHolder;
 import com.filemanager.util.CopyHelper;
 import com.filemanager.util.FileUtils;
 import com.filemanager.util.MenuUtils;
+import com.filemanager.util.Preference;
 import com.filemanager.view.PathBar;
 import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
@@ -40,13 +42,13 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     private static final int MENU_ID_SORT = 253;
 
-    private static final int SORT_BY_DEFAULT = 0;
-    private static final int SORT_BY_NAME = 1;
-    private static final int SORT_BY_TIME = 2;
+    private static final int SORT_BY_DEFAULT = Preference.SORT_TYPE_DEFAULT;
+    private static final int SORT_BY_NAME = Preference.SORT_TYPE_NAME;
+    private static final int SORT_BY_TIME = Preference.SORT_TYPE_MODIFY_TIME;
 
     protected static final int REQUEST_CODE_MULTISELECT = 2;
 
-    private int mCurrentSort = SORT_BY_DEFAULT;
+
 
     private PathBar mPathBar;
 	private boolean mActionsEnabled = true;
@@ -57,6 +59,8 @@ public class SimpleFileListFragment extends FileListFragment implements
     private LinearLayout mSearchActionBarLayout;
 
     private Handler mHandler;
+
+    private Preference mPreference;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -102,6 +106,8 @@ public class SimpleFileListFragment extends FileListFragment implements
 
         initSearchActionBar(view);
 
+        initCurrentSort(getContext());
+
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -109,6 +115,7 @@ public class SimpleFileListFragment extends FileListFragment implements
                     case SORT_BY_NAME:
                         if (mFiles != null && !mFiles.isEmpty()) {
                             mCurrentSort = SORT_BY_NAME;
+                            mPreference.setInt(Preference.PREFS_KEY_SORT_TYPE, SORT_BY_NAME);
                             Collections.sort(mFiles, new ComparatorByAlphabet());
                             mAdapter.notifyDataSetChanged();
                         }
@@ -116,12 +123,15 @@ public class SimpleFileListFragment extends FileListFragment implements
                     case SORT_BY_TIME:
                         if (mFiles != null && !mFiles.isEmpty()) {
                             mCurrentSort = SORT_BY_TIME;
+                            mPreference.setInt(Preference.PREFS_KEY_SORT_TYPE, SORT_BY_TIME);
                             Collections.sort(mFiles, new ComparatorByLastModified());
                             mAdapter.notifyDataSetChanged();
                         }
                         break;
                     default:
                         if (mFiles != null && !mFiles.isEmpty() && mCurrentSort != SORT_BY_DEFAULT) {
+                            mCurrentSort = SORT_BY_DEFAULT;
+                            mPreference.setInt(Preference.PREFS_KEY_SORT_TYPE, SORT_BY_DEFAULT);
                             refresh();
                             mAdapter.notifyDataSetChanged();
                         }
@@ -129,6 +139,11 @@ public class SimpleFileListFragment extends FileListFragment implements
                 }
             }
         };
+    }
+
+    private void initCurrentSort(Context context) {
+        mPreference = new Preference(context);
+        mCurrentSort = mPreference.getInt(Preference.PREFS_KEY_SORT_TYPE, Preference.SORT_TYPE_DEFAULT);
     }
 
     private void initSearchActionBar(View root) {
@@ -355,12 +370,6 @@ public class SimpleFileListFragment extends FileListFragment implements
         public int compare(FileHolder f1, FileHolder f2) {
             return String.CASE_INSENSITIVE_ORDER.compare(f1.getName(), f2.getName());
         }
-    }
-
-    @Override
-    public void refresh() {
-        super.refresh();
-        mCurrentSort = SORT_BY_DEFAULT;
     }
 
     @Override

@@ -180,4 +180,14 @@
         <item quantity="other">%1$d 项将被移动</item>    
     </plurals>
     <string name="paste">粘贴</string>
+    
+    <string name="file_sort">排序</string>
+    <string name="file_sort_dialog_title">排序</string>
+    <string name="file_sort_by_name">名称</string>
+    <string name="file_sort_by_time">修改时间</string>
+    <string name="file_sort_by_default">默认</string>
+
+    <!--5.2.0 file search dialog text-->
+    <string name="file_search_message">搜索中......</string>
+    <string name="file_search_no_result">(没有找到与搜索内容匹配的文件)</string>
 </resources>

@@ -183,4 +183,16 @@
         <item quantity="other">%1$d 項將被移動</item>
     </plurals>
     <string name="paste">粘貼</string>
+    
+         <!--5.2.0 for filemanager menu-->
+    <string name="file_sort">排序</string>
+    <string name="file_sort_dialog_title">排序</string>
+    <string name="file_sort_by_name">名稱</string>
+    <string name="file_sort_by_time">修改時間</string>
+    <string name="file_sort_by_default">默認</string>
+
+    <!--5.2.0 file search dialog text-->
+    <string name="file_search_message">搜索中......</string>
+    <string name="file_search_no_result">(沒有找到與搜索內容匹配的檔)</string>
+
 </resources>

@@ -177,13 +177,13 @@
     <string name="paste">Paste</string>
 
     <!--5.2.0 for filemanager menu-->
-    <string name="file_sort">Sort by</string>
-    <string name="file_sort_dialog_title">Sort by</string>
-    <string name="file_sort_by_name">Sort by file name</string>
-    <string name="file_sort_by_time">Sort by file date</string>
-    <string name="file_sort_by_default">Sort by default</string>
+    <string name="file_sort">Sort By</string>
+    <string name="file_sort_dialog_title">Sort By</string>
+    <string name="file_sort_by_name">Name</string>
+    <string name="file_sort_by_time">Last Modified</string>
+    <string name="file_sort_by_default">Default</string>
 
     <!--5.2.0 file search dialog text-->
-    <string name="file_search_message">processing</string>
-    <string name="file_search_no_result">(No matching results found)</string>
+    <string name="file_search_message">Searching...</string>
+    <string name="file_search_no_result">(No matching result found)</string>
 </resources>

@@ -20,6 +20,7 @@ import base.util.ui.fragment.BaseListFragment;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
@@ -28,6 +29,7 @@ import com.filemanager.files.DirectoryScanner;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.CopyHelper;
 import com.filemanager.util.MimeTypes;
+import com.filemanager.util.Preference;
 import com.intents.FileManagerIntents;
 
 /**
@@ -78,6 +80,8 @@ public abstract class FileListFragment extends BaseListFragment {
 	private View mClipboardInfo;
 	private TextView mClipboardContent;
 	private TextView mClipboardAction;
+
+    protected int mCurrentSort = Preference.SORT_TYPE_DEFAULT;
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -259,6 +263,12 @@ public abstract class FileListFragment extends BaseListFragment {
 					mFiles.addAll(c.listSdCard);
 					mFiles.addAll(c.listDir);
 					mFiles.addAll(c.listFile);
+
+                    if (mCurrentSort == Preference.SORT_TYPE_NAME) {
+                        Collections.sort(mFiles, new SimpleFileListFragment.ComparatorByAlphabet());
+                    } else if (mCurrentSort == Preference.SORT_TYPE_MODIFY_TIME) {
+                        Collections.sort(mFiles, new SimpleFileListFragment.ComparatorByLastModified());
+                    }
 
 					mAdapter.notifyDataSetChanged();
 
