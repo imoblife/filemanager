@@ -1,5 +1,6 @@
 package com.filemanager.dialogs;
 
+import com.filemanager.lists.MultiselectListFragment;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.File;
@@ -104,7 +105,10 @@ public class MultiDeleteDialog extends DialogFragment {
 		protected void onPostExecute(Void result) {
 			try {
 				Toast.makeText(dialog.getContext(), mResult == 0 ? R.string.delete_failure : R.string.delete_success, Toast.LENGTH_LONG).show();
-				((FileListFragment) getTargetFragment()).refresh();
+                if (getTargetFragment() instanceof MultiselectListFragment && mResult == 1) {
+                    ((FileListFragment) getTargetFragment()).getListView().clearChoices();
+                }
+                ((FileListFragment) getTargetFragment()).refresh();
 				dialog.dismiss();
 				
 				mContext = null;
