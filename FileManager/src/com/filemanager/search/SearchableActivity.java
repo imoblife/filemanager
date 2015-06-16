@@ -22,6 +22,7 @@ import com.filemanager.util.UIUtils;
 import com.intents.FileManagerIntents;
 import de.greenrobot.event.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -175,22 +176,34 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
         FileHolder fileHolder = (FileHolder) mAdapter.getItem(position);
 
-		//		FileUtils.locateFile(this, new File(path));
-        if(fileHolder != null) {
-            browse(Uri.parse(fileHolder.getFile().getAbsolutePath()));
+        if (fileHolder == null) {
+            return;
         }
-		finish();
-	}
 
-	private void browse(Uri path) {
-		Intent intent = new Intent(this, FileManagerActivity.class);
-		intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
-				| Intent.FLAG_ACTIVITY_CLEAR_TOP);
-		intent.setData(path);
+        File file = fileHolder.getFile();
+        if (file == null || !file.exists()) {
+            return;
+        }
+        browseFromListItem(Uri.parse(file.getAbsolutePath()));
+        if (!file.isFile()) {
+            finish();
+        }
+    }
 
-		startActivity(intent);
-		finish();
-	}
+    private void browseFromListItem(Uri path) {
+        Intent intent = new Intent(this, FileManagerActivity.class);
+        intent.setData(path);
+        startActivity(intent);
+    }
+
+    private void browse(Uri path) {
+        Intent intent = new Intent(this, FileManagerActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setData(path);
+        startActivity(intent);
+        finish();
+    }
 
     public String getTrackModule() {
         return getClass().getSimpleName();
