@@ -47,6 +47,7 @@ public abstract class FileListFragment extends BaseListFragment {
 	private static final String INSTANCE_STATE_PATH = "path";
 	private static final String INSTANCE_STATE_FILES = "files";
 	File mPreviousDirectory = null;
+    int mPreviousPosition = 0;
 
 	// Not an anonymous inner class because of:
 	// http://stackoverflow.com/questions/2542938/sharedpreferences-onsharedpreferencechangelistener-not-being-called-consistently

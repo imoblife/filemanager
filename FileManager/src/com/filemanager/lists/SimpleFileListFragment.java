@@ -214,9 +214,15 @@ public class SimpleFileListFragment extends FileListFragment implements
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
 		FileHolder item = (FileHolder) mAdapter.getItem(position);
-
+        mPreviousPosition = getListView().getFirstVisiblePosition();
 		openInformingPathBar(item);
-	}
+        mPathBar.updatePosition(mPreviousPosition);
+    }
+
+    @Override
+    protected void selectInList(File selectFile) {
+        getListView().setSelection(mPathBar.getPathPosition(mPreviousDirectory));
+    }
 
 	/**
 	 * Use this to open files and folders using this fragment. Appropriately

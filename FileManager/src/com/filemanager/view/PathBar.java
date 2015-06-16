@@ -1,12 +1,11 @@
 package com.filemanager.view;
 
 import java.io.File;
+import java.util.HashMap;
 
 import com.filemanager.R;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.text.InputType;
 import android.util.AttributeSet;
@@ -55,6 +54,7 @@ public class PathBar extends ViewFlipper {
 	private File mCurrentDirectory = null;
 	private Mode mCurrentMode = Mode.STANDARD_INPUT;
 	private File mInitialDirectory = null;
+    private HashMap<File, Integer> mPathPosition = new HashMap<>();
 
 	/** ImageButton used to switch to MANUAL_INPUT. */
 	private ImageButton mSwitchToManualModeButton = null;
@@ -473,4 +473,15 @@ public class PathBar extends ViewFlipper {
 //
 //		return d.mutate();
 //	}
+
+    public void updatePosition(int position) {
+        mPathPosition.put(mCurrentDirectory, position);
+    }
+
+    public int getPathPosition(File file) {
+        if (mPathPosition.containsKey(file)) {
+            return mPathPosition.get(file);
+        }
+        return 0;
+    }
 }
