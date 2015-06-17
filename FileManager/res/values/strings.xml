@@ -182,6 +182,7 @@
     <string name="file_sort_by_name">Name</string>
     <string name="file_sort_by_time">Last Modified</string>
     <string name="file_sort_by_default">Default</string>
+    <string name="storage_analysis">Storage Analysis</string>
 
     <!--5.2.0 file search dialog text-->
     <string name="file_search_message">Searching...</string>

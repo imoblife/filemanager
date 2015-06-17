@@ -17,6 +17,7 @@ import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
 import com.filemanager.dialogs.CreateDirectoryDialog;
 import com.filemanager.files.FileHolder;
+import com.filemanager.occupancy.StorageAnalysisActivity;
 import com.filemanager.util.CopyHelper;
 import com.filemanager.util.FileUtils;
 import com.filemanager.util.MenuUtils;
@@ -41,6 +42,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 	private static final String INSTANCE_STATE_PATHBAR_MODE = "pathbar_mode";
 
     private static final int MENU_ID_SORT = 253;
+    private static final int MENU_ID_STORAGE_ANALYSIS = 254;
 
     private static final int SORT_BY_DEFAULT = Preference.SORT_TYPE_DEFAULT;
     private static final int SORT_BY_NAME = Preference.SORT_TYPE_NAME;
@@ -92,11 +94,11 @@ public class SimpleFileListFragment extends FileListFragment implements
 		mPathBar.setOnDirectoryChangedListener(new OnDirectoryChangedListener() {
 
 			@Override
-			public void directoryChanged(File newCurrentDir) {
-				open(new FileHolder(newCurrentDir, getActivity()));
-			}
-		});
-		if (savedInstanceState != null
+            public void directoryChanged(File newCurrentDir, FileHolder fileHolder) {
+                open(new FileHolder(newCurrentDir, getActivity()));
+            }
+        });
+        if (savedInstanceState != null
 				&& savedInstanceState.getBoolean(INSTANCE_STATE_PATHBAR_MODE))
 			mPathBar.switchToManualInput();
 		// Removed else clause as the other mode is the default. It seems faster
@@ -351,12 +353,17 @@ public class SimpleFileListFragment extends FileListFragment implements
         } else if (id == MENU_ID_SORT) {
             new SortDialog();
             return true;
+        } else if (id == MENU_ID_STORAGE_ANALYSIS) {
+            Intent intent = new Intent();
+            intent.setClass(getActivity(), StorageAnalysisActivity.class);
+            startActivity(intent);
+            return true;
         } else {
             return false;
         }
     }
 
-    static class ComparatorByLastModified implements Comparator<FileHolder> {
+    public static class ComparatorByLastModified implements Comparator<FileHolder> {
         public int compare(FileHolder f1, FileHolder f2) {
             long diff = f1.getFile().lastModified() - f2.getFile().lastModified();
             if (diff > 0)
@@ -372,7 +379,7 @@ public class SimpleFileListFragment extends FileListFragment implements
         }
     }
 
-    static class ComparatorByAlphabet implements Comparator<FileHolder> {
+    public static class ComparatorByAlphabet implements Comparator<FileHolder> {
         public int compare(FileHolder f1, FileHolder f2) {
             return String.CASE_INSENSITIVE_ORDER.compare(f1.getName(), f2.getName());
         }
@@ -459,6 +466,8 @@ public class SimpleFileListFragment extends FileListFragment implements
             handleOptionMenu(R.id.menu_create_folder);
         } else if (position == 2) {
             handleOptionMenu(MENU_ID_SORT);
+        } else if (position == 3) {
+            handleOptionMenu(MENU_ID_STORAGE_ANALYSIS);
         }
     }
 

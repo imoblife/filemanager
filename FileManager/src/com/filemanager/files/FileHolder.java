@@ -4,6 +4,7 @@ import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
 
+import com.filemanager.occupancy.FileTreeNode;
 import com.filemanager.util.FileUtils;
 import com.filemanager.util.MimeTypes;
 
@@ -21,7 +22,8 @@ public class FileHolder implements Parcelable, Comparable<FileHolder> {
 	private String mMimeType = "";
 	private Context mContext;
 	private String mExtension;
-	private String mSize;
+	private long mSize;
+    private FileTreeNode<String> mFileTreeNode;
 
 	public FileHolder(File f, Context c) {
 		mFile = f;
@@ -30,7 +32,13 @@ public class FileHolder implements Parcelable, Comparable<FileHolder> {
 		mContext = c;
 	}
 
-	/**
+    public void setFile(File f) {
+        mFile = f;
+        mExtension = parseExtension();
+        mMimeType = MimeTypes.newInstance(mContext).getMimeType(f.getName());
+    }
+
+    /**
 	 * Only use this to create folders. Better leave icon handling for file
 	 * thumbnails to the {@link #getIcon(Resources)} method.
 	 * 
@@ -156,11 +164,13 @@ public class FileHolder implements Parcelable, Comparable<FileHolder> {
 	}
 
 	private long getSizeInBytes(boolean recursive) {
-		if (recursive && mFile.isDirectory())
-			return FileUtils.folderSize(mFile);
-		else
-			return mFile.length();
-	}
+//		if (recursive && mFile.isDirectory())
+//			return FileUtils.folderSize(mFile);
+        if (mFile.isDirectory())
+            return mSize;
+        else
+            return mFile.length();
+    }
 
 	@Override
 	public int describeContents() {
@@ -204,11 +214,20 @@ public class FileHolder implements Parcelable, Comparable<FileHolder> {
 		return ext;
 	}
 
-	public String getmSize() {
+	public long getSize() {
 		return mSize;
 	}
 
-	public void setmSize(String mSize) {
+	public void setSize(long mSize) {
 		this.mSize = mSize;
 	}
+
+
+    public void setNode(FileTreeNode<String> node) {
+        mFileTreeNode = node;
+    }
+
+    public FileTreeNode<String> getFileNode(){
+        return mFileTreeNode;
+    }
 }

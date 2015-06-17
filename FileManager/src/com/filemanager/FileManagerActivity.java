@@ -285,6 +285,8 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 			qa.addActionItem(new ActionItem(1,
 					getString(R.string.create_new_folder), null), true);
             qa.addActionItem(new ActionItem(2, getString(R.string.file_sort),
+                    null), true);
+            qa.addActionItem(new ActionItem(3, getString(R.string.storage_analysis),
                     null), false);
             qa.show(view);
 		}

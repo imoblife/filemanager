@@ -23,6 +23,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import com.filemanager.files.FileHolder;
+import com.filemanager.occupancy.FileTreeNode;
 
 /**
  * Provides a self contained way to represent the current path and provides a handy way of navigating. </br></br>
@@ -55,6 +57,7 @@ public class PathBar extends ViewFlipper {
 	private Mode mCurrentMode = Mode.STANDARD_INPUT;
 	private File mInitialDirectory = null;
     private HashMap<File, Integer> mPathPosition = new HashMap<>();
+    private HashMap<File, FileTreeNode<String>> mNodeMap = new HashMap<>();
 
 	/** ImageButton used to switch to MANUAL_INPUT. */
 	private ImageButton mSwitchToManualModeButton = null;
@@ -68,10 +71,10 @@ public class PathBar extends ViewFlipper {
 	private ImageView mGoButton = null;
 	//private ImageButton mGoButton = null;
 	private OnDirectoryChangedListener mDirectoryChangedListener = new OnDirectoryChangedListener() {
-		@Override
-		public void directoryChanged(File newCurrentDir) {
-		}
-	};
+        @Override
+        public void directoryChanged(File newCurrentDir, FileHolder fileHolder) {
+        }
+    };
 
 	public PathBar(Context context) {
 		super(context);
@@ -323,10 +326,42 @@ public class PathBar extends ViewFlipper {
 		} else
 			res = false;
 
-		mDirectoryChangedListener.directoryChanged(file);
+        mDirectoryChangedListener.directoryChanged(file, null);
 
 		return res;
 	}
+
+    public boolean cd(File file, FileHolder holder) {
+        boolean res = false;
+
+        if (isFileOk(file)) {
+            // Set proper current directory.
+            mCurrentDirectory = file;
+
+            // Refresh button layout.
+            mPathButtons.refresh(mCurrentDirectory);
+
+            // Reset scrolling position. http://stackoverflow.com/questions/3263259/scrollview-scrollto-not-working-saving-scrollview-position-on-rotation
+            mPathButtonsContainer.post(new Runnable() {
+                @Override
+                public void run() {
+                    mPathButtonsContainer.scrollTo(
+                            mPathButtonsContainer.getMaxScrollAmount(),
+                            (int) mPathButtonsContainer.getTop());
+                }
+            });
+
+            // Refresh manual input field.
+            mPathEditText.setText(file.getAbsolutePath());
+
+            res = true;
+        } else
+            res = false;
+
+        mDirectoryChangedListener.directoryChanged(file, holder);
+
+        return res;
+    }
 
 	/**
 	 * @see {@link com.filemanager.view.PathBar#cd(File) cd(File)}
@@ -352,7 +387,7 @@ public class PathBar extends ViewFlipper {
 		else
 			mDirectoryChangedListener = new OnDirectoryChangedListener() {
 				@Override
-				public void directoryChanged(File newCurrentDir) {
+				public void directoryChanged(File newCurrentDir,FileHolder holder) {
 				}
 			};
 	}
@@ -394,6 +429,26 @@ public class PathBar extends ViewFlipper {
 
 		return true;
 	}
+
+	public boolean pressBack(FileTreeNode<String> node) {
+        // Switch mode.
+        if (mCurrentMode == Mode.MANUAL_INPUT) {
+            switchToStandardInput();
+        }
+        // Go back.
+        else if (mCurrentMode == Mode.STANDARD_INPUT) {
+            if (!backWillExit(mCurrentDirectory.getAbsolutePath())) {
+                File file = new File(mCurrentDirectory.getParent());
+                FileHolder holder = new FileHolder(file,getContext());
+                holder.setNode(node);
+                cd(file, holder);
+                return true;
+            } else
+                return false;
+        }
+
+        return true;
+    }
 
 	/**
 	 * Returns the current {@link PathBar.Mode}.
@@ -442,12 +497,31 @@ public class PathBar extends ViewFlipper {
 		super.setEnabled(enabled);
 	}
 
+    /**
+     * use for storage analysis
+     * @param node
+     */
+    public void addNode(FileTreeNode<String> node) {
+        if (node == null) {
+            return;
+        }
+        mNodeMap.put(mCurrentDirectory, node);
+    }
+
+    public boolean isStorageAnalysis() {
+        return !mNodeMap.isEmpty();
+    }
+
+    public FileTreeNode<String> getNode(File file) {
+        return mNodeMap.get(file);
+    }
+
 	/**
 	 * Interface notifying users of this class when the user has chosen to navigate elsewhere.
 	 */
-	public interface OnDirectoryChangedListener {
-		public void directoryChanged(File newCurrentDir);
-	}
+    public interface OnDirectoryChangedListener {
+        public void directoryChanged(File newCurrentDir, FileHolder holder);
+    }
 
 	public PathButtonLayout getPathButtonLayout() {
 		return mPathButtons;

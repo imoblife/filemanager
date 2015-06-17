@@ -4,7 +4,8 @@ import java.io.File;
 import java.util.HashMap;
 
 import com.filemanager.R;
-import com.filemanager.util.ImageUtils;
+import com.filemanager.files.FileHolder;
+import com.filemanager.occupancy.FileTreeNode;
 import com.filemanager.view.PathBar.Mode;
 
 import android.content.Context;
@@ -290,14 +291,27 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 			//
 			btn.setLayoutParams(params);
 			btn.setTag(file);
-			btn.setOnClickListener(new View.OnClickListener() {
+            if (navbar.getNode(file) != null) {
+                btn.setTag(R.id.tag_storage_path_bar, navbar.getNode(file));
+            }
+
+            if (!navbar.isStorageAnalysis()) {
+                btn.setOnLongClickListener(navbar.getPathButtonLayout());
+            }
+            btn.setOnClickListener(new View.OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
-					navbar.cd((File) v.getTag());
-				}
-			});
-			btn.setOnLongClickListener(navbar.getPathButtonLayout());
+                    File tmpFile = (File) v.getTag();
+                    if (!navbar.isStorageAnalysis()) {
+                        navbar.cd(tmpFile);
+                    } else if (v.getTag(R.id.tag_storage_path_bar) instanceof FileTreeNode) {
+                        FileHolder fileHolder = new FileHolder(tmpFile, navbar.getContext());
+                        fileHolder.setNode((FileTreeNode<String>) v.getTag(R.id.tag_storage_path_bar));
+                        navbar.cd(tmpFile, fileHolder);
+                    }
+                }
+            });
 			// btn.setBackgroundDrawable(navbar.getItemBackground());
 
 			// We have to set this after adding the background as it'll cancel

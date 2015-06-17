@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="fill_parent"
+                android:background="@drawable/base_bg"
+                android:layout_height="40dp"
+                android:paddingLeft="7dp"
+                android:paddingRight="7dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp">
+    <TextView
+            android:id="@+id/tv_current_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="196m"/>
+    <TextView
+            android:id="@+id/tv_other_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tv_current_size"
+            android:layout_alignParentRight="true"
+            android:text="Avail:7.31GB/Total: 11.67GB"/>
+
+</RelativeLayout>
