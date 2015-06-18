@@ -65,6 +65,8 @@ public class StorageScanner extends Thread {
             mRoot.size = folderSize(mDirectory, mRoot);
         } catch (Exception e) {
 
+        } catch (OutOfMemoryError e) {
+
         }
 
         // Return lists
