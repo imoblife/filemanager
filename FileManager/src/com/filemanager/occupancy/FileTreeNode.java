@@ -10,8 +10,9 @@ public class FileTreeNode<T> implements Iterable<T> {
 
     //data use for file
     public T data;
-    //the file path
+    //the file size
     public long size;
+
     FileTreeNode<T> parent = null;
     LinkedList<FileTreeNode<T>> children;
 

@@ -8,16 +8,23 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp">
     <TextView
-            android:id="@+id/tv_current_size"
+            android:id="@+id/tv_current_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="196m"/>
     <TextView
-            android:id="@+id/tv_other_info"
+            android:id="@+id/tv_avail_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/tv_current_size"
+            android:layout_alignTop="@+id/tv_current_info"
+            android:layout_toLeftOf="@+id/tv_total_info"
+            android:text="Avail:7.31GB/"/>
+    <TextView
+            android:id="@+id/tv_total_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/tv_current_info"
             android:layout_alignParentRight="true"
-            android:text="Avail:7.31GB/Total: 11.67GB"/>
+            android:text="Total: 11.67GB"/>
 
 </RelativeLayout>

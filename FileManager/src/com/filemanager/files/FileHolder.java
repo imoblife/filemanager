@@ -137,7 +137,7 @@ public class FileHolder implements Parcelable, Comparable<FileHolder> {
 	 *            (Directories only).
 	 */
 	public String getFormattedSize(Context c, boolean recursive) {
-		return Formatter.formatFileSize(c, getSizeInBytes(recursive));
+		return Formatter.formatFileSize(c, getSizeInBytes());
 	}
 
 	public String getFormattedFloderSize(Context c, boolean recursive) {
@@ -163,9 +163,7 @@ public class FileHolder implements Parcelable, Comparable<FileHolder> {
 		return size;
 	}
 
-	private long getSizeInBytes(boolean recursive) {
-//		if (recursive && mFile.isDirectory())
-//			return FileUtils.folderSize(mFile);
+	private long getSizeInBytes() {
         if (mFile.isDirectory())
             return mSize;
         else

@@ -7,12 +7,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
+import android.text.format.Formatter;
 import android.view.*;
-import android.widget.AdapterView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.*;
+import base.util.os.StatFsUtil;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 import com.filemanager.PreferenceActivity;
@@ -25,6 +23,8 @@ import com.filemanager.view.PathBar;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by wuhao on 2015/6/15.
@@ -36,9 +36,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private static final int MENU_ID_SORT = 253;
     private static final int MENU_ID_STORAGE_ANALYSIS = 254;
 
-    private static final int SORT_BY_DEFAULT = Preference.SORT_TYPE_DEFAULT;
-    private static final int SORT_BY_NAME = Preference.SORT_TYPE_NAME;
-    private static final int SORT_BY_TIME = Preference.SORT_TYPE_MODIFY_TIME;
+    private static final int MSG_REFRESH_TREENODE = 201;
 
     protected static final int REQUEST_CODE_MULTISELECT = 2;
 
@@ -52,10 +50,18 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
     private LinearLayout mSearchActionBarLayout;
 
+    private RelativeLayout mStorageAnalysisLayout;
+    private TextView mCurrentSizeTextView;
+    private TextView mAvailSizeTextView;
+    private TextView mTotalSizeTextView;
+
+    private FileHolderLongClickListener mLongClickListener;
+
     private Handler mHandler;
 
     private Preference mPreference;
 
+    private ExecutorService mExecutors;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,6 +73,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mExecutors = Executors.newSingleThreadExecutor();
         // Pathbar init.
         mPathBar = (PathBar) view.findViewById(R.id.pathbar);
         if (savedInstanceState == null)
@@ -92,10 +99,28 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
         initCurrentSort(getContext());
 
+        mLongClickListener = new FileHolderLongClickListener();
+        getListView().setOnItemLongClickListener(mLongClickListener);
+
+        mStorageAnalysisLayout = (RelativeLayout) view.findViewById(R.id.bottom_layout);
+        mCurrentSizeTextView = (TextView) view.findViewById(R.id.tv_current_info);
+        mAvailSizeTextView = (TextView) view.findViewById(R.id.tv_avail_info);
+        mTotalSizeTextView = (TextView) view.findViewById(R.id.tv_total_info);
+        hideBottomLayout();
+
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 switch (msg.what) {
+                    case MSG_REFRESH_TREENODE:
+                        if(mAdapter == null){
+                            return;
+                        }
+                        mAdapter.clearCache();
+                        mAdapter.setNodeData(getFileList(mCurrentNode));
+                        mAdapter.notifyDataSetChanged();
+                        setLoading(false);
+                        break;
                     default:
                         break;
                 }
@@ -106,6 +131,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     @Override
     protected ArrayList<FileTreeNode<String>> getFileList(FileTreeNode<String> parentNode) {
         mPathBar.addNode(parentNode);
+        updateCurrentPageInfo(parentNode);
         return super.getFileList(parentNode);
     }
 
@@ -228,17 +254,14 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         } else {
             //data is already complete,just update ui
             if (fileholder.getFileNode() == null || fileholder.getFileNode().children == null) {
-                Log.e("wuhao"," refresh return==>>");
                 return;
             }
             setLoading(true);
+            hideBottomLayout();
             mCurrentNode = fileholder.getFileNode();
-//            mFiles.clear();
-//            mFiles.addAll(getFileList(mCurrentNode));
             mAdapter.clearCache();
             mAdapter.setNodeData(getFileList(mCurrentNode));
             mAdapter.notifyDataSetChanged();
-            getListView().setOnItemLongClickListener(new FileHolderLongClickListener());
             setLoading(false);
         }
     }
@@ -346,11 +369,13 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private class DeleteDialog implements
             android.content.DialogInterface.OnClickListener {
         private AlertDialog alertDialog;
+        private FileTreeNode<String> node;
 
         public DeleteDialog(FileHolder holder) {
+            node = holder.getFileNode();
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(holder.getFile().getName());
-            builder.setItems(new String[]{"delete"}, this);
+            builder.setItems(new String[]{getString(R.string.storage_analysis_delete)}, this);
 
             alertDialog = builder.create();
             alertDialog.setCancelable(true);
@@ -362,8 +387,99 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
         public void onClick(DialogInterface dialog, int actionId) {
 
+            RefreshTreeNodeRunnable refreshTreeNodeRunnable = new RefreshTreeNodeRunnable(node, mHandler);
+            setLoading(true);
+            hideBottomLayout();
+            mExecutors.execute(refreshTreeNodeRunnable);
             //delete file
             alertDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mHandler.removeMessages(MSG_REFRESH_TREENODE);
+        mHandler = null;
+    }
+
+    class RefreshTreeNodeRunnable implements Runnable{
+        /**
+         * If 0 some failed, if 1 all succeeded.
+         */
+        private int mResult = 1;
+
+        FileTreeNode<String> deleteNode;
+        Handler handler;
+
+        public RefreshTreeNodeRunnable(FileTreeNode<String> deleteNode, Handler handler) {
+            this.deleteNode = deleteNode;
+            this.handler = handler;
+        }
+
+        private void recursiveDelete(File file) {
+            File[] files = file.listFiles();
+            if (files != null && files.length != 0)
+                // If it's a directory delete all children.
+                for (File childFile : files) {
+                    if (childFile.isDirectory()) {
+                        recursiveDelete(childFile);
+                    } else {
+                        mResult *= childFile.delete() ? 1 : 0;
+                    }
+                }
+
+            // And then delete parent. -- or just delete the file.
+            mResult *= file.delete() ? 1 : 0;
+        }
+
+        @Override
+        public void run() {
+
+            FileTreeNode<String> parent = deleteNode.parent;
+            long deleteSize = deleteNode.size;
+            try {
+
+                recursiveDelete(new File(deleteNode.data));
+
+                if (parent != null) {
+                    parent.children.remove(deleteNode);
+                }
+
+                FileTreeNode<String> tmpNode = deleteNode;
+                while (tmpNode.parent != null) {
+                    FileTreeNode<String> tmpParent = tmpNode.parent;
+                    tmpParent.size = tmpParent.size - deleteSize;
+                    tmpNode = tmpParent;
+                }
+            } catch (Exception e) {
+
+            }
+
+            Message msg = handler.obtainMessage(MSG_REFRESH_TREENODE);
+            msg.sendToTarget();
+        }
+    }
+
+    private void hideBottomLayout(){
+        mStorageAnalysisLayout.setVisibility(View.GONE);
+    }
+
+    private void updateCurrentPageInfo(FileTreeNode<String> currentTreeNode) {
+
+        File file = new File(currentTreeNode.data);
+        if (file.exists()) {
+            mStorageAnalysisLayout.setVisibility(View.VISIBLE);
+            mCurrentSizeTextView.setText(Formatter.formatFileSize(getContext(), currentTreeNode.size));
+
+            String format1 = getResources().getString(R.string.storage_analysis_avail_size);
+            String result1 = String.format(format1, Formatter.formatFileSize(getContext(), StatFsUtil.getFreeSdcard(getContext())));
+            mAvailSizeTextView.setText(result1);
+            String format2 = getResources().getString(R.string.storage_analysis_total_size);
+            String result2 = String.format(format2, Formatter.formatFileSize(getContext(), StatFsUtil.getTotalSdcard(getContext())));
+            mTotalSizeTextView.setText(result2);
+        } else {
+            mStorageAnalysisLayout.setVisibility(View.GONE);
         }
     }
 }

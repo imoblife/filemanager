@@ -187,4 +187,10 @@
     <!--5.2.0 file search dialog text-->
     <string name="file_search_message">Searching...</string>
     <string name="file_search_no_result">(No matching result found)</string>
+
+    <!--storage analysis text-->
+    <string name="storage_analysis_delete">delete</string>
+    <string name="storage_analysis_avail_size">Avail：%s</string>
+    <string name="storage_analysis_total_size">/Total：%s</string>
+
 </resources>

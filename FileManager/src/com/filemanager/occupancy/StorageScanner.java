@@ -1,12 +1,10 @@
 package com.filemanager.occupancy;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
 import android.util.Log;
-import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 
 import java.io.File;
@@ -61,7 +59,6 @@ public class StorageScanner extends Thread {
         running = true;
         init();
 
-        Log.e("wuhao", "Storage Scan start..." + mDirectory.getAbsolutePath());
         // Scan files
         long time = System.currentTimeMillis();
         try {
@@ -69,7 +66,6 @@ public class StorageScanner extends Thread {
         } catch (Exception e) {
 
         }
-        Log.e("wuhao", "Storage Scan end..." + (System.currentTimeMillis() - time));
 
         // Return lists
         if (!cancelled) {
