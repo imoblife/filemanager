@@ -76,6 +76,8 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         mExecutors = Executors.newSingleThreadExecutor();
         // Pathbar init.
         mPathBar = (PathBar) view.findViewById(R.id.pathbar);
+        mPathBar.setStorageAnalysis(true);
+
         if (savedInstanceState == null)
             mPathBar.setInitialDirectory(getPath());
         else

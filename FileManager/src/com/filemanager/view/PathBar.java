@@ -58,6 +58,7 @@ public class PathBar extends ViewFlipper {
 	private File mInitialDirectory = null;
     private HashMap<File, Integer> mPathPosition = new HashMap<>();
     private HashMap<File, FileTreeNode<String>> mNodeMap = new HashMap<>();
+    private boolean mIsStorageAnalysis = false;
 
 	/** ImageButton used to switch to MANUAL_INPUT. */
 	private ImageButton mSwitchToManualModeButton = null;
@@ -508,8 +509,12 @@ public class PathBar extends ViewFlipper {
         mNodeMap.put(mCurrentDirectory, node);
     }
 
+    public void setStorageAnalysis(boolean storageAnalysis) {
+        mIsStorageAnalysis = storageAnalysis;
+    }
+
     public boolean isStorageAnalysis() {
-        return !mNodeMap.isEmpty();
+        return mIsStorageAnalysis;
     }
 
     public FileTreeNode<String> getNode(File file) {
