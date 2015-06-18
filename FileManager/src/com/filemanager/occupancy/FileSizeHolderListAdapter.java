@@ -35,7 +35,7 @@ public class FileSizeHolderListAdapter extends BaseAdapter {
     private boolean scrolling = false;
 
 
-    public FileSizeHolderListAdapter( Context c) {
+    public FileSizeHolderListAdapter(Context c) {
         folderIcon = c.getResources().getDrawable(R.drawable.file_ic_launcher);
         mInflater = (LayoutInflater) c
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -109,8 +109,9 @@ public class FileSizeHolderListAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         final FileHolder item = getFileHolder(position);
 
-        if (convertView == null)
+        if (convertView == null) {
             convertView = newView();
+        }
 
         final ViewHolder holder = (ViewHolder) convertView.getTag();
 
@@ -120,10 +121,11 @@ public class FileSizeHolderListAdapter extends BaseAdapter {
                 .getFormattedModificationDate(mContext));
         holder.secondaryInfo.setVisibility(View.GONE);
 
-        String[] files = item.getFile().list();
+        int childrenCount = item.getFileNode().children.size();
         StringBuilder builder = new StringBuilder();
-        if (files != null) {
-            builder.append(item.getFile().isDirectory() ? files.length + " "
+
+        if (childrenCount > 0) {
+            builder.append(item.getFile().isDirectory() ? childrenCount + " "
                     + mContext.getString(R.string.items) + " | " + item
                     .getFormattedSize(mContext, false) : item
                     .getFormattedSize(mContext, false));
