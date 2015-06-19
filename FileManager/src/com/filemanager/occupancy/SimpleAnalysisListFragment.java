@@ -442,7 +442,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
             long deleteSize = deleteNode.size;
             try {
 
-                recursiveDelete(new File(deleteNode.data));
+                recursiveDelete(deleteNode.data);
 
                 if (parent != null) {
                     parent.children.remove(deleteNode);
@@ -469,7 +469,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
     private void updateCurrentPageInfo(FileTreeNode<String> currentTreeNode) {
 
-        File file = new File(currentTreeNode.data);
+        File file = currentTreeNode.data;
         if (file.exists()) {
             mStorageAnalysisLayout.setVisibility(View.VISIBLE);
             mCurrentSizeTextView.setText(Formatter.formatFileSize(getContext(), currentTreeNode.size));

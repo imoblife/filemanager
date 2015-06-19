@@ -4,11 +4,11 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
+import android.text.format.Formatter;
 import android.util.Log;
-import com.filemanager.files.FileHolder;
 
 import java.io.File;
-import java.util.Comparator;
+import java.util.*;
 
 /**
  * Created by wuhao on 2015/6/15.
@@ -32,16 +32,17 @@ public class StorageScanner extends Thread {
     private File mDirectory;
     private Context mContext;
     private long mBlockSize = 512;
+    private Stack<FileTreeNode<String>> mDir;
 
     public StorageScanner(File directory, Context context, Handler handler) {
         super("Storage analysis Scanner");
         currentDirectory = directory;
         this.handler = handler;
-        this.mRoot = new FileTreeNode<>("root");
-        this.mRoot.data = directory.getPath();
+        this.mRoot = new FileTreeNode<>(directory);
         this.mDirectory = directory;
         this.mContext = context.getApplicationContext();
 
+        this.mDir = new Stack<>();
         StatFs fs = new StatFs(mDirectory.getPath());
         mBlockSize = fs.getBlockSize();
     }
@@ -62,7 +63,8 @@ public class StorageScanner extends Thread {
         // Scan files
         long time = System.currentTimeMillis();
         try {
-            mRoot.size = folderSize(mDirectory, mRoot);
+            mDir.push(mRoot);
+            createTreeNodes(mRoot);
         } catch (Exception e) {
 
         } catch (OutOfMemoryError e) {
@@ -71,59 +73,17 @@ public class StorageScanner extends Thread {
 
         // Return lists
         if (!cancelled) {
-            Log.v(TAG, "Sending data back to main thread");
-
+            while (!mDir.isEmpty()){
+                FileTreeNode<String> node = mDir.pop();
+                node.refresh();
+            }
+            Log.e(TAG, "Sending data back to main thread cost time ==>>" + (System.currentTimeMillis() - time) + " size==>>" + Formatter.formatFileSize(mContext, mRoot.size));
             Message msg = handler.obtainMessage(MESSAGE_SHOW_STORAGE_ANALYSIS);
             msg.obj = mRoot;
             msg.sendToTarget();
         }
 
         running = false;
-    }
-
-
-    public long folderSize(File directory, FileTreeNode<String> node) {
-        long length = 0;
-
-        if (cancelled) {
-            throw new RuntimeException();
-        }
-        File[] contents = directory.listFiles();
-        // the directory file is not really a directory..
-        if (contents == null) {
-            return 0;
-        }
-
-        try {
-            for (File file : contents) {
-                FileHolder holder = null;
-                FileTreeNode<String> child = node.addChild(file.getPath());
-                long tmpSize;
-                if (file.isFile()) {
-                    tmpSize = file.length();
-                    child.size = tmpSize;
-                    length += tmpSize;
-                } else {
-                    tmpSize = folderSize(file, child);
-                    child.size = tmpSize;
-                    length += tmpSize;
-                }
-            }
-        } catch (Exception e) {
-
-        } catch (OutOfMemoryError error) {
-
-        }
-
-        if (cancelled) {
-            throw new RuntimeException();
-        }
-
-        if (directory.isDirectory()) {
-            length = length + mBlockSize;
-        }
-
-        return length;
     }
 
     public void cancel() {
@@ -147,6 +107,33 @@ public class StorageScanner extends Thread {
 
         public boolean equals(Object obj) {
             return true;
+        }
+    }
+
+    private void createTreeNodes(FileTreeNode<String> node) {
+        Stack<FileTreeNode<String>> dirlist = new Stack<FileTreeNode<String>>();
+        dirlist.push(node);
+
+        while (!dirlist.isEmpty()) {
+            if (cancelled) {
+                return;
+            }
+            FileTreeNode<String> dirCurrent = dirlist.pop();
+
+            File[] fileList = dirCurrent.data.listFiles();
+            for (File f : fileList) {
+                if (cancelled) {
+                    return;
+                }
+                FileTreeNode<String> tmp = dirCurrent.addChild(f);
+                if (f.isDirectory()) {
+                    if (cancelled) {
+                        return;
+                    }
+                    mDir.push(tmp);
+                    dirlist.push(tmp);
+                }
+            }
         }
     }
 }

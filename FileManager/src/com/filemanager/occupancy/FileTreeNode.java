@@ -1,7 +1,10 @@
 package com.filemanager.occupancy;
 
+import android.os.StatFs;
+
+import java.io.File;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 
 /**
  * Created by wuhao on 2015/6/15.
@@ -9,21 +12,32 @@ import java.util.LinkedList;
 public class FileTreeNode<T> implements Iterable<T> {
 
     //data use for file
-    public T data;
+    public File data;
     //the file size
-    public long size;
+    public long size = 0;
 
     FileTreeNode<T> parent = null;
-    LinkedList<FileTreeNode<T>> children;
+    ArrayList<FileTreeNode<T>> children;
 
-    public FileTreeNode(T data) {
+    public FileTreeNode(File data) {
         this.data = data;
-        this.children = new LinkedList<FileTreeNode<T>>();
+        this.children = new ArrayList<FileTreeNode<T>>();
+        initSize();
     }
 
-    public FileTreeNode<T> addChild(T child) {
+    private void initSize() {
+        if (data.isFile()) {
+            size = data.length();
+        } else {
+            StatFs fs = new StatFs(data.getPath());
+            size = fs.getBlockSize();
+        }
+    }
+
+    public FileTreeNode<T> addChild(File child) {
         FileTreeNode<T> childNode = new FileTreeNode<T>(child);
         childNode.parent = this;
+        size = size + childNode.size;
         this.children.add(childNode);
         return childNode;
     }
@@ -32,6 +46,15 @@ public class FileTreeNode<T> implements Iterable<T> {
     public Iterator<T> iterator() {
         //add something
         return null;
+    }
+
+    public final void refresh() {
+        initSize();
+        Iterator iterator = children.iterator();
+        while (iterator.hasNext()) {
+            FileTreeNode<T> tmp = (FileTreeNode<T>) iterator.next();
+            size += tmp.size;
+        }
     }
 }
 

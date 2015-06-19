@@ -124,7 +124,7 @@ public class FileSizeHolderListAdapter extends BaseAdapter {
         int childrenCount = item.getFileNode().children.size();
         StringBuilder builder = new StringBuilder();
 
-        if (childrenCount > 0) {
+        if (childrenCount >= 0) {
             builder.append(item.getFile().isDirectory() ? childrenCount + " "
                     + mContext.getString(R.string.items) + " | " + item
                     .getFormattedSize(mContext, false) : item
@@ -185,7 +185,7 @@ public class FileSizeHolderListAdapter extends BaseAdapter {
             return mCacheData.get(position);
         } else {
             FileTreeNode<String> tmpNode = mNodes.get(position);
-            FileHolder fileHolder = new FileHolder(new File(mNodes.get(position).data), mContext);
+            FileHolder fileHolder = new FileHolder(mNodes.get(position).data, mContext);
             fileHolder.setNode(tmpNode);
             fileHolder.setSize(tmpNode.size);
             mCacheData.put(position, fileHolder);
