@@ -198,8 +198,14 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     public void onListItemClick(ListView l, View v, int position, long id) {
 
         FileHolder item = (FileHolder) mAdapter.getItem(position);
-
+        mPreviousPosition = getListView().getFirstVisiblePosition();
         openInformingPathBar(item);
+        mPathBar.updatePosition(mPreviousPosition);
+    }
+
+    @Override
+    protected void selectInList(File selectFile) {
+        getListView().setSelection(mPathBar.getPathPosition(mPreviousDirectory));
     }
 
     /**
@@ -264,6 +270,9 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
             mAdapter.clearCache();
             mAdapter.setNodeData(getFileList(mCurrentNode));
             mAdapter.notifyDataSetChanged();
+            if (mPreviousDirectory != null) {
+                selectInList(mPreviousDirectory);
+            }
             setLoading(false);
         }
     }

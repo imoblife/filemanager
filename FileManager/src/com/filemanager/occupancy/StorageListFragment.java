@@ -30,6 +30,7 @@ public abstract class StorageListFragment extends BaseListFragment {
     private static final String INSTANCE_STATE_PATH = "path";
     private static final String INSTANCE_STATE_FILES = "files";
     File mPreviousDirectory = null;
+    int mPreviousPosition = 0;
 
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
