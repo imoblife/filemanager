@@ -13,6 +13,7 @@ import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
+import com.filemanager.FileManagerActivity;
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
 import com.filemanager.dialogs.CreateDirectoryDialog;
@@ -90,7 +91,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 		if (savedInstanceState == null)
 			mPathBar.setInitialDirectory(getPath());
 		else
-			mPathBar.cd(getPath());
+		mPathBar.cd(getPath());
 		mPathBar.setOnDirectoryChangedListener(new OnDirectoryChangedListener() {
 
 			@Override
@@ -104,7 +105,11 @@ public class SimpleFileListFragment extends FileListFragment implements
 		// Removed else clause as the other mode is the default. It seems faster
 		// this way on Nexus S.
 
-		initContextualActions();
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            mPathBar.setPathButtonClickable(bundle.getBoolean(FileManagerActivity.EXTRA_PATH_CLICK, true));
+        }
+        initContextualActions();
 
         initSearchActionBar(view);
 

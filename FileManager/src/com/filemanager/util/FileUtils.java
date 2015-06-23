@@ -425,7 +425,8 @@ public class FileUtils {
 			if (title != null) {
 				bundle.putString(FileManagerActivity.EXTRA_CHANGE_TITLE, title);
 			}
-			Intent intent = new Intent(context, FileManagerActivity.class);
+            bundle.putBoolean(FileManagerActivity.EXTRA_PATH_CLICK, false);
+            Intent intent = new Intent(context, FileManagerActivity.class);
 			intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			intent.putExtras(bundle);
 			context.startActivity(intent);

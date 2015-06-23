@@ -47,6 +47,7 @@ import com.util.MenuIntentOptionsWithIcons;
 public class FileManagerActivity extends DistributionLibraryFragmentActivity implements ISearchBarActionListener {
 	public static final String EXTRA_CHANGE_TITLE = "changeTitle";
 	public static final String EXTRA_FILE_URI = "fileUri";
+	public static final String EXTRA_PATH_CLICK = "pathBarClickable";
 
 	public static final String FRAGMENT_TAG = "ListFragment";
 
@@ -112,13 +113,15 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 		setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
 		File data = null;
-		if (getIntent().getStringExtra(EXTRA_FILE_URI) != null) {
+        boolean pathBarClickable = true;
+        if (getIntent().getStringExtra(EXTRA_FILE_URI) != null) {
 			data = FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
 					EXTRA_FILE_URI)));
 			if (getIntent().getStringExtra(EXTRA_CHANGE_TITLE) != null) {
 				setTitle(getIntent().getStringExtra(EXTRA_CHANGE_TITLE));
 			}
-		} else {
+            pathBarClickable = getIntent().getBooleanExtra(EXTRA_PATH_CLICK, true);
+        } else {
 			// If not called by name, open on the requested location.
 			data = resolveIntentData();
 		}
@@ -129,16 +132,18 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 		if (mFragment == null) {
 			mFragment = new SimpleFileListFragment();
 			Bundle args = new Bundle();
-			if (data == null)
-				args.putString(
-						FileManagerIntents.EXTRA_DIR_PATH,
-						Environment.getExternalStorageState().equals(
-								Environment.MEDIA_MOUNTED) ? PreferenceHelper
-								.getSdcardPath(getApplicationContext()) : "/");
-			else
-				args.putString(FileManagerIntents.EXTRA_DIR_PATH,
-						data.toString());
-			mFragment.setArguments(args);
+			if (data == null) {
+                args.putString(
+                        FileManagerIntents.EXTRA_DIR_PATH,
+                        Environment.getExternalStorageState().equals(
+                                Environment.MEDIA_MOUNTED) ? PreferenceHelper
+                                .getSdcardPath(getApplicationContext()) : "/");
+            }else {
+                args.putString(FileManagerIntents.EXTRA_DIR_PATH,
+                        data.toString());
+            }
+            args.putBoolean(EXTRA_PATH_CLICK, pathBarClickable);
+            mFragment.setArguments(args);
 			getSupportFragmentManager().beginTransaction()
 					.add(android.R.id.content, mFragment, FRAGMENT_TAG)
 					.commit();

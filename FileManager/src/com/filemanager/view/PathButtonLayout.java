@@ -300,8 +300,11 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
             }
             btn.setOnClickListener(new View.OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
+                    if (!navbar.isPathButtonClickable()) {
+                        return;
+                    }
                     File tmpFile = (File) v.getTag();
                     if (!navbar.isStorageAnalysis()) {
                         navbar.cd(tmpFile);
@@ -312,7 +315,7 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
                     }
                 }
             });
-			// btn.setBackgroundDrawable(navbar.getItemBackground());
+            // btn.setBackgroundDrawable(navbar.getItemBackground());
 
 			// We have to set this after adding the background as it'll cancel
 			// the padding out.
@@ -337,7 +340,9 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 
 	@Override
 	public boolean onLongClick(View v) {
-		mPathBar.switchToManualInput();
-		return true;
+        if (mPathBar.isPathButtonClickable()) {
+            mPathBar.switchToManualInput();
+        }
+        return true;
 	}
 }

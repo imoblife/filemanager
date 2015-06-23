@@ -59,6 +59,7 @@ public class PathBar extends ViewFlipper {
     private HashMap<File, Integer> mPathPosition = new HashMap<>();
     private HashMap<File, FileTreeNode<String>> mNodeMap = new HashMap<>();
     private boolean mIsStorageAnalysis = false;
+    private boolean mIsPathButtonClickable = true;
 
 	/** ImageButton used to switch to MANUAL_INPUT. */
 	private ImageButton mSwitchToManualModeButton = null;
@@ -515,6 +516,14 @@ public class PathBar extends ViewFlipper {
 
     public boolean isStorageAnalysis() {
         return mIsStorageAnalysis;
+    }
+
+    public void setPathButtonClickable(boolean pathButtonClickable) {
+        mIsPathButtonClickable = pathButtonClickable;
+    }
+
+    public boolean isPathButtonClickable() {
+        return mIsPathButtonClickable;
     }
 
     public FileTreeNode<String> getNode(File file) {
