@@ -2,6 +2,8 @@ package com.filemanager.search;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import com.filemanager.R;
 
@@ -35,12 +37,6 @@ public class SearchCore {
 		mContext = context;
 	}
 
-	private FilenameFilter filter = new FilenameFilter() {
-		@Override
-		public boolean accept(File dir, String filename) {
-			return mQuery == null ? false : filename.toLowerCase().contains(mQuery.toLowerCase());
-		}
-	};
 
 	public void setQuery(String q) {
 		mQuery = q;
@@ -119,67 +115,29 @@ public class SearchCore {
 		return mContext.getContentResolver().delete(mContentURI, null, null);
 	}
 
-	/**
-	 * Core search function. Recursively searches files from root of external storage to the leaves. Prioritizes {@link #root}'s subtree.
-	 * 
-	 * @param dir
-	 *            The starting dir for the search. Callers outside of this class are highly encouraged to use the same as {@link #root}.
-	 */
-	public void search(File dir) {
+    public void search(File dir) {
+        Queue<File> dirList = new LinkedList<>();
+        dirList.offer(dir);
 
-        if (!isRun()) {
-            throw new RuntimeException();
-        }
+        while (!dirList.isEmpty()) {
+            File dirCurrent = dirList.poll();
 
-        if (dir == null) {
-            return;
-        }
-
-
-        // Results in root pass
-        for (File f : dir.listFiles(filter)) {
-            if (!isRun()) {
-                throw new RuntimeException();
-            }
-            insertResult(f);
-
-            if (!isRun()) {
-                throw new RuntimeException();
-            }
-            // Break search on result count and search time conditions.
-            if ((mMaxResults > 0 && mResultCount >= mMaxResults) || (mMaxNanos > 0 && System.nanoTime() - mStart > mMaxNanos)) {
-                return;
-            }
-
-            if (!isRun()) {
-                throw new RuntimeException();
-            }
-        }
-
-        // Recursion pass
-        for (File f : dir.listFiles()) {
-            if (!isRun()) {
-                throw new RuntimeException();
-            }
-
-            // Prevent us from re-searching the root directory, or trying to search invalid Files.
-            if (f.isDirectory() && f.canRead() && !isChildOf(f, root)) {
-                search(f);
-            }
-
-            if (!isRun()) {
-                throw new RuntimeException();
-            }
-        }
-
-        // If we're on the parent of the recursion, and we're done searching, start searching the rest of the FS.
-        if (dir.equals(root) && !root.equals(Environment.getExternalStorageDirectory())) {
-            if (!isRun()) {
-                throw new RuntimeException();
-            }
-            search(Environment.getExternalStorageDirectory());
-            if (!isRun()) {
-                throw new RuntimeException();
+            for (File f : dirCurrent.listFiles()) {
+                if (!isRun()) {
+                    throw new RuntimeException();
+                }
+                if (f == null) {
+                    continue;
+                }
+                if (f.getName().toLowerCase().contains(mQuery.toLowerCase())) {
+                    insertResult(f);
+                }
+                if (!isRun()) {
+                    throw new RuntimeException();
+                }
+                if (f.isDirectory()) {
+                    dirList.offer(f);
+                }
             }
         }
     }

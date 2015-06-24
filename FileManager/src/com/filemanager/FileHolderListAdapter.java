@@ -1,32 +1,28 @@
 package com.filemanager;
 
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import com.filemanager.files.FileHolder;
-import com.filemanager.view.ViewHolder;
-
-import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.filemanager.files.FileHolder;
+import com.filemanager.view.ViewHolder;
+import org.w3c.dom.Text;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
 
 public class FileHolderListAdapter extends BaseAdapter {
 	private List<FileHolder> mItems;
 	private LayoutInflater mInflater;
 	private Context mContext;
 	private int mItemLayoutId = R.layout.item_filelist;
+    private HashMap<File,Integer> mFileListsSize;
 
 	// Thumbnail specific
 	private ThumbnailLoader mThumbnailLoader;
@@ -41,6 +37,7 @@ public class FileHolderListAdapter extends BaseAdapter {
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		mContext = c;
 
+        mFileListsSize = new HashMap<>();
 		mThumbnailLoader = new ThumbnailLoader(c);
 	}
 
@@ -116,19 +113,28 @@ public class FileHolderListAdapter extends BaseAdapter {
 		// Hide directories' size as it's irrelevant if we can't recursively
 		// find it.
 
-		String[] files = item.getFile().list();
-		if (files != null) {
-			holder.tertiaryInfo
-					.setText(item.getFile().isDirectory() ? files.length + " "
-							+ mContext.getString(R.string.items) : item
-							.getFormattedSize(mContext, false));
-		} else {
-			holder.tertiaryInfo.setText(item.getFile().isDirectory() ? "0"
-					+ " " + mContext.getString(R.string.items) : item
-					.getFormattedSize(mContext, false));
-		}
+        String tertiaryInfo;
+        File file = item.getFile();
+        if (!mFileListsSize.containsKey(file)) {
+            String[] files = file.list();
+            if (files != null) {
+                mFileListsSize.put(file, files.length);
+                tertiaryInfo = file.isDirectory() ? files.length + " "
+                        + mContext.getString(R.string.items) : item
+                        .getFormattedSize(mContext, false);
+            } else {
+                mFileListsSize.put(file, 0);
+                tertiaryInfo = file.isDirectory() ? "0"
+                        + " " + mContext.getString(R.string.items) : item
+                        .getFormattedSize(mContext, false);
+            }
+        } else {
+            tertiaryInfo = file.isDirectory() ? mFileListsSize.get(file) + " "
+                    + mContext.getString(R.string.items) : item
+                    .getFormattedSize(mContext, false);
+        }
 
-		// loadSize(item);
+        holder.tertiaryInfo.setText(tertiaryInfo);
 
 		if (shouldLoadIcon(item)) {
 			if (mThumbnailLoader != null) {
