@@ -1,17 +1,16 @@
 package com.filemanager;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.filemanager.files.FileHolder;
 import com.filemanager.view.ViewHolder;
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.util.HashMap;
@@ -27,7 +26,7 @@ public class FileHolderListAdapter extends BaseAdapter {
 	// Thumbnail specific
 	private ThumbnailLoader mThumbnailLoader;
 	private boolean scrolling = false;
-	private Handler mHandler;
+    private String mKeyword;
 
 	//	private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
@@ -87,6 +86,7 @@ public class FileHolderListAdapter extends BaseAdapter {
 		View view = mInflater.inflate(mItemLayoutId, null);
 
 		ViewHolder holder = new ViewHolder();
+        holder.content = (LinearLayout) view.findViewById(R.id.item_ll);
 		holder.icon = (ImageView) view.findViewById(R.id.icon);
 		holder.primaryInfo = (TextView) view.findViewById(R.id.primary_info);
 		holder.secondaryInfo = (TextView) view
@@ -142,53 +142,11 @@ public class FileHolderListAdapter extends BaseAdapter {
 			}
 		}
 
-		return convertView;
+        if (!TextUtils.isEmpty(mKeyword) && mKeyword.equals(file.getName())) {
+            holder.content.setBackgroundResource(R.drawable.base_card_press);
+        }
+        return convertView;
 	}
-
-	private Handler handler = new Handler() {
-		public void handleMessage(Message msg) {
-			FileSize fs = (FileSize) msg.obj;
-			fs.tx.setText(fs.size);
-		};
-	};
-
-	class FileSize {
-		TextView tx;
-		String size;
-	}
-
-	//	public String loadSize(final FileHolder item) {
-	//
-	//		// if (TextUtils.isEmpty(tx.getText()))
-	//		executorService.submit(new Runnable() {
-	//			public void run() {
-	//				String res = "loading";
-	//				if (item.getFile().isDirectory()) {
-	//					res = (item.getFormattedSize(mContext, false));
-	//					item.setmSize(res);
-	//				} else {
-	//					res = (item.getFormattedSize(mContext, false));
-	//					item.setmSize(res);
-	//				}
-	//
-	//				Activity activity = ((Activity) mContext);
-	//				activity.runOnUiThread(new Runnable() {
-	//					public void run() {
-	//						// notifyDataSetChanged();
-	//					}
-	//				});
-	//				// tx.setText(res);
-	//				// Message msg = handler.obtainMessage();
-	//				// FileSize fs = new FileSize();
-	//				// fs.tx = tx;
-	//				// fs.size = res;
-	//				// msg.obj = fs;
-	//				// handler.sendMessage(msg);
-	//			}
-	//		});
-	//		return null;
-	//
-	//	}
 
 	/**
 	 * Inform this adapter about scrolling state of list so that lists don't lag
@@ -207,4 +165,8 @@ public class FileHolderListAdapter extends BaseAdapter {
 		return !scrolling && item.getFile().isFile()
 				&& !item.getMimeType().equals("video/mpeg");
 	}
+
+    public void setHighlightKeyword(String keyword) {
+        mKeyword = keyword;
+    }
 }

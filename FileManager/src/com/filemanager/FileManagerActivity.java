@@ -18,6 +18,7 @@ package com.filemanager;
 
 import java.io.File;
 
+import android.text.TextUtils;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import net.londatiga.android.ActionItem;
 import net.londatiga.android.QuickAction;
@@ -48,6 +49,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 	public static final String EXTRA_CHANGE_TITLE = "changeTitle";
 	public static final String EXTRA_FILE_URI = "fileUri";
 	public static final String EXTRA_PATH_CLICK = "pathBarClickable";
+	public static final String EXTRA_PATH_KEYWORD = "locateKeyword";
 
 	public static final String FRAGMENT_TAG = "ListFragment";
 
@@ -114,6 +116,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 
 		File data = null;
         boolean pathBarClickable = true;
+        String keyword = null;
         if (getIntent().getStringExtra(EXTRA_FILE_URI) != null) {
 			data = FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
 					EXTRA_FILE_URI)));
@@ -121,6 +124,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 				setTitle(getIntent().getStringExtra(EXTRA_CHANGE_TITLE));
 			}
             pathBarClickable = getIntent().getBooleanExtra(EXTRA_PATH_CLICK, true);
+            keyword = getIntent().getStringExtra(EXTRA_PATH_KEYWORD);
         } else {
 			// If not called by name, open on the requested location.
 			data = resolveIntentData();
@@ -143,6 +147,9 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
                         data.toString());
             }
             args.putBoolean(EXTRA_PATH_CLICK, pathBarClickable);
+            if (!TextUtils.isEmpty(keyword)) {
+                args.putString(EXTRA_PATH_KEYWORD, keyword);
+            }
             mFragment.setArguments(args);
 			getSupportFragmentManager().beginTransaction()
 					.add(android.R.id.content, mFragment, FRAGMENT_TAG)

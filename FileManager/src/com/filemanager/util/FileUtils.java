@@ -434,4 +434,23 @@ public class FileUtils {
 			e.printStackTrace();
 		}
 	}
+
+	public static void locateFileAndHighlight(Context context, File file, String keyword) {
+        try {
+            File path = FileUtils.getPathWithoutFilename(file);
+            Bundle bundle = new Bundle();
+            bundle.putString(FileManagerActivity.EXTRA_FILE_URI,
+                    path.getAbsolutePath());
+            if (keyword != null) {
+                bundle.putString(FileManagerActivity.EXTRA_PATH_KEYWORD, keyword);
+            }
+            bundle.putBoolean(FileManagerActivity.EXTRA_PATH_CLICK, false);
+            Intent intent = new Intent(context, FileManagerActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtras(bundle);
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

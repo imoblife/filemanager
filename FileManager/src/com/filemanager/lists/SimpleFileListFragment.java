@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
@@ -106,8 +107,13 @@ public class SimpleFileListFragment extends FileListFragment implements
 		// this way on Nexus S.
 
         Bundle bundle = getArguments();
+        String keyword = null;
         if (bundle != null) {
             mPathBar.setPathButtonClickable(bundle.getBoolean(FileManagerActivity.EXTRA_PATH_CLICK, true));
+            keyword = bundle.getString(FileManagerActivity.EXTRA_PATH_KEYWORD);
+            if (!TextUtils.isEmpty(keyword)) {
+                mAdapter.setHighlightKeyword(keyword);
+            }
         }
         initContextualActions();
 
