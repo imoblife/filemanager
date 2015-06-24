@@ -33,6 +33,7 @@ public class StorageScanner extends Thread {
     private Context mContext;
     private long mBlockSize = 512;
     private Stack<FileTreeNode<String>> mDir;
+    private int mResult = 0;
 
     public StorageScanner(File directory, Context context, Handler handler) {
         super("Storage analysis Scanner");
@@ -125,6 +126,7 @@ public class StorageScanner extends Thread {
                 if (cancelled) {
                     return;
                 }
+                mResult++;
                 FileTreeNode<String> tmp = dirCurrent.addChild(f);
                 if (f.isDirectory()) {
                     if (cancelled) {
@@ -135,6 +137,10 @@ public class StorageScanner extends Thread {
                 }
             }
         }
+    }
+
+    public int getResultCount() {
+        return mResult;
     }
 }
 

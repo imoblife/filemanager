@@ -19,9 +19,18 @@
             android:indeterminate="true" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/scanning" />
+                android:id="@+id/tv_loading_default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/scanning"/>
+
+        <TextView
+                android:id="@+id/tv_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/scanning"
+                android:visibility="gone"/>
     </LinearLayout>
 
     <RelativeLayout

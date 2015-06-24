@@ -8,10 +8,7 @@ import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ViewFlipper;
+import android.widget.*;
 import base.util.ui.fragment.BaseListFragment;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
@@ -31,6 +28,7 @@ public abstract class StorageListFragment extends BaseListFragment {
     private static final String INSTANCE_STATE_FILES = "files";
     File mPreviousDirectory = null;
     int mPreviousPosition = 0;
+    private Handler mHandler = new Handler();
 
     private SharedPreferences.OnSharedPreferenceChangeListener preferenceListener = new SharedPreferences.OnSharedPreferenceChangeListener() {
         @Override
@@ -46,6 +44,8 @@ public abstract class StorageListFragment extends BaseListFragment {
     private String mFilename;
 
     private ViewFlipper mFlipper;
+    private TextView mLoadingDefaultTextView;
+    private TextView mLoadingTextView;
     private File mCurrentDirectory;
     private View mClipboardInfo;
     private TextView mClipboardContent;
@@ -97,6 +97,10 @@ public abstract class StorageListFragment extends BaseListFragment {
 
         // Init flipper
         mFlipper = (ViewFlipper) view.findViewById(R.id.flipper);
+        mLoadingDefaultTextView = (TextView) view.findViewById(R.id.tv_loading_default);
+        mLoadingDefaultTextView.setVisibility(View.GONE);
+        mLoadingTextView = (TextView) view.findViewById(R.id.tv_loading);
+        mLoadingTextView.setVisibility(View.VISIBLE);
         mClipboardInfo = view.findViewById(R.id.clipboard_info);
         mClipboardContent = (TextView) view
                 .findViewById(R.id.clipboard_content);
@@ -147,6 +151,7 @@ public abstract class StorageListFragment extends BaseListFragment {
         renewScanner();
         mAdapter = new FileSizeHolderListAdapter(getActivity());
 
+        mHandler.post(new UpdateRunnable());
         setListAdapter(mAdapter);
         mScanner.start();
 
@@ -323,5 +328,27 @@ public abstract class StorageListFragment extends BaseListFragment {
 
     public String getFilename() {
         return mFilename;
+    }
+
+
+    private class UpdateRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            if (mFlipper != null && mFlipper.getChildAt(0).getVisibility() != View.VISIBLE || mScanner == null) {
+                mLoadingDefaultTextView.setVisibility(View.VISIBLE);
+                mLoadingTextView.setVisibility(View.GONE);
+                return;
+            }
+            if(getActivity() == null){
+                return;
+            }
+            String tmp = getResources().getString(R.string.storage_analysis_scan_count);
+            String tmpCount = String.format(tmp, mScanner.getResultCount() + "");
+            if (mLoadingTextView != null) {
+                mLoadingTextView.setText(tmpCount);
+            }
+            mHandler.postDelayed(this, 1);
+        }
     }
 }
