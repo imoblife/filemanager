@@ -121,8 +121,15 @@ public class SearchCore {
 
         while (!dirList.isEmpty()) {
             File dirCurrent = dirList.poll();
+            if (dirCurrent == null) {
+                continue;
+            }
+            File[] files = dirCurrent.listFiles();
+            if (files == null || files.length == 0) {
+                continue;
+            }
 
-            for (File f : dirCurrent.listFiles()) {
+            for (File f : files) {
                 if (!isRun()) {
                     throw new RuntimeException();
                 }
@@ -135,7 +142,7 @@ public class SearchCore {
                 if (!isRun()) {
                     throw new RuntimeException();
                 }
-                if (f.isDirectory()) {
+                if (f.isDirectory() && dirCurrent.canRead()) {
                     dirList.offer(f);
                 }
             }
