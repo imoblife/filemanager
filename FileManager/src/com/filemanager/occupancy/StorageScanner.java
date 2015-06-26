@@ -32,7 +32,7 @@ public class StorageScanner extends Thread {
     private File mDirectory;
     private Context mContext;
     private long mBlockSize = 512;
-    private Stack<FileTreeNode<String>> mDir;
+    private ArrayList<FileTreeNode<String>> mDir;
     private int mResult = 0;
 
     public StorageScanner(File directory, Context context, Handler handler) {
@@ -43,7 +43,7 @@ public class StorageScanner extends Thread {
         this.mDirectory = directory;
         this.mContext = context.getApplicationContext();
 
-        this.mDir = new Stack<>();
+        this.mDir = new ArrayList<>();
         StatFs fs = new StatFs(mDirectory.getPath());
         mBlockSize = fs.getBlockSize();
     }
@@ -64,18 +64,19 @@ public class StorageScanner extends Thread {
         // Scan files
         long time = System.currentTimeMillis();
         try {
-            mDir.push(mRoot);
+            mDir.add(mRoot);
             createTreeNodes(mRoot);
         } catch (Exception e) {
-
+            e.printStackTrace();
         } catch (OutOfMemoryError e) {
 
         }
 
         // Return lists
         if (!cancelled) {
-            while (!mDir.isEmpty()){
-                FileTreeNode<String> node = mDir.pop();
+            int size = mDir.size();
+            for (int i = size - 1; i < size && i >= 0; i--) {
+                FileTreeNode<String> node = mDir.get(i);
                 node.refresh();
             }
             Log.e(TAG, "Sending data back to main thread cost time ==>>" + (System.currentTimeMillis() - time) + " size==>>" + Formatter.formatFileSize(mContext, mRoot.size));
@@ -112,19 +113,25 @@ public class StorageScanner extends Thread {
     }
 
     private void createTreeNodes(FileTreeNode<String> node) {
-        Stack<FileTreeNode<String>> dirlist = new Stack<FileTreeNode<String>>();
-        dirlist.push(node);
+        Stack<FileTreeNode<String>> dirList = new Stack<FileTreeNode<String>>();
+        dirList.push(node);
 
-        while (!dirlist.isEmpty()) {
+        while (!dirList.isEmpty()) {
             if (cancelled) {
                 return;
             }
-            FileTreeNode<String> dirCurrent = dirlist.pop();
+            FileTreeNode<String> dirCurrent = dirList.pop();
 
             File[] fileList = dirCurrent.data.listFiles();
+            if(fileList == null){
+                continue;
+            }
             for (File f : fileList) {
                 if (cancelled) {
                     return;
+                }
+                if (f == null) {
+                    continue;
                 }
                 mResult++;
                 FileTreeNode<String> tmp = dirCurrent.addChild(f);
@@ -132,8 +139,8 @@ public class StorageScanner extends Thread {
                     if (cancelled) {
                         return;
                     }
-                    mDir.push(tmp);
-                    dirlist.push(tmp);
+                    mDir.add(tmp);
+                    dirList.push(tmp);
                 }
             }
         }

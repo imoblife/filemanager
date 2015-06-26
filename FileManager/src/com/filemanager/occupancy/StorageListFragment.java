@@ -348,7 +348,7 @@ public abstract class StorageListFragment extends BaseListFragment {
             if (mLoadingTextView != null) {
                 mLoadingTextView.setText(tmpCount);
             }
-            mHandler.postDelayed(this, 1);
+            mHandler.postDelayed(this, 100);
         }
     }
 }
