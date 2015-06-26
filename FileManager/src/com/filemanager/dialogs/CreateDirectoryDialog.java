@@ -68,14 +68,20 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
 	}
 
 	private void createFolder(final CharSequence text, Context c) {
-		if (text != null && text.length() != 0) {
+        if (c == null) {
+            return;
+        }
+        if (text != null && text.length() != 0) {
 			tbcreated = new File(mIn + File.separator + text.toString());
 			if (tbcreated.exists()) {
 				this.text = text;
 				this.c = c;
 				OverwriteFileDialog dialog = new OverwriteFileDialog();
 				dialog.setTargetFragment(this, 0);
-				dialog.show(getFragmentManager(), "OverwriteFileDialog");
+                if (getFragmentManager() == null) {
+                    return;
+                }
+                dialog.show(getFragmentManager(), "OverwriteFileDialog");
 			} else {
 				if (tbcreated.mkdirs())
 					Toast.makeText(c, R.string.create_dir_success, Toast.LENGTH_SHORT).show();
