@@ -32,7 +32,7 @@ public class StorageScanner extends Thread {
     private File mDirectory;
     private Context mContext;
     private long mBlockSize = 512;
-    private ArrayList<FileTreeNode<String>> mDir;
+    private LinkedList<FileTreeNode<String>> mDir;
     private int mResult = 0;
 
     public StorageScanner(File directory, Context context, Handler handler) {
@@ -43,7 +43,7 @@ public class StorageScanner extends Thread {
         this.mDirectory = directory;
         this.mContext = context.getApplicationContext();
 
-        this.mDir = new ArrayList<>();
+        this.mDir = new LinkedList<>();
         StatFs fs = new StatFs(mDirectory.getPath());
         mBlockSize = fs.getBlockSize();
     }
@@ -64,7 +64,7 @@ public class StorageScanner extends Thread {
         // Scan files
         long time = System.currentTimeMillis();
         try {
-            mDir.add(mRoot);
+            mDir.addFirst(mRoot);
             createTreeNodes(mRoot);
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,9 +74,9 @@ public class StorageScanner extends Thread {
 
         // Return lists
         if (!cancelled) {
-            int size = mDir.size();
-            for (int i = size - 1; i < size && i >= 0; i--) {
-                FileTreeNode<String> node = mDir.get(i);
+            Iterator iterator = mDir.iterator();
+            while (iterator.hasNext()) {
+                FileTreeNode<String> node = (FileTreeNode<String>) iterator.next();
                 node.refresh();
             }
             Log.e(TAG, "Sending data back to main thread cost time ==>>" + (System.currentTimeMillis() - time) + " size==>>" + Formatter.formatFileSize(mContext, mRoot.size));
@@ -139,7 +139,7 @@ public class StorageScanner extends Thread {
                     if (cancelled) {
                         return;
                     }
-                    mDir.add(tmp);
+                    mDir.addFirst(tmp);
                     dirList.push(tmp);
                 }
             }
