@@ -40,7 +40,6 @@ public class SearchService extends IntentService {
 		lbm = LocalBroadcastManager.getInstance(getApplicationContext());
 
 		searcher = new SearchCore(this);
-		searcher.setURI(SearchResultsProvider.CONTENT_URI);
 	}
 
 	@Override

@@ -1,17 +1,11 @@
 package com.filemanager.search;
 
+import android.content.Context;
+import android.os.Environment;
+
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.LinkedList;
 import java.util.Queue;
-
-import com.filemanager.R;
-
-import android.app.SearchManager;
-import android.content.ContentValues;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Environment;
 
 /**
  * Provides the search core, used by every search subsystem that provides results.
@@ -21,7 +15,6 @@ import android.os.Environment;
  */
 public class SearchCore {
 	private String mQuery;
-	private Uri mContentURI;
 	private Context mContext;
 	/** See {@link #setRoot(File)} */
 	private File root = Environment.getExternalStorageDirectory();
@@ -57,16 +50,6 @@ public class SearchCore {
 	}
 
 	/**
-	 * Set the content URI, of which the results are. Used for operations on the correct search content providers.
-	 * 
-	 * @param URI
-	 *            The URI.
-	 */
-	public void setURI(Uri URI) {
-		mContentURI = URI;
-	}
-
-	/**
 	 * Set the maximum number of results to get before search ends.
 	 * 
 	 * @param i
@@ -87,32 +70,18 @@ public class SearchCore {
 
 	private void insertResult(File f) {
         mResultCount++;
-		ContentValues values = new ContentValues();
-
-		if (mContentURI == SearchResultsProvider.CONTENT_URI) {
-            // for 5.2.0 use no db to notify activity update ui
-            SearchResultContainer.getInstance().setResult(mResultCount);
-            SearchResultContainer.getInstance().addFilePath(f.getAbsolutePath());
-        } else if (mContentURI == SearchSuggestionsProvider.CONTENT_URI) {
-			values.put(SearchManager.SUGGEST_COLUMN_ICON_1,
-					f.isDirectory() ? R.drawable.file_ic_launcher
-							: R.drawable.ic_launcher_file);
-			values.put(SearchManager.SUGGEST_COLUMN_TEXT_1, f.getName());
-			values.put(SearchManager.SUGGEST_COLUMN_TEXT_2, f.getAbsolutePath());
-			values.put(SearchManager.SUGGEST_COLUMN_INTENT_DATA,
-                    f.getAbsolutePath());
-            mContext.getContentResolver().insert(mContentURI, values);
-        }
-	}
+        // for 5.2.0 use no db to notify activity update ui
+        SearchResultContainer.getInstance().setResult(mResultCount);
+        SearchResultContainer.getInstance().addFilePath(f.getAbsolutePath());
+    }
 
 	/**
 	 * Reset the results of the previous queries.
 	 * 
 	 * @return The previous result count.
 	 */
-	public int dropPreviousResults() {
+	public void dropPreviousResults() {
 		mResultCount = 0;
-		return mContext.getContentResolver().delete(mContentURI, null, null);
 	}
 
     public void search(File dir) {
