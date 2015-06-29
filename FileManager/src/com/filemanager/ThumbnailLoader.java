@@ -180,7 +180,10 @@ public class ThumbnailLoader {
 	}
 	
 	private void clearCaches(){
-		mSoftBitmapCache.clear();
+        if (mSoftBitmapCache == null || mHardBitmapCache == null || mBlacklist == null) {
+            return;
+        }
+        mSoftBitmapCache.clear();
 		mHardBitmapCache.clear();
 		mBlacklist.clear();
 	}
