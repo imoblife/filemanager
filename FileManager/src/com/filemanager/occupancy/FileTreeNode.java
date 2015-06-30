@@ -1,6 +1,5 @@
 package com.filemanager.occupancy;
 
-import android.os.StatFs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,6 +9,8 @@ import java.util.Iterator;
  * Created by wuhao on 2015/6/15.
  */
 public class FileTreeNode<T> implements Iterable<T> {
+
+    public static final int DEFAULT_FILE_BLOCK_SIZE = 4096;
 
     //data use for file
     public File data;
@@ -26,11 +27,14 @@ public class FileTreeNode<T> implements Iterable<T> {
     }
 
     private void initSize() {
-        if (data.isFile()) {
-            size = data.length();
-        } else {
-            StatFs fs = new StatFs(data.getPath());
-            size = fs.getBlockSize();
+        try {
+            if (data.isFile() && data.canRead()) {
+                size = data.length();
+            } else if (data.isDirectory()) {
+                size = DEFAULT_FILE_BLOCK_SIZE;
+            }
+        } catch (Exception e) {
+            size = 0;
         }
     }
 
