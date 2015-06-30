@@ -186,6 +186,7 @@
     <string name="file_sort_by_name">名称</string>
     <string name="file_sort_by_time">修改时间</string>
     <string name="file_sort_by_default">默认</string>
+    <string name="storage_analysis">大文件检索</string>
 
     <!--5.2.0 file search dialog text-->
     <string name="file_search_message">搜索中......</string>
