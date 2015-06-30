@@ -189,9 +189,9 @@
     <string name="file_search_no_result">(No matching result found)</string>
 
     <!--storage analysis text-->
-    <string name="storage_analysis_delete">delete</string>
+    <string name="storage_analysis_delete">Delete</string>
     <string name="storage_analysis_avail_size">Avail：%s</string>
     <string name="storage_analysis_total_size">/Total：%s</string>
-    <string name="storage_analysis_scan_count">Scanning： %s items...</string>
+    <string name="storage_analysis_scan_count">Scanning： %s items analyzed...</string>
 
 </resources>

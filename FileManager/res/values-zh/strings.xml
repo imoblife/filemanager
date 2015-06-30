@@ -190,4 +190,11 @@
     <!--5.2.0 file search dialog text-->
     <string name="file_search_message">搜索中......</string>
     <string name="file_search_no_result">(没有找到与搜索内容匹配的文件)</string>
+    
+    <!--storage analysis text-->
+    <string name="storage_analysis_delete">删除</string>
+    <string name="storage_analysis_avail_size">可用：%s</string>
+    <string name="storage_analysis_total_size">/总计：%s</string>
+    <string name="storage_analysis_scan_count">扫描中： %s 项...</string>
+
 </resources>
