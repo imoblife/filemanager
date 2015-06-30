@@ -380,10 +380,10 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private class DeleteDialog implements
             android.content.DialogInterface.OnClickListener {
         private AlertDialog alertDialog;
-        private FileTreeNode<String> node;
+        private FileHolder mFileHolder;
 
         public DeleteDialog(FileHolder holder) {
-            node = holder.getFileNode();
+            mFileHolder = holder;
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle(holder.getFile().getName());
             builder.setItems(new String[]{getString(R.string.storage_analysis_delete)}, this);
@@ -397,13 +397,39 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         }
 
         public void onClick(DialogInterface dialog, int actionId) {
-
-            RefreshTreeNodeRunnable refreshTreeNodeRunnable = new RefreshTreeNodeRunnable(node, mHandler);
-            setLoading(true);
-            hideBottomLayout();
-            mExecutors.execute(refreshTreeNodeRunnable);
+            ConfirmDialog deleteDialog = new ConfirmDialog(mFileHolder);
+            deleteDialog.show();
             //delete file
             alertDialog.dismiss();
+        }
+    }
+
+    private class ConfirmDialog {
+        private AlertDialog alertDialog;
+        private FileTreeNode<String> node;
+
+        public ConfirmDialog(FileHolder holder) {
+            node = holder.getFileNode();
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle(getString(R.string.really_delete, holder.getName()));
+            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    RefreshTreeNodeRunnable refreshTreeNodeRunnable = new RefreshTreeNodeRunnable(node, mHandler);
+                    setLoading(true);
+                    hideBottomLayout();
+                    mExecutors.execute(refreshTreeNodeRunnable);
+                }
+            });
+            builder.setIcon(holder.getIcon());
+            builder.setNegativeButton(android.R.string.cancel, null);
+
+            alertDialog = builder.create();
+            alertDialog.setCancelable(true);
+        }
+
+        public void show() {
+            alertDialog.show();
         }
     }
 
