@@ -15,7 +15,6 @@
 
     <include
             android:layout_below="@+id/pathbar"
-            android:layout_above="@+id/bottom_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             layout="@layout/filelist" />

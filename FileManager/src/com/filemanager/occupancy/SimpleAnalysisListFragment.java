@@ -4,11 +4,13 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.format.Formatter;
 import android.view.*;
+import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import base.util.os.StatFsUtil;
 import base.util.ui.titlebar.ISearchBarActionListener;
@@ -16,9 +18,7 @@ import base.util.ui.titlebar.ITitlebarActionMenuListener;
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
-import com.filemanager.util.CopyHelper;
-import com.filemanager.util.FileUtils;
-import com.filemanager.util.Preference;
+import com.filemanager.util.*;
 import com.filemanager.view.PathBar;
 
 import java.io.File;
@@ -62,6 +62,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private Preference mPreference;
 
     private ExecutorService mExecutors;
+    private FooterScrollHelper mFooterScrollHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,6 +109,9 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         mCurrentSizeTextView = (TextView) view.findViewById(R.id.tv_current_info);
         mAvailSizeTextView = (TextView) view.findViewById(R.id.tv_avail_info);
         mTotalSizeTextView = (TextView) view.findViewById(R.id.tv_total_info);
+
+        mFooterScrollHelper = new FooterScrollHelper();
+        mFooterScrollHelper.setTargetViewHeight(getListView(), UIUtils.dip2px(getContext(), 40));
         hideBottomLayout();
 
         mHandler = new Handler() {
@@ -128,7 +132,30 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
                 }
             }
         };
+
+
     }
+
+    @Override
+    void onScrollCall(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+        if(mFooterScrollHelper == null){
+            return;
+        }
+
+        int translationY = mFooterScrollHelper.getFooterTranslationY(view,firstVisibleItem,visibleItemCount,totalItemCount);
+
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB) {
+            TranslateAnimation anim = new TranslateAnimation(0, 0, translationY,
+                    translationY);
+            anim.setFillAfter(true);
+            anim.setDuration(0);
+            mStorageAnalysisLayout.startAnimation(anim);
+        } else {
+            mStorageAnalysisLayout.setTranslationY(translationY);
+        }
+    }
+
 
     @Override
     protected ArrayList<FileTreeNode<String>> getFileList(FileTreeNode<String> parentNode) {
