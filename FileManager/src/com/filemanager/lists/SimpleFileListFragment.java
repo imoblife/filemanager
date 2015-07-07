@@ -11,7 +11,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import base.util.ui.titlebar.ISearchBarActionListener;
@@ -28,7 +27,6 @@ import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
 import com.intents.FileManagerIntents;
 import com.readystatesoftware.systembartint.SystemBarTintUtil;
-import imoblife.view.HeaderScrollHelper;
 import imoblife.view.ListViewScrollHelper;
 
 import java.io.File;
@@ -69,7 +67,7 @@ public class SimpleFileListFragment extends FileListFragment implements
     private Preference mPreference;
 
     private ListViewScrollHelper mListViewScrollHelper;
-    private HeaderScrollHelper mHeaderScrollHelper;
+    private RelativeLayout mTitleContent;
     private ListView mListView;
     private int mOffset = 0;
     private LinearLayout mTitleLayout;
@@ -90,8 +88,6 @@ public class SimpleFileListFragment extends FileListFragment implements
         }
         mListView = getListView();
         mListViewScrollHelper = new ListViewScrollHelper(mListView);
-        mHeaderScrollHelper = new HeaderScrollHelper();
-        mHeaderScrollHelper.setTargetViewHeight(UIUtils.dip2px(getContext(), 48));
         mListView.addHeaderView(mHeaderLayout);
 		super.onViewCreated(view, savedInstanceState);
 
@@ -126,6 +122,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 		// this way on Nexus S.
 
         mTitleLayout = (LinearLayout) view.findViewById(R.id.titlebar);
+        mTitleContent = (RelativeLayout) view.findViewById(R.id.rl_title);
 
         mTitleLayout.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -205,15 +202,15 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     @Override
     void onScrollCall(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-        if (mPathBar == null || mTitleLayout == null || mHeaderScrollHelper == null) {
+        if (mPathBar == null || mTitleLayout == null || mTitleContent == null || mListViewScrollHelper == null) {
             return;
         }
-        int scroll = mListViewScrollHelper.getScroll();
-        int titleBarTranslationY = -Math.min(scroll, mTitleHeight);
-        int pathBarTranslationY = mHeaderScrollHelper.getHeaderTranslationY(view, scroll, firstVisibleItem, visibleItemCount, totalItemCount);
 
-        ListViewScrollHelper.startAnimY(mTitleLayout, titleBarTranslationY);
-        ListViewScrollHelper.startAnimY(mPathBar, pathBarTranslationY - mTitleHeight + mOffset);
+        if (firstVisibleItem > mListViewScrollHelper.getOldVisibleItem()) {
+            mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, 0, -mTitleHeight + mOffset, firstVisibleItem);
+        } else if (firstVisibleItem < mListViewScrollHelper.getOldVisibleItem()) {
+            mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, -mTitleHeight + mOffset, 0, firstVisibleItem);
+        }
     }
 
     private void initCurrentSort(Context context) {

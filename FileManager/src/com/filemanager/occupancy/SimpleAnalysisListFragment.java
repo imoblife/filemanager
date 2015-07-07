@@ -25,8 +25,6 @@ import com.filemanager.files.FileHolder;
 import com.filemanager.util.*;
 import com.filemanager.view.PathBar;
 import com.readystatesoftware.systembartint.SystemBarTintUtil;
-import imoblife.view.FooterScrollHelper;
-import imoblife.view.HeaderScrollHelper;
 import imoblife.view.ListViewScrollHelper;
 
 import java.io.File;
@@ -48,6 +46,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
     protected static final int REQUEST_CODE_MULTISELECT = 2;
     private ListViewScrollHelper mListViewScrollHelper;
+    private RelativeLayout mTitleContent;
     private ListView mListView;
 
     private int mOffset = 0;
@@ -71,8 +70,6 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private Preference mPreference;
 
     private ExecutorService mExecutors;
-    private HeaderScrollHelper mHeaderScrollHelper;
-    private FooterScrollHelper mFooterScrollHelper;
 
     private LinearLayout mTitleLayout;
     private int mTitleHeight;
@@ -99,6 +96,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         mPathBar = (PathBar) view.findViewById(R.id.pathbar);
         mPathBar.setStorageAnalysis(true);
         mTitleLayout = (LinearLayout) view.findViewById(R.id.titlebar);
+        mTitleContent = (RelativeLayout) view.findViewById(R.id.rl_title);
 
         mTitleLayout.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -158,10 +156,6 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         mAvailSizeTextView = (TextView) view.findViewById(R.id.tv_avail_info);
         mTotalSizeTextView = (TextView) view.findViewById(R.id.tv_total_info);
 
-        mHeaderScrollHelper = new HeaderScrollHelper();
-        mHeaderScrollHelper.setTargetViewHeight(UIUtils.dip2px(getContext(), 48));
-        mFooterScrollHelper = new FooterScrollHelper();
-        mFooterScrollHelper.setTargetViewHeight(getListView(), UIUtils.dip2px(getContext(), 40));
         hideBottomLayout();
 
         mHandler = new Handler() {
@@ -189,19 +183,19 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     @Override
     void onScrollCall(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        if (mFooterScrollHelper == null || mPathBar == null || mTitleLayout == null) {
+        if (mPathBar == null || mTitleLayout == null ||  mTitleContent == null || mListViewScrollHelper == null) {
             return;
         }
 
-        int scroll = mListViewScrollHelper.getScroll();
-        int titleBarTranslationY = -Math.min(scroll, mTitleHeight);
-        int pathBarTranslationY = mHeaderScrollHelper.getHeaderTranslationY(view, scroll, firstVisibleItem, visibleItemCount, totalItemCount);
 
-        int translationY = mFooterScrollHelper.getFooterTranslationY(view, scroll, firstVisibleItem, visibleItemCount, totalItemCount);
+        if (firstVisibleItem > mListViewScrollHelper.getOldVisibleItem()) {
+            mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, 0, -mTitleHeight + mOffset, firstVisibleItem);
+            mListViewScrollHelper.showQuickReturnBottomAnim(mStorageAnalysisLayout, 0, UIUtils.dip2px(getContext(), 40), firstVisibleItem);
+        } else if (firstVisibleItem < mListViewScrollHelper.getOldVisibleItem()) {
+            mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, -mTitleHeight + mOffset, 0, firstVisibleItem);
+            mListViewScrollHelper.showQuickReturnBottomAnim(mStorageAnalysisLayout, UIUtils.dip2px(getContext(), 40), 0, firstVisibleItem);
+        }
 
-        ListViewScrollHelper.startAnimY(mTitleLayout, titleBarTranslationY);
-        ListViewScrollHelper.startAnimY(mPathBar, pathBarTranslationY - mTitleHeight + mOffset);
-        ListViewScrollHelper.startAnimY(mStorageAnalysisLayout, translationY);
     }
 
 

@@ -5,13 +5,19 @@
 
     <include layout="@layout/filelist" />
 
-    <include layout="@layout/base_titlebar2" />
 
-    <com.filemanager.view.PathBar
-            android:id="@+id/pathbar"
+    <RelativeLayout
+            android:id="@+id/rl_title"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/topBar_height"
-            android:layout_below="@+id/titlebar"
-            android:background="@drawable/base_bg" >
-    </com.filemanager.view.PathBar>
+            android:layout_height="wrap_content">
+        <include layout="@layout/base_titlebar2"/>
+
+        <com.filemanager.view.PathBar
+                android:id="@+id/pathbar"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/topBar_height"
+                android:layout_below="@+id/titlebar"
+                android:background="@drawable/base_bg">
+        </com.filemanager.view.PathBar>
+    </RelativeLayout>
 </RelativeLayout>
