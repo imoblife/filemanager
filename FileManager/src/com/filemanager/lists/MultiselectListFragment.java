@@ -2,6 +2,7 @@ package com.filemanager.lists;
 
 import java.util.ArrayList;
 
+import android.widget.*;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.MenuUtils;
@@ -16,10 +17,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Dedicated file list fragment, used for multiple selection on platforms older
@@ -91,6 +88,11 @@ public class MultiselectListFragment extends FileListFragment {
 					}
 				});
 	}
+
+    @Override
+    void onScrollCall(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+    }
 
 //	@Override
 //	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

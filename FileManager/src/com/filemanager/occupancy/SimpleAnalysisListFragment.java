@@ -10,8 +10,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.Formatter;
 import android.view.*;
-import android.view.animation.TranslateAnimation;
 import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import base.util.os.StatFsUtil;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
@@ -20,6 +24,10 @@ import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.*;
 import com.filemanager.view.PathBar;
+import com.readystatesoftware.systembartint.SystemBarTintUtil;
+import imoblife.view.FooterScrollHelper;
+import imoblife.view.HeaderScrollHelper;
+import imoblife.view.ListViewScrollHelper;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,9 +47,10 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private static final int MSG_REFRESH_TREENODE = 201;
 
     protected static final int REQUEST_CODE_MULTISELECT = 2;
+    private ListViewScrollHelper mListViewScrollHelper;
+    private ListView mListView;
 
-
-
+    private int mOffset = 0;
     private PathBar mPathBar;
     private boolean mActionsEnabled = true;
 
@@ -62,23 +71,62 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private Preference mPreference;
 
     private ExecutorService mExecutors;
+    private HeaderScrollHelper mHeaderScrollHelper;
     private FooterScrollHelper mFooterScrollHelper;
 
+    private LinearLayout mTitleLayout;
+    private int mTitleHeight;
+    private RelativeLayout mHeaderLayout;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mHeaderLayout = (RelativeLayout) inflater.inflate(R.layout.place_holder_header, null);
         return inflater.inflate(R.layout.storage_filelist_browse, null);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 19) {
+            mOffset = SystemBarTintUtil.getStatusBarHeight(getActivity());
+        }
+        mListView = getListView();
+        mListViewScrollHelper = new ListViewScrollHelper(mListView);
+        mListView.addHeaderView(mHeaderLayout);
         super.onViewCreated(view, savedInstanceState);
 
         mExecutors = Executors.newSingleThreadExecutor();
         // Pathbar init.
         mPathBar = (PathBar) view.findViewById(R.id.pathbar);
         mPathBar.setStorageAnalysis(true);
+        mTitleLayout = (LinearLayout) view.findViewById(R.id.titlebar);
 
+        mTitleLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (mTitleHeight == 0) {
+                            mTitleHeight = mTitleLayout.getHeight();
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                mTitleLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            } else {
+                                mTitleLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            }
+                        }
+                    }
+                });
+        mHeaderLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ViewGroup.LayoutParams params = mHeaderLayout.getLayoutParams();
+                params.height = mTitleHeight + UIUtils.dip2px(getContext(), 48);
+                mHeaderLayout.setLayoutParams(params);
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    mHeaderLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    mHeaderLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
         if (savedInstanceState == null)
             mPathBar.setInitialDirectory(getPath());
         else
@@ -110,6 +158,8 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         mAvailSizeTextView = (TextView) view.findViewById(R.id.tv_avail_info);
         mTotalSizeTextView = (TextView) view.findViewById(R.id.tv_total_info);
 
+        mHeaderScrollHelper = new HeaderScrollHelper();
+        mHeaderScrollHelper.setTargetViewHeight(UIUtils.dip2px(getContext(), 48));
         mFooterScrollHelper = new FooterScrollHelper();
         mFooterScrollHelper.setTargetViewHeight(getListView(), UIUtils.dip2px(getContext(), 40));
         hideBottomLayout();
@@ -139,21 +189,19 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     @Override
     void onScrollCall(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
 
-        if(mFooterScrollHelper == null){
+        if (mFooterScrollHelper == null || mPathBar == null || mTitleLayout == null) {
             return;
         }
 
-        int translationY = mFooterScrollHelper.getFooterTranslationY(view,firstVisibleItem,visibleItemCount,totalItemCount);
+        int scroll = mListViewScrollHelper.getScroll();
+        int titleBarTranslationY = -Math.min(scroll, mTitleHeight);
+        int pathBarTranslationY = mHeaderScrollHelper.getHeaderTranslationY(view, scroll, firstVisibleItem, visibleItemCount, totalItemCount);
 
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.HONEYCOMB) {
-            TranslateAnimation anim = new TranslateAnimation(0, 0, translationY,
-                    translationY);
-            anim.setFillAfter(true);
-            anim.setDuration(0);
-            mStorageAnalysisLayout.startAnimation(anim);
-        } else {
-            mStorageAnalysisLayout.setTranslationY(translationY);
-        }
+        int translationY = mFooterScrollHelper.getFooterTranslationY(view, scroll, firstVisibleItem, visibleItemCount, totalItemCount);
+
+        ListViewScrollHelper.startAnimY(mTitleLayout, titleBarTranslationY);
+        ListViewScrollHelper.startAnimY(mPathBar, pathBarTranslationY - mTitleHeight + mOffset);
+        ListViewScrollHelper.startAnimY(mStorageAnalysisLayout, translationY);
     }
 
 
@@ -224,7 +272,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-        FileHolder item = (FileHolder) mAdapter.getItem(position);
+        FileHolder item = (FileHolder) l.getAdapter().getItem(position);
         mPreviousPosition = getListView().getFirstVisiblePosition();
         openInformingPathBar(item);
         mPathBar.updatePosition(mPreviousPosition);
@@ -365,7 +413,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             if (mAdapter != null) {
-                FileHolder holder = (FileHolder) mAdapter.getItem(position);
+                FileHolder holder = (FileHolder) parent.getAdapter().getItem(position);
                 DeleteDialog deleteDialog = new DeleteDialog(holder);
                 deleteDialog.show();
                 return true;

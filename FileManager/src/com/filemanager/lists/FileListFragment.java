@@ -118,7 +118,8 @@ public abstract class FileListFragment extends BaseListFragment {
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
 					int visibleItemCount, int totalItemCount) {
-			}
+                onScrollCall(view, firstVisibleItem, visibleItemCount, totalItemCount);
+            }
 		});
 		getListView().requestFocus();
 		getListView().requestFocusFromTouch();
@@ -179,6 +180,9 @@ public abstract class FileListFragment extends BaseListFragment {
 		mScanner.start();
 
 	}
+
+    abstract void onScrollCall(AbsListView view, int firstVisibleItem,
+                               int visibleItemCount, int totalItemCount);
 
 	@Override
 	public void onDestroy() {

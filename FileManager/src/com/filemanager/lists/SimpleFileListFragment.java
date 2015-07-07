@@ -4,12 +4,14 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.animation.TranslateAnimation;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import base.util.ui.titlebar.ISearchBarActionListener;
@@ -20,14 +22,14 @@ import com.filemanager.R;
 import com.filemanager.dialogs.CreateDirectoryDialog;
 import com.filemanager.files.FileHolder;
 import com.filemanager.occupancy.StorageAnalysisActivity;
-import com.filemanager.util.CopyHelper;
-import com.filemanager.util.FileUtils;
-import com.filemanager.util.MenuUtils;
-import com.filemanager.util.Preference;
+import com.filemanager.util.*;
 import com.filemanager.view.PathBar;
 import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
 import com.intents.FileManagerIntents;
+import com.readystatesoftware.systembartint.SystemBarTintUtil;
+import imoblife.view.HeaderScrollHelper;
+import imoblife.view.ListViewScrollHelper;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,14 +68,31 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     private Preference mPreference;
 
+    private ListViewScrollHelper mListViewScrollHelper;
+    private HeaderScrollHelper mHeaderScrollHelper;
+    private ListView mListView;
+    private int mOffset = 0;
+    private LinearLayout mTitleLayout;
+    private int mTitleHeight;
+    private RelativeLayout mHeaderLayout;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.filelist_browse, null);
+        mHeaderLayout = (RelativeLayout) inflater.inflate(R.layout.place_holder_header, null);
+        return inflater.inflate(R.layout.filelist_browse, null);
 	}
 
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= 19) {
+            mOffset = SystemBarTintUtil.getStatusBarHeight(getActivity());
+        }
+        mListView = getListView();
+        mListViewScrollHelper = new ListViewScrollHelper(mListView);
+        mHeaderScrollHelper = new HeaderScrollHelper();
+        mHeaderScrollHelper.setTargetViewHeight(UIUtils.dip2px(getContext(), 48));
+        mListView.addHeaderView(mHeaderLayout);
 		super.onViewCreated(view, savedInstanceState);
 
 		// Pathbar init.
@@ -105,6 +124,36 @@ public class SimpleFileListFragment extends FileListFragment implements
 			mPathBar.switchToManualInput();
 		// Removed else clause as the other mode is the default. It seems faster
 		// this way on Nexus S.
+
+        mTitleLayout = (LinearLayout) view.findViewById(R.id.titlebar);
+
+        mTitleLayout.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                        if (mTitleHeight == 0) {
+                            mTitleHeight = mTitleLayout.getHeight();
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                mTitleLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            } else {
+                                mTitleLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            }
+                        }
+                    }
+                });
+        mHeaderLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                ViewGroup.LayoutParams params = mHeaderLayout.getLayoutParams();
+                params.height = mTitleHeight + UIUtils.dip2px(getContext(), 48);
+                mHeaderLayout.setLayoutParams(params);
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    mHeaderLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    mHeaderLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
 
         Bundle bundle = getArguments();
         String keyword = null;
@@ -152,6 +201,19 @@ public class SimpleFileListFragment extends FileListFragment implements
                 }
             }
         };
+    }
+
+    @Override
+    void onScrollCall(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if (mPathBar == null || mTitleLayout == null || mHeaderScrollHelper == null) {
+            return;
+        }
+        int scroll = mListViewScrollHelper.getScroll();
+        int titleBarTranslationY = -Math.min(scroll, mTitleHeight);
+        int pathBarTranslationY = mHeaderScrollHelper.getHeaderTranslationY(view, scroll, firstVisibleItem, visibleItemCount, totalItemCount);
+
+        ListViewScrollHelper.startAnimY(mTitleLayout, titleBarTranslationY);
+        ListViewScrollHelper.startAnimY(mPathBar, pathBarTranslationY - mTitleHeight + mOffset);
     }
 
     private void initCurrentSort(Context context) {
@@ -226,7 +288,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
-		FileHolder item = (FileHolder) mAdapter.getItem(position);
+		FileHolder item = (FileHolder) l.getAdapter().getItem(position);
         mPreviousPosition = getListView().getFirstVisiblePosition();
 		openInformingPathBar(item);
         mPathBar.updatePosition(mPreviousPosition);
