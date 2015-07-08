@@ -189,7 +189,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
 
         if (firstVisibleItem > mListViewScrollHelper.getOldVisibleItem()) {
-            mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, 0, -mTitleHeight + mOffset, firstVisibleItem);
+            mListViewScrollHelper.hideQuickReturnTopAnim(mTitleContent, 0, -mTitleHeight + mOffset, firstVisibleItem);
             mListViewScrollHelper.showQuickReturnBottomAnim(mStorageAnalysisLayout, 0, UIUtils.dip2px(getContext(), 40), firstVisibleItem);
         } else if (firstVisibleItem < mListViewScrollHelper.getOldVisibleItem()) {
             mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, -mTitleHeight + mOffset, 0, firstVisibleItem);

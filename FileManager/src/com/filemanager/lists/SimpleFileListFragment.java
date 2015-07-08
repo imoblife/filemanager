@@ -207,7 +207,7 @@ public class SimpleFileListFragment extends FileListFragment implements
         }
 
         if (firstVisibleItem > mListViewScrollHelper.getOldVisibleItem()) {
-            mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, 0, -mTitleHeight + mOffset, firstVisibleItem);
+            mListViewScrollHelper.hideQuickReturnTopAnim(mTitleContent, 0, -mTitleHeight + mOffset, firstVisibleItem);
         } else if (firstVisibleItem < mListViewScrollHelper.getOldVisibleItem()) {
             mListViewScrollHelper.showQuickReturnTopAnim(mTitleContent, -mTitleHeight + mOffset, 0, firstVisibleItem);
         }
