@@ -90,7 +90,7 @@ public abstract class StorageListFragment extends BaseListFragment {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem,
                                  int visibleItemCount, int totalItemCount) {
-                onScrollCall(view, firstVisibleItem, visibleItemCount, totalItemCount);
+//                onScrollCall(view, firstVisibleItem, visibleItemCount, totalItemCount);
             }
         });
         getListView().requestFocus();
