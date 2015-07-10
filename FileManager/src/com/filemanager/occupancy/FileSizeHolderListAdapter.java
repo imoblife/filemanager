@@ -137,14 +137,11 @@ public class FileSizeHolderListAdapter extends BaseAdapter {
             if (mListTotalSize > 0) {
                 if (mCacheRatio.get(position) == null) {
                     double tmp = (((double) item.getSize()) / mListTotalSize);
-
-                    long value = Math.round(tmp * 10000) >= 100 ? (Math.round(tmp * 10000)) : 0;
-                    double tmpRation = (double) (value / 10000.0);
+                    double tmpRation = (double) (Math.round(tmp * 10000) / 100.0);
 
                     mCacheRatio.put(position, tmpRation);
-
                 }
-                tmpProgress = mCacheRatio.get(position) * 100;
+                tmpProgress = mCacheRatio.get(position);
                 if (tmpProgress == 0) {
                     builder.append(" | " + "0.00%");
                 } else {
