@@ -13,11 +13,8 @@ import com.filemanager.R;
 import com.filemanager.ThumbnailLoader;
 import com.filemanager.files.FileHolder;
 
-import java.io.File;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class FileSizeHolderListAdapter extends BaseAdapter {
     private ArrayList<FileTreeNode<String>> mNodes = new ArrayList<>();
@@ -140,19 +137,24 @@ public class FileSizeHolderListAdapter extends BaseAdapter {
             if (mListTotalSize > 0) {
                 if (mCacheRatio.get(position) == null) {
                     double tmp = (((double) item.getSize()) / mListTotalSize);
-                    double tmpRation = (double) (Math.round(tmp * 100) / 100.0);
+
+                    long value = Math.round(tmp * 10000) >= 100 ? (Math.round(tmp * 10000)) : 0;
+                    double tmpRation = (double) (value / 10000.0);
+
                     mCacheRatio.put(position, tmpRation);
 
                 }
-                tmpProgress = Double.valueOf(mCacheRatio.get(position) * 100);
-                builder.append(" | " + tmpProgress + "%");
+                tmpProgress = mCacheRatio.get(position) * 100;
+                if (tmpProgress == 0) {
+                    builder.append(" | " + "0.00%");
+                } else {
+                    builder.append(" | " + tmpProgress + "%");
+                }
             } else {
                 builder.append(" | " + "0.00%");
             }
             holder.progressBar.setProgress((int) tmpProgress);
         }
-
-
 
         holder.tertiaryInfo.setText(builder);
 
