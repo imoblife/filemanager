@@ -117,18 +117,21 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         mHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
-                switch (msg.what) {
-                    case MSG_REFRESH_TREENODE:
-                        if(mAdapter == null){
-                            return;
-                        }
-                        mAdapter.clearCache();
-                        mAdapter.setNodeData(getFileList(mCurrentNode));
-                        mAdapter.notifyDataSetChanged();
-                        setLoading(false);
-                        break;
-                    default:
-                        break;
+                try {
+                    switch (msg.what) {
+                        case MSG_REFRESH_TREENODE:
+                            if (mAdapter == null || getActivity() == null) {
+                                return;
+                            }
+                            mAdapter.clearCache();
+                            mAdapter.setNodeData(getFileList(mCurrentNode));
+                            mAdapter.notifyDataSetChanged();
+                            setLoading(false);
+                            break;
+                        default:
+                            break;
+                    }
+                } catch (Exception e) {
                 }
             }
         };
