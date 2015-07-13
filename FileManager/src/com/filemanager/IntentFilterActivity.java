@@ -11,6 +11,7 @@ import base.util.PreferenceHelper;
 
 import java.io.File;
 
+import base.util.ui.activity.BaseFragmentActivity;
 import com.filemanager.lists.FileListFragment;
 import com.filemanager.lists.MultiselectListFragment;
 import com.filemanager.lists.PickFileListFragment;
@@ -18,11 +19,11 @@ import com.filemanager.util.FileUtils;
 import com.filemanager.util.UIUtils;
 import com.intents.FileManagerIntents;
 
-public class IntentFilterActivity extends FragmentActivity {
+public class IntentFilterActivity extends BaseFragmentActivity {
 	private FileListFragment mFragment;
 
 	@Override
-	protected void onCreate(Bundle savedInstance) {
+	public void onCreate(Bundle savedInstance) {
 		UIUtils.setThemeFor(this);
 
 		super.onCreate(savedInstance);
