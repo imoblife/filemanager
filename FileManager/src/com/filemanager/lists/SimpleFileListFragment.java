@@ -87,6 +87,7 @@ public class SimpleFileListFragment extends FileListFragment implements
             mOffset = SystemBarTintUtil.getStatusBarHeight(getActivity());
         }
         mListView = getListView();
+        mListView.setPadding(0, getResources().getDimensionPixelOffset(R.dimen.topBar_height) + mOffset + 5, 0, 0);
         mListViewScrollHelper = new ListViewScrollHelper(mListView);
         mListView.addHeaderView(mHeaderLayout);
 		super.onViewCreated(view, savedInstanceState);
@@ -142,7 +143,7 @@ public class SimpleFileListFragment extends FileListFragment implements
             @Override
             public void onGlobalLayout() {
                 ViewGroup.LayoutParams params = mHeaderLayout.getLayoutParams();
-                params.height = mTitleHeight + UIUtils.dip2px(getContext(), 48);
+                params.height = mTitleHeight - mOffset;
                 mHeaderLayout.setLayoutParams(params);
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
                     mHeaderLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
