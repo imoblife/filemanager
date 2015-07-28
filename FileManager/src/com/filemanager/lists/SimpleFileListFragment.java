@@ -271,7 +271,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 			return;
 		}
 
-		MenuUtils.fillContextMenu((FileHolder) mAdapter.getItem(info.position),
+        MenuUtils.fillContextMenu((FileHolder) mAdapter.getItem(info.position - 1),
                 menu, mSingleSelectionMenu, inflater, getActivity());
 	}
 
@@ -286,7 +286,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
-		FileHolder item = (FileHolder) l.getAdapter().getItem(position);
+		FileHolder item = (FileHolder) mAdapter.getItem(position - 1);
         mPreviousPosition = getListView().getFirstVisiblePosition();
 		openInformingPathBar(item);
         mPathBar.updatePosition(mPreviousPosition);

@@ -267,7 +267,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
 
-        FileHolder item = (FileHolder) l.getAdapter().getItem(position);
+        FileHolder item = (FileHolder) mAdapter.getItem(position - 1);
         mPreviousPosition = getListView().getFirstVisiblePosition();
         openInformingPathBar(item);
         mPathBar.updatePosition(mPreviousPosition);
@@ -408,7 +408,7 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             if (mAdapter != null) {
-                FileHolder holder = (FileHolder) parent.getAdapter().getItem(position);
+                FileHolder holder = (FileHolder) mAdapter.getItem(position - 1);
                 DeleteDialog deleteDialog = new DeleteDialog(holder);
                 deleteDialog.show();
                 return true;
