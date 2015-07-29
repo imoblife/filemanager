@@ -29,9 +29,9 @@
 
         <ImageView
             android:id="@+id/icon"
-            android:layout_width="@dimen/list_icon_size"
-            android:layout_height="@dimen/list_icon_size"
-            android:layout_margin="@dimen/list_margin"
+            android:layout_width="@dimen/base_list_icon_size"
+            android:layout_height="@dimen/base_list_icon_size"
+            android:layout_margin="@dimen/base_list_margin"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_gravity="center_vertical"

@@ -13,6 +13,7 @@ import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import base.util.ViewUtil;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 import com.filemanager.FileManagerActivity;
@@ -87,10 +88,23 @@ public class SimpleFileListFragment extends FileListFragment implements
             mOffset = SystemBarTintUtil.getStatusBarHeight(getActivity());
         }
         mListView = getListView();
-        mListView.setPadding(0, getResources().getDimensionPixelOffset(R.dimen.topBar_height) + mOffset + 5, 0, 0);
         mListViewScrollHelper = new ListViewScrollHelper(mListView);
         mListView.addHeaderView(mHeaderLayout);
 		super.onViewCreated(view, savedInstanceState);
+        mListView.getViewTreeObserver().addOnGlobalLayoutListener(
+                new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @Override
+                    public void onGlobalLayout() {
+                            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mListView.getLayoutParams();
+                            params.topMargin = ViewUtil.dip2px(getContext(), 48) + mOffset;
+                            mListView.setLayoutParams(params);
+                            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                                mListView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            } else {
+                                mListView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                            }
+                    }
+                });
 
 		// Pathbar init.
 		mPathBar = (PathBar) view.findViewById(R.id.pathbar);
