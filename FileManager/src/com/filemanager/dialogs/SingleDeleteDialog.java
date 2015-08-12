@@ -1,24 +1,19 @@
 package com.filemanager.dialogs;
 
-import imoblife.android.os.ModernAsyncTask;
-
-import java.io.File;
-
-
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.widget.Toast;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.FileListFragment;
 import com.filemanager.util.MediaScannerUtils;
-import com.filemanager.util.UIUtils;
 import com.intents.FileManagerIntents;
+import imoblife.android.os.ModernAsyncTask;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.widget.Toast;
+import java.io.File;
 
 public class SingleDeleteDialog extends DialogFragment {
 	private FileHolder mFileHolder;
@@ -32,22 +27,22 @@ public class SingleDeleteDialog extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		AlertDialog.Builder adb = new AlertDialog.Builder(getActivity());
-		try {
-			adb.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(getActivity()))
-			.setTitle(getString(R.string.really_delete, mFileHolder.getName()))
-			.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-				@Override
-				public void onClick(DialogInterface dialog, int which) {
-					new RecursiveDeleteTask().execute(mFileHolder.getFile());
-				}
-			})
-			.setIcon(mFileHolder.getIcon())
-			.setNegativeButton(android.R.string.cancel, null);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return adb.create();
+        MaterialDialog.Builder adb = new MaterialDialog.Builder(getActivity());
+        try {
+            adb.title(getString(R.string.really_delete, mFileHolder.getName()))
+                    .positiveText(android.R.string.ok)
+                    .negativeText(android.R.string.cancel)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            new RecursiveDeleteTask().execute(mFileHolder.getFile());
+                        }
+                    })
+                    .icon(mFileHolder.getIcon());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return adb.build();
 	}
 	
 	private class RecursiveDeleteTask extends ModernAsyncTask<File, Void, Void> {

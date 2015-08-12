@@ -1,5 +1,6 @@
 package com.filemanager.dialogs;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.File;
@@ -53,20 +54,13 @@ public class DetailsDialog extends DialogFragment {
 		((TextView) v.findViewById(R.id.details_lastmodified_value)).setText(mFileHolder.getFormattedModificationDate(getActivity()));
 		
 		// Finally create the dialog
-		return new AlertDialog.Builder(getActivity())
-				.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(getActivity()))
-				.setTitle(mFileHolder.getName())
-				.setIcon(mFileHolder.getIcon())
-				.setView(v)
-				.setPositiveButton(android.R.string.ok,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								dismiss();
-							}
-						}).create();
-	}
+        return new MaterialDialog.Builder(getActivity())
+                .title(mFileHolder.getName())
+                .icon(mFileHolder.getIcon())
+                .customView(v, true)
+                .positiveText(android.R.string.ok)
+                .build();
+    }
 	
 	/**
 	 * This task doesn't update the text viewed to the user until it's finished, 

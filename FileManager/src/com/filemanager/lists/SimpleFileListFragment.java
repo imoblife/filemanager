@@ -1,8 +1,6 @@
 package com.filemanager.lists;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,16 +12,16 @@ import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.FileManagerActivity;
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
 import com.filemanager.dialogs.CreateDirectoryDialog;
+import com.filemanager.dialogs.RenameDialog;
+import com.filemanager.dialogs.SingleDeleteDialog;
 import com.filemanager.files.FileHolder;
 import com.filemanager.occupancy.StorageAnalysisActivity;
-import com.filemanager.util.CopyHelper;
-import com.filemanager.util.FileUtils;
-import com.filemanager.util.MenuUtils;
-import com.filemanager.util.Preference;
+import com.filemanager.util.*;
 import com.filemanager.view.PathBar;
 import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
@@ -31,6 +29,8 @@ import com.intents.FileManagerIntents;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -40,7 +40,7 @@ import java.util.Comparator;
  * @author George Venios
  */
 public class SimpleFileListFragment extends FileListFragment implements
-		ITitlebarActionMenuListener {
+		ITitlebarActionMenuListener,AdapterView.OnItemLongClickListener {
 	private static final String INSTANCE_STATE_PATHBAR_MODE = "pathbar_mode";
 
     private static final int MENU_ID_SORT = 253;
@@ -51,7 +51,6 @@ public class SimpleFileListFragment extends FileListFragment implements
     private static final int SORT_BY_TIME = Preference.SORT_TYPE_MODIFY_TIME;
 
     protected static final int REQUEST_CODE_MULTISELECT = 2;
-
 
 
     private PathBar mPathBar;
@@ -115,7 +114,7 @@ public class SimpleFileListFragment extends FileListFragment implements
                 mAdapter.setHighlightKeyword(keyword);
             }
         }
-        initContextualActions();
+        getListView().setOnItemLongClickListener(this);
 
         initSearchActionBar(view);
 
@@ -181,38 +180,38 @@ public class SimpleFileListFragment extends FileListFragment implements
 	 * Override this to handle initialization of list item long clicks.
 	 */
 	void initContextualActions() {
-		//		if (mActionsEnabled) {
-		//			if (VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+        //		if (mActionsEnabled) {
+        //			if (VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
 		registerForContextMenu(getListView());
-		//			} else {
-		//				FileMultiChoiceModeHelper multiChoiceModeHelper = new FileMultiChoiceModeHelper(
-		//						mSingleSelectionMenu, mMultiSelectionMenu);
-		//				multiChoiceModeHelper.setListView(getListView());
-		//				multiChoiceModeHelper.setPathBar(mPathBar);
-		//				multiChoiceModeHelper.setContext(this);
-		//				getListView()
-		//						.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-		//			}
-		//			setHasOptionsMenu(true);
-		//		}
-	}
+        //			} else {
+        //				FileMultiChoiceModeHelper multiChoiceModeHelper = new FileMultiChoiceModeHelper(
+        //						mSingleSelectionMenu, mMultiSelectionMenu);
+        //				multiChoiceModeHelper.setListView(getListView());
+        //				multiChoiceModeHelper.setPathBar(mPathBar);
+        //				multiChoiceModeHelper.setContext(this);
+        //				getListView()
+        //						.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        //			}
+        //			setHasOptionsMenu(true);
+        //		}
+    }
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View view,
 			ContextMenuInfo menuInfo) {
-		MenuInflater inflater = new MenuInflater(getActivity());
-
-		// Obtain context menu info
-		AdapterView.AdapterContextMenuInfo info;
-		try {
-			info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-			return;
-		}
-
-		MenuUtils.fillContextMenu((FileHolder) mAdapter.getItem(info.position),
-                menu, mSingleSelectionMenu, inflater, getActivity());
+//		MenuInflater inflater = new MenuInflater(getActivity());
+//
+//		// Obtain context menu info
+//		AdapterView.AdapterContextMenuInfo info;
+//		try {
+//			info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+//		} catch (ClassCastException e) {
+//			e.printStackTrace();
+//			return;
+//		}
+//
+//		MenuUtils.fillContextMenu((FileHolder) mAdapter.getItem(info.position),
+//                menu, mSingleSelectionMenu, inflater, getActivity());
 	}
 
 	@Override
@@ -374,6 +373,16 @@ public class SimpleFileListFragment extends FileListFragment implements
         }
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mAdapter != null && mAdapter.getItem(position) != null) {
+            new OperationDialog((FileHolder) mAdapter.getItem(position));
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static class ComparatorByLastModified implements Comparator<FileHolder> {
         public int compare(FileHolder f1, FileHolder f2) {
             long diff = f1.getFile().lastModified() - f2.getFile().lastModified();
@@ -483,32 +492,133 @@ public class SimpleFileListFragment extends FileListFragment implements
     }
 
     private class SortDialog implements
-            android.content.DialogInterface.OnClickListener {
-        private AlertDialog alertDialog;
+            MaterialDialog.ListCallbackSingleChoice {
 
         public SortDialog() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.file_sort_dialog_title));
             String[] items = new String[]{getString(R.string.file_sort_by_default)
                     , getString(R.string.file_sort_by_name),
                     getString(R.string.file_sort_by_time)};
 
-            builder.setSingleChoiceItems(items, mCurrentSort, this);
-            alertDialog = builder.create();
-            alertDialog.show();
+            new MaterialDialog.Builder(getActivity())
+                    .title(getString(R.string.file_sort_dialog_title))
+                    .items(items)
+                    .itemsCallbackSingleChoice(mCurrentSort, this)
+                    .show();
         }
 
-        public void onClick(DialogInterface dialog, int actionId) {
+        @Override
+        public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
             Message msg = null;
-            if (actionId == 0) {
+            if (which == 0) {
                 msg = mHandler.obtainMessage(SORT_BY_DEFAULT);
-            } else if (actionId == 1) {
+            } else if (which == 1) {
                 msg = mHandler.obtainMessage(SORT_BY_NAME);
-            } else if (actionId == 2) {
+            } else if (which == 2) {
                 msg = mHandler.obtainMessage(SORT_BY_TIME);
             }
             mHandler.sendMessage(msg);
-            alertDialog.dismiss();
+            return true;
+        }
+    }
+
+    private class OperationDialog implements
+            MaterialDialog.ListCallback {
+        private FileHolder item;
+
+        public OperationDialog(FileHolder holder) {
+            if (holder == null) {
+                return;
+            }
+            ArrayList<String> items = new ArrayList<>();
+
+            item = holder;
+            File file = item.getFile();
+            items.add(getString(R.string.menu_open));
+            items.add(getString(R.string.menu_delete));
+            items.add(getString(R.string.menu_move));
+            items.add(getString(R.string.menu_copy));
+            items.add(getString(R.string.menu_create_shortcut));
+            items.add(getString(R.string.menu_rename));
+            // If selected item is a directory
+            if (file.isDirectory()) {
+                items.add(getString(R.string.menu_send));
+            }
+
+            // If selected item is a zip archive
+            if (FileUtils.checkIfZipArchive(file)) {
+                items.add(getString(R.string.menu_extract));
+            } else {
+                items.add(getString(R.string.menu_compress));
+            }
+
+            String[] array = (String[])items.toArray(new String[items.size()]);
+            new MaterialDialog.Builder(getActivity())
+                    .title(holder.getName())
+                    .icon(holder.getIcon())
+                    .items(array)
+                    .itemsCallback(this)
+                    .build()
+                    .show();
+        }
+
+        @Override
+        public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+            switch (which) {
+                case 0:
+                    openInformingPathBar(item);
+                    break;
+                case 1:
+                    SingleDeleteDialog tmpDialog = new SingleDeleteDialog();
+                    tmpDialog.setTargetFragment(SimpleFileListFragment.this, 0);
+                    Bundle args = new Bundle();
+                    args.putParcelable(FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER,
+                            item);
+                    tmpDialog.setArguments(args);
+                    tmpDialog.show(getFragmentManager(),
+                            SingleDeleteDialog.class.getName());
+                    break;
+                case 2:
+                    CopyHelper.get(getActivity()).cut(item);
+                    updateClipboardInfo();
+                    break;
+                case 3:
+                    CopyHelper.get(getActivity()).copy(item);
+                    updateClipboardInfo();
+                    break;
+                case 4:
+                    MenuUtils.createShortcut(item, getContext());
+                    break;
+                case 5:
+                    RenameDialog tmpDialog1 = new RenameDialog();
+                    tmpDialog1.setTargetFragment(SimpleFileListFragment.this, 0);
+                    Bundle args1 = new Bundle();
+                    args1.putParcelable(FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER,
+                            item);
+                    tmpDialog1.setArguments(args1);
+                    tmpDialog1.show(getFragmentManager(),
+                            RenameDialog.class.getName());
+                    break;
+                default:
+                    //else ..
+                    if (item.getFile().isDirectory()) {
+                        if (which == 6) {
+                            MenuUtils.sendFile(item, getActivity());
+                        } else if (which == 7) {
+                            if (FileUtils.checkIfZipArchive(item.getFile())) {
+                                MenuUtils.extractFile(SimpleFileListFragment.this, item);
+                            } else {
+                                MenuUtils.compressFile(SimpleFileListFragment.this, item);
+                            }
+                        }
+                    } else {
+                        if (FileUtils.checkIfZipArchive(item.getFile())) {
+                            MenuUtils.extractFile(SimpleFileListFragment.this, item);
+                        } else {
+                            MenuUtils.compressFile(SimpleFileListFragment.this, item);
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

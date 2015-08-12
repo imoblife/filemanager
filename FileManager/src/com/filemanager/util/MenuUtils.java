@@ -13,6 +13,7 @@ import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.view.*;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -327,7 +328,7 @@ public abstract class MenuUtils {
 	 * @param fileholder
 	 *            The {@link File} to create the shortcut to.
 	 */
-	static private void createShortcut(FileHolder fileholder, Context context) {
+	static public void createShortcut(FileHolder fileholder, Context context) {
 		Intent shortcutintent = new Intent(
 				"com.android.launcher.action.INSTALL_SHORTCUT");
 		shortcutintent.putExtra("duplicate", false);
@@ -360,7 +361,7 @@ public abstract class MenuUtils {
 	 * @param context
 	 *            {@link Context} in which to create the picker.
 	 */
-	private static void sendFile(FileHolder fHolder, Context context) {
+	public static void sendFile(FileHolder fHolder, Context context) {
 		String filename = fHolder.getName();
 
 		Intent i = new Intent();
@@ -487,4 +488,34 @@ public abstract class MenuUtils {
 							}).create().show();
 		}
 	}
+
+    public static void compressFile(SimpleFileListFragment fragment, FileHolder fileHolder) {
+        SingleCompressDialog dialog = new SingleCompressDialog();
+        dialog.setTargetFragment(fragment, 0);
+        Bundle args = new Bundle();
+        args.putParcelable(FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER,
+                fileHolder);
+        dialog.setArguments(args);
+        dialog.show(fragment.getFragmentManager(), SingleCompressDialog.class.getName());
+    }
+
+    public static void extractFile(final SimpleFileListFragment fragment, FileHolder fileHolder) {
+        File dest = new File(fileHolder.getFile().getParentFile(),
+                FileUtils.getNameWithoutExtension(fileHolder.getFile()));
+        dest.mkdirs();
+
+        // Changed from the previous behavior.
+        // We just extract on the current directory. If the user needs to
+        // put it in another dir,
+        // he/she can copy/cut the file with the new, equally easy to use
+        // way.
+        new ExtractManager(fragment.getActivity()).setOnExtractFinishedListener(
+                new ExtractManager.OnExtractFinishedListener() {
+
+                    @Override
+                    public void extractFinished() {
+                        fragment.refresh();
+                    }
+                }).extract(fileHolder.getFile(), dest.getAbsolutePath());
+    }
 }

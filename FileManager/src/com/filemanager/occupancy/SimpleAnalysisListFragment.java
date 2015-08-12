@@ -15,6 +15,7 @@ import android.widget.*;
 import base.util.os.StatFsUtil;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
@@ -408,17 +409,18 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     }
 
     private class DeleteDialog implements
-            android.content.DialogInterface.OnClickListener {
-        private AlertDialog alertDialog;
+            MaterialDialog.ListCallback {
+        private MaterialDialog alertDialog;
         private FileHolder mFileHolder;
 
         public DeleteDialog(FileHolder holder) {
             mFileHolder = holder;
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(holder.getFile().getName());
-            builder.setItems(new String[]{getString(R.string.storage_analysis_delete)}, this);
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+            builder.title(holder.getFile().getName());
+            builder.items(new String[]{getString(R.string.storage_analysis_delete)});
+            builder.itemsCallback(this);
 
-            alertDialog = builder.create();
+            alertDialog = builder.build();
             alertDialog.setCancelable(true);
         }
 
@@ -426,35 +428,36 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
             alertDialog.show();
         }
 
-        public void onClick(DialogInterface dialog, int actionId) {
+        @Override
+        public void onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
             ConfirmDialog deleteDialog = new ConfirmDialog(mFileHolder);
             deleteDialog.show();
             //delete file
-            alertDialog.dismiss();
         }
     }
 
     private class ConfirmDialog {
-        private AlertDialog alertDialog;
+        private MaterialDialog alertDialog;
         private FileTreeNode<String> node;
 
         public ConfirmDialog(FileHolder holder) {
             node = holder.getFileNode();
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getString(R.string.really_delete, holder.getName()));
-            builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+            builder.title(getString(R.string.really_delete, holder.getName()));
+            builder.positiveText(android.R.string.ok);
+            builder.icon(holder.getIcon());
+            builder.negativeText(android.R.string.cancel);
+            builder.callback(new MaterialDialog.ButtonCallback() {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onPositive(MaterialDialog dialog) {
                     RefreshTreeNodeRunnable refreshTreeNodeRunnable = new RefreshTreeNodeRunnable(node, mHandler);
                     setLoading(true);
                     hideBottomLayout();
                     mExecutors.execute(refreshTreeNodeRunnable);
                 }
             });
-            builder.setIcon(holder.getIcon());
-            builder.setNegativeButton(android.R.string.cancel, null);
 
-            alertDialog = builder.create();
+            alertDialog = builder.build();
             alertDialog.setCancelable(true);
         }
 

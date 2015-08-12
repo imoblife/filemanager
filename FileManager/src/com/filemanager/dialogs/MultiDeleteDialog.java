@@ -1,5 +1,6 @@
 package com.filemanager.dialogs;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.lists.MultiselectListFragment;
 import imoblife.android.os.ModernAsyncTask;
 
@@ -35,19 +36,18 @@ public class MultiDeleteDialog extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		return new AlertDialog.Builder(getActivity())
-				.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(getActivity()))
-				.setTitle(getString(R.string.really_delete_multiselect, mFileHolders.size()))
-				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-							new RecursiveDeleteTask().execute();
-					}
-				})
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setNegativeButton(android.R.string.cancel, null)
-				.create();
-	}
+        return new MaterialDialog.Builder(getActivity())
+                .title(getString(R.string.really_delete_multiselect, mFileHolders.size()))
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .iconRes(android.R.drawable.ic_dialog_alert)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        new RecursiveDeleteTask().execute();
+                    }
+                }).build();
+    }
 	
 	private class RecursiveDeleteTask extends ModernAsyncTask<Void, Void, Void> {
 		private Context mContext;

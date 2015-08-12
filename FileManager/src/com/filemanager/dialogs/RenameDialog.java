@@ -1,27 +1,18 @@
 package com.filemanager.dialogs;
 
-import java.io.File;
-
-
+import android.app.Dialog;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.text.InputType;
+import android.widget.Toast;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.FileListFragment;
 import com.filemanager.util.MediaScannerUtils;
-import com.filemanager.util.UIUtils;
 import com.intents.FileManagerIntents;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.io.File;
 
 public class RenameDialog extends DialogFragment {
 	private FileHolder mFileHolder;
@@ -35,37 +26,19 @@ public class RenameDialog extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		LayoutInflater inflater = LayoutInflater.from(getActivity());
-		LinearLayout view = (LinearLayout) inflater.inflate(R.layout.dialog_text_input, null);
-		final EditText v = (EditText) view.findViewById(R.id.foldername);
-		v.setText(mFileHolder.getName());
 
-		v.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-			public boolean onEditorAction(TextView text, int actionId,
-					KeyEvent event) {
-				if (actionId == EditorInfo.IME_ACTION_GO)
-					renameTo(text.getText().toString());
-				dismiss();
-				return true;
-			}
-		});
-		
-		return new AlertDialog.Builder(getActivity())
-				.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(getActivity()))
-				.setTitle(R.string.menu_rename)
-				.setIcon(mFileHolder.getIcon())
-				.setView(view)
-				.setNegativeButton(android.R.string.cancel, null)
-				.setPositiveButton(android.R.string.ok,
-						new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								renameTo(v.getText().toString());
-
-							}
-						}).create();
-	}
+        return new MaterialDialog.Builder(getActivity())
+                .title(R.string.menu_rename)
+                .inputType(InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_CLASS_TEXT)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                        .input(mFileHolder.getName(), mFileHolder.getName(), false, new MaterialDialog.InputCallback() {
+                            @Override
+                            public void onInput(MaterialDialog dialog, CharSequence input) {
+                                renameTo(input.toString());
+                            }
+                        }).build();
+    }
 	
 	private void renameTo(String to){
 		boolean res = false;

@@ -1,31 +1,28 @@
 package com.filemanager.dialogs;
 
 
-import com.filemanager.R;
-import com.filemanager.util.UIUtils;
-
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.filemanager.R;
 
 public class OverwriteFileDialog extends DialogFragment {
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		return new AlertDialog.Builder(getActivity())
-				.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(getActivity()))
-				.setTitle(R.string.file_exists)
-				.setMessage(R.string.overwrite_question)
-				.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-								((Overwritable) getTargetFragment()).overwrite();
-							}
-						}).setNegativeButton(android.R.string.cancel, null)
-				.create();
+        return new MaterialDialog.Builder(getActivity())
+                .title(R.string.file_exists)
+                .content(R.string.overwrite_question)
+                .positiveText(android.R.string.ok)
+                .negativeText(android.R.string.cancel)
+                .callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        ((Overwritable) getTargetFragment()).overwrite();
+                    }
+                })
+                .build();
 	}
 	
 	public interface Overwritable {
