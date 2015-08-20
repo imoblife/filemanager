@@ -12,6 +12,7 @@ import base.util.PreferenceHelper;
 import java.io.File;
 
 import base.util.ui.activity.BaseFragmentActivity;
+import base.util.ui.titlebar.BaseTitlebarFragmentActivity;
 import com.filemanager.lists.FileListFragment;
 import com.filemanager.lists.MultiselectListFragment;
 import com.filemanager.lists.PickFileListFragment;
@@ -19,7 +20,8 @@ import com.filemanager.util.FileUtils;
 import com.filemanager.util.UIUtils;
 import com.intents.FileManagerIntents;
 
-public class IntentFilterActivity extends BaseFragmentActivity {
+public class IntentFilterActivity extends BaseTitlebarFragmentActivity {
+	private static final String TAG = IntentFilterActivity.class.getSimpleName();
 	private FileListFragment mFragment;
 
 	@Override
@@ -159,5 +161,10 @@ public class IntentFilterActivity extends BaseFragmentActivity {
 			}
 
 		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public String getTrackModule() {
+		return TAG;
 	}
 }
