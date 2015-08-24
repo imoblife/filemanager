@@ -1,7 +1,6 @@
 package com.filemanager.dialogs;
 
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
@@ -50,7 +49,7 @@ public class SingleDeleteDialog extends DialogFragment {
 		 * If 0 some failed, if 1 all succeeded. 
 		 */
 		private int mResult = 1;
-		private ProgressDialog dialog = new ProgressDialog(getActivity());
+		private MaterialDialog dialog = new MaterialDialog.Builder(getActivity()).progressIndeterminateStyle(false).progress(true, 0).build();
 
 		/**
 		 * Recursively delete a file or directory and all of its children.
@@ -76,7 +75,6 @@ public class SingleDeleteDialog extends DialogFragment {
 		@Override
 		protected void onPreExecute() {		
 			dialog.setMessage(getActivity().getString(R.string.deleting));
-			dialog.setIndeterminate(true);
 			dialog.show();
 		}
 		

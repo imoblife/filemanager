@@ -1,6 +1,5 @@
 package com.filemanager.search;
 
-import android.app.ProgressDialog;
 import android.app.SearchManager;
 import android.content.*;
 import android.net.Uri;
@@ -14,11 +13,11 @@ import android.view.Window;
 import android.widget.ListView;
 import android.widget.TextView;
 import base.util.ui.titlebar.BaseTitlebarListActivity;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.FileManagerActivity;
 import com.filemanager.R;
 import com.filemanager.compatibility.HomeIconHelper;
 import com.filemanager.files.FileHolder;
-import com.filemanager.util.UIUtils;
 import com.intents.FileManagerIntents;
 import de.greenrobot.event.EventBus;
 
@@ -38,7 +37,7 @@ public class SearchableActivity extends BaseTitlebarListActivity {
     private static final int MIN_REFRESH_LIST_COUNT = 1000;
 
 	private LocalBroadcastManager lbm;
-    private ProgressDialog mProgressDialog;
+    private MaterialDialog mProgressDialog;
     private SearchListResultAdapter mAdapter;
     private TextView mEmptyTextView;
     private String mTitle;
@@ -61,9 +60,9 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 		lbm = LocalBroadcastManager.getInstance(getApplicationContext());
         mEmptyTextView = (TextView) findViewById(R.id.tv_empty);
         hideEmptyView();
-        mProgressDialog = new ProgressDialog(this);
-        mProgressDialog.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(this));
-        mProgressDialog.setMessage(getString(R.string.file_search_message));
+        mProgressDialog = new MaterialDialog.Builder(SearchableActivity.this).progressIndeterminateStyle(false).progress(true, 0).build();
+//        mProgressDialog.setInverseBackgroundForced(UIUtils.shouldDialogInverseBackground(this));
+        mProgressDialog.setContent(getString(R.string.file_search_message));
         mProgressDialog.setCancelable(true);
         mProgressDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override

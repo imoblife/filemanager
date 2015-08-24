@@ -1,28 +1,21 @@
 package com.filemanager.dialogs;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.filemanager.R;
+import com.filemanager.files.FileHolder;
+import com.filemanager.lists.FileListFragment;
 import com.filemanager.lists.MultiselectListFragment;
+import com.filemanager.util.MediaScannerUtils;
+import com.intents.FileManagerIntents;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.File;
 import java.util.List;
-
-
-import com.filemanager.R;
-import com.filemanager.files.FileHolder;
-import com.filemanager.lists.FileListFragment;
-import com.filemanager.util.MediaScannerUtils;
-import com.filemanager.util.UIUtils;
-import com.intents.FileManagerIntents;
-
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.ProgressDialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.widget.Toast;
 
 public class MultiDeleteDialog extends DialogFragment {
 	private List<FileHolder> mFileHolders;
@@ -61,7 +54,7 @@ public class MultiDeleteDialog extends DialogFragment {
 		 * If 0 some failed, if 1 all succeeded. 
 		 */
 		private int mResult = 1;
-		private ProgressDialog dialog = new ProgressDialog(getActivity());
+		private MaterialDialog dialog = new MaterialDialog.Builder(getActivity()).progressIndeterminateStyle(false).progress(true, 0).build();
 
 		/**
 		 * Recursively delete a file or directory and all of its children.
@@ -89,8 +82,7 @@ public class MultiDeleteDialog extends DialogFragment {
 		
 		@Override
 		protected void onPreExecute() {		
-			dialog.setMessage(getActivity().getString(R.string.deleting));
-			dialog.setIndeterminate(true);
+			dialog.setContent(getActivity().getString(R.string.deleting));
 			dialog.show();
 		}
 		
