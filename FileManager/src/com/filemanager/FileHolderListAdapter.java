@@ -169,4 +169,8 @@ public class FileHolderListAdapter extends BaseAdapter {
     public void setHighlightKeyword(String keyword) {
         mKeyword = keyword;
     }
+
+    public void clearFileChildrenCache(){
+        mFileListsSize.clear();
+    }
 }

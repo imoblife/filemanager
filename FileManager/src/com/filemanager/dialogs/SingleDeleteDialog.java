@@ -2,9 +2,11 @@ package com.filemanager.dialogs;
 
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
+import base.util.FileUtils;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
@@ -17,11 +19,12 @@ import java.io.File;
 
 public class SingleDeleteDialog extends DialogFragment {
 	private FileHolder mFileHolder;
+    private Context mContext;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+        mContext = getActivity().getApplicationContext();
 		mFileHolder = getArguments().getParcelable(FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER);
 	}
 	
@@ -58,22 +61,27 @@ public class SingleDeleteDialog extends DialogFragment {
 		 * @returns 0 if successful, error value otherwise.
 		 */
 		private void recursiveDelete(File file) {
-			File[] files = file.listFiles();
-			if (files != null && files.length != 0) 
-				// If it's a directory delete all children.
-				for (File childFile : files) {
-					if (childFile.isDirectory()) {
-						recursiveDelete(childFile);
-					} else {
-						mResult *= childFile.delete() ? 1 : 0;
-					}
-				}
-				
-				// And then delete parent. -- or just delete the file.
-				mResult *= file.delete() ? 1 : 0;
-		}
-		
-		@Override
+            if (FileUtils.isAndroid5() && (FileUtils.getDocumentFile(file, false, false, mContext) != null
+                    || FileUtils.getDocumentFile(file, true, false, mContext) != null)) {
+                mResult = (FileUtils.deleteFile(file, mContext)) ? 1 : 0;
+            } else {
+                File[] files = file.listFiles();
+                if (files != null && files.length != 0)
+                    // If it's a directory delete all children.
+                    for (File childFile : files) {
+                        if (childFile.isDirectory()) {
+                            recursiveDelete(childFile);
+                        } else {
+                            mResult *= childFile.delete() ? 1 : 0;
+                        }
+                    }
+
+                // And then delete parent. -- or just delete the file.
+                mResult *= file.delete() ? 1 : 0;
+            }
+        }
+
+        @Override
 		protected void onPreExecute() {		
 			dialog.setMessage(getActivity().getString(R.string.deleting));
 			dialog.setIndeterminate(true);

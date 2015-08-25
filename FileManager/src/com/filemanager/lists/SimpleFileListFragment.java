@@ -461,7 +461,13 @@ public class SimpleFileListFragment extends FileListFragment implements
 		return mPathBar.pressBack();
 	}
 
-	/**
+    @Override
+    public void refresh() {
+        super.refresh();
+        mAdapter.clearFileChildrenCache();
+    }
+
+    /**
 	 * Set whether to show menu and selection actions. Must be set before
 	 * OnViewCreated is called.
 	 * 
