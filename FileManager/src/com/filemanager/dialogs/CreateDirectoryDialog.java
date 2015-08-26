@@ -84,15 +84,16 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
                 if(FileUtils.isAndroid5()){
                     if (tbcreated.mkdirs()) {
                         Toast.makeText(c, R.string.create_dir_success, Toast.LENGTH_SHORT).show();
-                    } else {
+                    } else if (FileUtils.isOnExtSdCard(tbcreated, mContext)) {
                         DocumentFile documentFile = FileUtils.getDocumentFile(tbcreated, true, true, mContext);
                         if (documentFile != null) {
                             Toast.makeText(c, R.string.create_dir_success, Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(c, R.string.create_dir_failure, Toast.LENGTH_SHORT).show();
                         }
+                    } else {
+                        Toast.makeText(c, R.string.create_dir_failure, Toast.LENGTH_SHORT).show();
                     }
-
                 } else {
                     if (tbcreated.mkdirs())
                         Toast.makeText(c, R.string.create_dir_success, Toast.LENGTH_SHORT).show();

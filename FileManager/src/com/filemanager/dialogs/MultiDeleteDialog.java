@@ -1,5 +1,6 @@
 package com.filemanager.dialogs;
 
+import base.util.FileUtils;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.lists.MultiselectListFragment;
 import imoblife.android.os.ModernAsyncTask;
@@ -26,11 +27,12 @@ import android.widget.Toast;
 
 public class MultiDeleteDialog extends DialogFragment {
 	private List<FileHolder> mFileHolders;
+    private Context mContext;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+        mContext = getActivity().getApplicationContext();
 		mFileHolders = getArguments().getParcelableArrayList(FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER);
 	}
 	
@@ -69,22 +71,24 @@ public class MultiDeleteDialog extends DialogFragment {
 		 * @returns 0 if successful, error value otherwise.
 		 */
 		private void recursiveDelete(File file) {
-			File[] files = file.listFiles();
-			if (files != null && files.length != 0) 
-				// If it's a directory delete all children.
-				for (File childFile : files) {
-					if (childFile.isDirectory()) {
-						recursiveDelete(childFile);
-					} else {
-						mResult *= childFile.delete() ? 1 : 0;
+            if (FileUtils.isAndroid5() && (FileUtils.getDocumentFile(file, false, false, mContext) != null
+                    || FileUtils.getDocumentFile(file, true, false, mContext) != null)) {
+                mResult = (FileUtils.deleteFile(file, mContext)) ? 1 : 0;
+            } else {
+                File[] files = file.listFiles();
+                if (files != null && files.length != 0)
+                    // If it's a directory delete all children.
+                    for (File childFile : files) {
+                        if (childFile.isDirectory()) {
+                            recursiveDelete(childFile);
+                        } else {
+                            mResult *= childFile.delete() ? 1 : 0;
+                        }
+                    }
 
-						MediaScannerUtils.informFileDeleted(mContext, childFile);
-					}
-				}
-				
-				// And then delete parent. -- or just delete the file.
-				mResult *= file.delete() ? 1 : 0;
-				MediaScannerUtils.informFileDeleted(mContext, file);
+                // And then delete parent. -- or just delete the file.
+                mResult *= file.delete() ? 1 : 0;
+            }
 		}
 		
 		@Override
