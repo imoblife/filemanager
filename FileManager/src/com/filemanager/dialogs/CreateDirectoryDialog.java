@@ -137,7 +137,7 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && requestCode == FileUtils.REQUEST_STORAGE_CODE) {
             onActivityResultLollipop(requestCode, resultCode, data);
         }
     }
@@ -157,7 +157,7 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public final void onActivityResultLollipop(final int requestCode, final int resultCode, final Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK && requestCode == FileUtils.REQUEST_STORAGE_CODE) {
             Uri uri;
             // Get Uri from Storage Access Framework.
             uri = data.getData();
