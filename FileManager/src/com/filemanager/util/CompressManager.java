@@ -1,13 +1,9 @@
 package com.filemanager.util;
 
+import android.support.v4.provider.DocumentFile;
 import imoblife.android.os.ModernAsyncTask;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.ZipEntry;
@@ -66,6 +62,7 @@ public class CompressManager {
 		private static final int error = 1;
 		private ZipOutputStream zos;
 		private File zipDirectory;
+        private DocumentFile zipDirectoryDocumentFile;
 		private boolean cancelCompression = false;
 
 		/**
@@ -124,7 +121,8 @@ public class CompressManager {
 		protected void onPreExecute() {
 			FileOutputStream out = null;
 			zipDirectory = new File(fileOut);
-			progressDialog = new ProgressDialog(mContext);
+            zipDirectoryDocumentFile = base.util.FileUtils.getDocumentFile(zipDirectory, false, true, mContext);
+            progressDialog = new ProgressDialog(mContext);
 			progressDialog.setCancelable(false);
 			progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
 					new DialogInterface.OnClickListener() {
@@ -140,9 +138,15 @@ public class CompressManager {
 			progressDialog.show();
 			progressDialog.setProgress(0);
 			try {
-				out = new FileOutputStream(zipDirectory);
-				zos = new ZipOutputStream(new BufferedOutputStream(out));
-			} catch (FileNotFoundException e) {
+                if (base.util.FileUtils.isAndroid5() && zipDirectoryDocumentFile != null) {
+
+                    OutputStream tmp = mContext.getContentResolver().openOutputStream(zipDirectoryDocumentFile.getUri());
+                    zos = new ZipOutputStream(new BufferedOutputStream(tmp));
+                } else {
+                    out = new FileOutputStream(zipDirectory);
+                    zos = new ZipOutputStream(new BufferedOutputStream(out));
+                }
+            } catch (FileNotFoundException e) {
 				Log.e(TAG, "error while creating ZipOutputStream");
 			}
 		}

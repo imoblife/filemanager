@@ -1,12 +1,11 @@
 package com.filemanager.util;
 
+import android.support.v4.provider.DocumentFile;
+import base.util.*;
+import base.util.FileUtils;
 import imoblife.android.os.ModernAsyncTask;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -70,8 +69,16 @@ public class ExtractManager {
             if (dir.exists()) {
                 return;
             }
-            if (!dir.mkdirs()) {
-                throw new RuntimeException("Can not create dir " + dir);
+            if (base.util.FileUtils.isAndroid5() && FileUtils.isOnExtSdCard(dir, context)) {
+
+                if (FileUtils.getDocumentFile(dir, true, true, context) == null) {
+                    throw new RuntimeException("Can not create dir " + dir);
+                }
+
+            } else {
+                if (!dir.mkdirs()) {
+                    throw new RuntimeException("Can not create dir " + dir);
+                }
             }
         }        
         
@@ -86,7 +93,16 @@ public class ExtractManager {
                 createDir(outputFile.getParentFile());
             }
             BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
-            BufferedOutputStream outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+            BufferedOutputStream outputStream = null;
+
+            DocumentFile documentFile = FileUtils.getDocumentFile(outputFile, false, true, context);
+            if (FileUtils.isAndroid5() && documentFile != null) {
+
+                OutputStream tmp = context.getContentResolver().openOutputStream(documentFile.getUri());
+                outputStream = new BufferedOutputStream(tmp);
+            } else {
+                outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+            }
             try {
                 int len;
                 byte buf[] = new byte[BUFFER_SIZE];

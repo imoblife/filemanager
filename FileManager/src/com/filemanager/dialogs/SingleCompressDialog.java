@@ -1,9 +1,11 @@
 package com.filemanager.dialogs;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
+import base.util.FileUtils;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.dialogs.OverwriteFileDialog.Overwritable;
@@ -18,11 +20,12 @@ import java.io.File;
 public class SingleCompressDialog extends DialogFragment implements Overwritable {
 	private FileHolder mFileHolder;
 	private CompressManager mCompressManager;
+    private Context mContext;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+        mContext = getActivity().getApplicationContext();
 		mFileHolder = getArguments().getParcelable(FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER);
 		
 		mCompressManager = new CompressManager(getActivity());
@@ -30,10 +33,14 @@ public class SingleCompressDialog extends DialogFragment implements Overwritable
 			
 			@Override
 			public void compressFinished() {
-				((FileListFragment) SingleCompressDialog.this.getTargetFragment()).refresh();
+                try {
+                    ((FileListFragment) SingleCompressDialog.this.getTargetFragment()).refresh();
 
-				MediaScannerUtils.informFileAdded(getTargetFragment().getActivity().getApplicationContext(), tbcreated);
-			}
+                    MediaScannerUtils.informFileAdded(getTargetFragment().getActivity().getApplicationContext(), tbcreated);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
 		});
 	}
 	
@@ -69,7 +76,11 @@ public class SingleCompressDialog extends DialogFragment implements Overwritable
 	
 	@Override
 	public void overwrite() {
-		tbcreated.delete();
+        deleteFolder();
 		compress(zipname);
 	}
+
+    private boolean deleteFolder(){
+        return FileUtils.deleteFile(tbcreated, mContext);
+    }
 }

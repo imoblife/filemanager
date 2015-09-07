@@ -1,7 +1,11 @@
 package com.filemanager.lists;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +14,7 @@ import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import base.util.*;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -22,6 +27,7 @@ import com.filemanager.dialogs.SingleDeleteDialog;
 import com.filemanager.files.FileHolder;
 import com.filemanager.occupancy.StorageAnalysisActivity;
 import com.filemanager.util.*;
+import com.filemanager.util.FileUtils;
 import com.filemanager.view.PathBar;
 import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
@@ -29,7 +35,6 @@ import com.intents.FileManagerIntents;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -151,6 +156,10 @@ public class SimpleFileListFragment extends FileListFragment implements
                 }
             }
         };
+
+        if (base.util.FileUtils.checkSdCardAndroid5(getContext().getApplicationContext())) {
+            base.util.FileUtils.showStorageAccessDialog(this);
+        }
     }
 
     private void initCurrentSort(Context context) {
@@ -408,7 +417,8 @@ public class SimpleFileListFragment extends FileListFragment implements
     @Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// Automatically refresh to display possible changes done through the
-		// multiselect fragment.
+        onActivityResultLollipop(requestCode, resultCode, data);
+        // multiselect fragment.
 		if (requestCode == REQUEST_CODE_MULTISELECT)
 			refresh();
 		super.onActivityResult(requestCode, resultCode, data);
@@ -461,7 +471,13 @@ public class SimpleFileListFragment extends FileListFragment implements
 		return mPathBar.pressBack();
 	}
 
-	/**
+    @Override
+    public void refresh() {
+        super.refresh();
+        mAdapter.clearFileChildrenCache();
+    }
+
+    /**
 	 * Set whether to show menu and selection actions. Must be set before
 	 * OnViewCreated is called.
 	 * 
@@ -619,6 +635,34 @@ public class SimpleFileListFragment extends FileListFragment implements
                     }
                     break;
             }
+        }
+    }
+
+    /**
+     * After triggering the Storage Access Framework, ensure that folder is really writable. Set preferences
+     * accordingly.
+     *
+     * @param requestCode The integer request code originally supplied to startActivityForResult(), allowing you to identify who
+     *                    this result came from.
+     * @param resultCode  The integer result code returned by the child activity through its setResult().
+     * @param data        An Intent, which can return result data to the caller (various data can be attached to Intent
+     *                    "extras").
+     */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public final void onActivityResultLollipop(final int requestCode, final int resultCode, final Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == base.util.FileUtils.REQUEST_STORAGE_CODE) {
+            Uri uri;
+            // Get Uri from Storage Access Framework.
+            uri = data.getData();
+            // Persist URI - this is required for verification of writability.
+            PreferenceDefault.setTreeUris(getContext(), uri.toString());
+            // Persist access permissions.
+            final int takeFlags = data.getFlags()
+                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            getActivity().getContentResolver().takePersistableUriPermission(uri, takeFlags);
+        } else {
+            return;
         }
     }
 }
