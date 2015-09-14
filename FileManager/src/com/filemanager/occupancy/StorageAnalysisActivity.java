@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import base.util.FileUtil;
 import base.util.PreferenceHelper;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import com.filemanager.DistributionLibraryFragmentActivity;
@@ -37,7 +38,7 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
     protected void onNewIntent(Intent intent) {
         try {
             if (intent.getData() != null)
-                mFragment.openInformingPathBar(new FileHolder(FileUtils
+                mFragment.openInformingPathBar(new FileHolder(FileUtil
                         .getFile(intent.getData()), this));
         } catch (Exception e) {
             Log.w(getClass().getSimpleName(), e);
@@ -52,7 +53,7 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
      * @return The folder to navigate to, if applicable. Null otherwise.
      */
     private File resolveIntentData() {
-        File data = FileUtils.getFile(getIntent().getData());
+        File data = FileUtil.getFile(getIntent().getData());
         if (data == null)
             return null;
 
@@ -64,7 +65,7 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
             finish();
             return null;
         } else
-            return FileUtils.getFile(getIntent().getData());
+            return FileUtil.getFile(getIntent().getData());
     }
 
     /** Called when the activity is first created. */
@@ -78,7 +79,7 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
 
         File data = null;
         if (getIntent().getStringExtra(EXTRA_FILE_URI) != null) {
-            data = FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
+            data = FileUtil.getFile(Uri.parse(getIntent().getStringExtra(
                     EXTRA_FILE_URI)));
             if (getIntent().getStringExtra(EXTRA_CHANGE_TITLE) != null) {
                 setTitle(getIntent().getStringExtra(EXTRA_CHANGE_TITLE));

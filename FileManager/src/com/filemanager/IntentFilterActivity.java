@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
+import base.util.FileUtil;
 import base.util.PreferenceHelper;
 
 import java.io.File;
@@ -53,9 +54,9 @@ public class IntentFilterActivity extends BaseTitlebarFragmentActivity {
 		}
 
 		// Add a path if a path has been specified in this activity's call.
-		File data = FileUtils.getFile(getIntent().getData());
+		File data = FileUtil.getFile(getIntent().getData());
 		if (data != null) {
-			File dir = FileUtils.getPathWithoutFilename(data);
+			File dir = FileUtil.getPathWithoutFilename(data);
 			if (dir != null) {
 				extras.putString(FileManagerIntents.EXTRA_DIR_PATH,
 						data.getAbsolutePath());

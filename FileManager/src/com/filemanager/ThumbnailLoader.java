@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 
+import base.util.FileUtil;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.FileUtils;
 import com.filemanager.util.ImageUtils;
@@ -418,7 +419,7 @@ public class ThumbnailLoader {
 			return null;
 		}
 		
-		Uri data = FileUtils.getUri(holder.getFile());
+		Uri data = FileUtil.getUri(holder.getFile());
 
 		Intent intent = new Intent(Intent.ACTION_VIEW);
 		// intent.setType(mimetype);

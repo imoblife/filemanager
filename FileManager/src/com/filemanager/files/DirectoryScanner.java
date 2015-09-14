@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.List;
 
 
+import base.util.FileUtil;
 import com.filemanager.PreferenceActivity;
 import com.filemanager.R;
 import com.filemanager.util.FileUtils;
@@ -141,7 +142,7 @@ public class DirectoryScanner extends Thread {
 
 					// Get the file's mimetype.
 					String mimetype = mMimeTypes.getMimeType(fileName);
-					String filetype = FileUtils.getExtension(fileName);
+					String filetype = FileUtil.getExtension(fileName);
 					
 					boolean ext_allow = filetype.equalsIgnoreCase(mFilterFiletype) || mFilterFiletype == "";
 					boolean mime_allow = mFilterMimetype != null && 

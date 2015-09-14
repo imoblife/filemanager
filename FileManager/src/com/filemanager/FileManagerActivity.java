@@ -19,6 +19,7 @@ package com.filemanager;
 import java.io.File;
 
 import android.text.TextUtils;
+import base.util.FileUtil;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import net.londatiga.android.ActionItem;
 import net.londatiga.android.QuickAction;
@@ -61,7 +62,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 	protected void onNewIntent(Intent intent) {
 		try {
 			if (intent.getData() != null)
-				mFragment.openInformingPathBar(new FileHolder(FileUtils
+				mFragment.openInformingPathBar(new FileHolder(FileUtil
 						.getFile(intent.getData()), this));
 		} catch (Exception e) {
 			Log.w(getClass().getSimpleName(), e);
@@ -76,7 +77,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 	 * @return The folder to navigate to, if applicable. Null otherwise.
 	 */
 	private File resolveIntentData() {
-		File data = FileUtils.getFile(getIntent().getData());
+		File data = FileUtil.getFile(getIntent().getData());
 		if (data == null)
 			return null;
 
@@ -88,7 +89,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 			finish();
 			return null;
 		} else
-			return FileUtils.getFile(getIntent().getData());
+			return FileUtil.getFile(getIntent().getData());
 	}
 
 	/** Called when the activity is first created. */
@@ -118,7 +119,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
         boolean pathBarClickable = true;
         String keyword = null;
         if (getIntent().getStringExtra(EXTRA_FILE_URI) != null) {
-			data = FileUtils.getFile(Uri.parse(getIntent().getStringExtra(
+			data = FileUtil.getFile(Uri.parse(getIntent().getStringExtra(
 					EXTRA_FILE_URI)));
 			if (getIntent().getStringExtra(EXTRA_CHANGE_TITLE) != null) {
 				setTitle(getIntent().getStringExtra(EXTRA_CHANGE_TITLE));

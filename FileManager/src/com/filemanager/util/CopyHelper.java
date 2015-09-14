@@ -5,6 +5,7 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 import android.widget.Toast;
 
+import base.util.FileUtil;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.File;
@@ -321,16 +322,16 @@ public class CopyHelper {
             for (FileHolder fh : mClipboard) {
                 from = fh.getFile().getAbsoluteFile();
                 if (!from.isDirectory()) {
-                    res &= cutFileAndroid5(from, FileUtils.getFile(dest, fh.getName()));
+                    res &= cutFileAndroid5(from, FileUtil.getFile(dest, fh.getName()));
                 } else {
-                    res &= cutFolderAndroid5(from, FileUtils.getFile(dest, fh.getName()));
+                    res &= cutFolderAndroid5(from, FileUtil.getFile(dest, fh.getName()));
                 }
 
                 deleteOk = FileUtils.deleteFile(from, mContext);
                 if (deleteOk) {
                     MediaScannerUtils.informFileDeleted(mContext, from);
                     MediaScannerUtils.informFileAdded(mContext,
-                            FileUtils.getFile(dest, fh.getName()));
+							FileUtil.getFile(dest, fh.getName()));
                 }
 
             }
@@ -340,13 +341,13 @@ public class CopyHelper {
                 from = fh.getFile().getAbsoluteFile();
 
                 deleteOk = fh.getFile().renameTo(
-                        FileUtils.getFile(dest, fh.getName()));
+						FileUtil.getFile(dest, fh.getName()));
 
                 // Inform media scanner
                 if (deleteOk) {
                     MediaScannerUtils.informFileDeleted(mContext, from);
                     MediaScannerUtils.informFileAdded(mContext,
-                            FileUtils.getFile(dest, fh.getName()));
+							FileUtil.getFile(dest, fh.getName()));
                 }
 
                 res &= deleteOk;

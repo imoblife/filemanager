@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import base.util.FileUtil;
 import com.filemanager.*;
 import com.filemanager.bookmarks.BookmarksProvider;
 import com.filemanager.compatibility.ActionbarRefreshHelper;
@@ -89,7 +90,7 @@ public abstract class MenuUtils {
 			}
 
 			// If selected item is a zip archive
-			if (!FileUtils.checkIfZipArchive(file)) {
+			if (!FileUtil.checkIfZipArchive(file)) {
 				m.removeItem(R.id.menu_extract);
 			} else {
 				m.removeItem(R.id.menu_compress);
@@ -135,7 +136,7 @@ public abstract class MenuUtils {
 			intent.setType("text/plain");
 
 			for (FileHolder fh : fItems)
-				uris.add(FileUtils.getUri(fh.getFile()));
+				uris.add(FileUtil.getUri(fh.getFile()));
 
 			intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
 
@@ -368,7 +369,7 @@ public abstract class MenuUtils {
 		i.setAction(Intent.ACTION_SEND);
 		i.setType(fHolder.getMimeType());
 		i.putExtra(Intent.EXTRA_SUBJECT, filename);
-		i.putExtra(Intent.EXTRA_STREAM, FileUtils.getUri(fHolder.getFile()));
+		i.putExtra(Intent.EXTRA_STREAM, FileUtil.getUri(fHolder.getFile()));
 		i.putExtra(
 				Intent.EXTRA_STREAM,
 				Uri.parse("content://" + FileManagerProvider.AUTHORITY

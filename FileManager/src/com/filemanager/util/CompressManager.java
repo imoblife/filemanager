@@ -1,6 +1,7 @@
 package com.filemanager.util;
 
 import android.support.v4.provider.DocumentFile;
+import base.util.FileUtil;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.*;
@@ -51,7 +52,7 @@ public class CompressManager {
 		this.fileOut = list.get(0).getFile().getParent() + File.separator + out;
 		fileCount = 0;
 		for (FileHolder f : list) {
-			fileCount += FileUtils.getFileCount(f.getFile());
+			fileCount += FileUtil.getFileCount(f.getFile());
 		}
 		new CompressTask().execute(list);
 	}

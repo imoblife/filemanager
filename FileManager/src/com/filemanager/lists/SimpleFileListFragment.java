@@ -426,7 +426,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 	private void includeInMediaScan() {
 		// Delete the .nomedia file.
-		File file = FileUtils.getFile(mPathBar.getCurrentDirectory(),
+		File file = FileUtil.getFile(mPathBar.getCurrentDirectory(),
 				FileUtils.NOMEDIA_FILE_NAME);
 		if (file.delete()) {
 			Toast.makeText(getActivity(),
@@ -442,7 +442,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 	private void excludeFromMediaScan() {
 		// Create the .nomedia file.
-		File file = FileUtils.getFile(mPathBar.getCurrentDirectory(),
+		File file = FileUtil.getFile(mPathBar.getCurrentDirectory(),
 				FileUtils.NOMEDIA_FILE_NAME);
 		try {
 			if (file.createNewFile()) {
@@ -561,7 +561,7 @@ public class SimpleFileListFragment extends FileListFragment implements
             }
 
             // If selected item is a zip archive
-            if (FileUtils.checkIfZipArchive(file)) {
+            if (FileUtil.checkIfZipArchive(file)) {
                 items.add(getString(R.string.menu_extract));
             } else {
                 items.add(getString(R.string.menu_compress));
@@ -620,14 +620,14 @@ public class SimpleFileListFragment extends FileListFragment implements
                         if (which == 6) {
                             MenuUtils.sendFile(item, getActivity());
                         } else if (which == 7) {
-                            if (FileUtils.checkIfZipArchive(item.getFile())) {
+                            if (FileUtil.checkIfZipArchive(item.getFile())) {
                                 MenuUtils.extractFile(SimpleFileListFragment.this, item);
                             } else {
                                 MenuUtils.compressFile(SimpleFileListFragment.this, item);
                             }
                         }
                     } else {
-                        if (FileUtils.checkIfZipArchive(item.getFile())) {
+                        if (FileUtil.checkIfZipArchive(item.getFile())) {
                             MenuUtils.extractFile(SimpleFileListFragment.this, item);
                         } else {
                             MenuUtils.compressFile(SimpleFileListFragment.this, item);
