@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
-import base.util.FileUtils;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.dialogs.OverwriteFileDialog.Overwritable;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.FileListFragment;
 import com.filemanager.util.CompressManager;
+import com.filemanager.util.FileUtils;
 import com.filemanager.util.MediaScannerUtils;
 import com.intents.FileManagerIntents;
 

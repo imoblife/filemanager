@@ -8,11 +8,11 @@ import android.support.v4.provider.DocumentFile;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.widget.Toast;
-import base.util.FileUtils;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.FileListFragment;
+import com.filemanager.util.FileUtils;
 import com.filemanager.util.MediaScannerUtils;
 import com.intents.FileManagerIntents;
 

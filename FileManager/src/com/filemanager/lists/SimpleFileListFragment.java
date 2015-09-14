@@ -157,8 +157,8 @@ public class SimpleFileListFragment extends FileListFragment implements
             }
         };
 
-        if (base.util.FileUtils.checkSdCardAndroid5(getContext().getApplicationContext())) {
-            base.util.FileUtils.showStorageAccessDialog(this);
+        if (FileUtils.checkSdCardAndroid5(getContext().getApplicationContext())) {
+            FileUtils.showStorageAccessDialog(this);
         }
     }
 
@@ -650,7 +650,7 @@ public class SimpleFileListFragment extends FileListFragment implements
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public final void onActivityResultLollipop(final int requestCode, final int resultCode, final Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == base.util.FileUtils.REQUEST_STORAGE_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == FileUtils.REQUEST_STORAGE_CODE) {
             Uri uri;
             // Get Uri from Storage Access Framework.
             uri = data.getData();

@@ -121,7 +121,7 @@ public class CompressManager {
 		protected void onPreExecute() {
 			FileOutputStream out = null;
 			zipDirectory = new File(fileOut);
-            zipDirectoryDocumentFile = base.util.FileUtils.getDocumentFile(zipDirectory, false, true, mContext);
+            zipDirectoryDocumentFile = FileUtils.getDocumentFile(zipDirectory, false, true, mContext);
             progressDialog = new ProgressDialog(mContext);
 			progressDialog.setCancelable(false);
 			progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
@@ -138,7 +138,7 @@ public class CompressManager {
 			progressDialog.show();
 			progressDialog.setProgress(0);
 			try {
-                if (base.util.FileUtils.isAndroid5() && zipDirectoryDocumentFile != null) {
+                if (FileUtils.isAndroid5() && zipDirectoryDocumentFile != null) {
 
                     OutputStream tmp = mContext.getContentResolver().openOutputStream(zipDirectoryDocumentFile.getUri());
                     zos = new ZipOutputStream(new BufferedOutputStream(tmp));

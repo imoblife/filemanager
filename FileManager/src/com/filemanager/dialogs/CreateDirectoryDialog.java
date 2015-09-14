@@ -10,13 +10,12 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
-import base.util.FileUtil;
-import base.util.FileUtils;
 import base.util.PreferenceDefault;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.dialogs.OverwriteFileDialog.Overwritable;
 import com.filemanager.lists.FileListFragment;
+import com.filemanager.util.FileUtils;
 import com.intents.FileManagerIntents;
 
 import android.app.Dialog;

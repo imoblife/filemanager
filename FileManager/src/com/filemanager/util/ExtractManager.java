@@ -2,7 +2,6 @@ package com.filemanager.util;
 
 import android.support.v4.provider.DocumentFile;
 import base.util.*;
-import base.util.FileUtils;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.*;
@@ -69,7 +68,7 @@ public class ExtractManager {
             if (dir.exists()) {
                 return;
             }
-            if (base.util.FileUtils.isAndroid5() && FileUtils.isOnExtSdCard(dir, context)) {
+            if (FileUtils.isAndroid5() && FileUtils.isOnExtSdCard(dir, context)) {
 
                 if (FileUtils.getDocumentFile(dir, true, true, context) == null) {
                     throw new RuntimeException("Can not create dir " + dir);
