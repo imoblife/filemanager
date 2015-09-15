@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
+import base.util.FileUtil;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.dialogs.OverwriteFileDialog.Overwritable;
@@ -81,6 +82,6 @@ public class SingleCompressDialog extends DialogFragment implements Overwritable
 	}
 
     private boolean deleteFolder(){
-        return FileUtils.deleteFile(tbcreated, mContext);
+        return FileUtil.deleteFile(tbcreated, mContext);
     }
 }

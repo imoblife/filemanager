@@ -8,6 +8,8 @@ import android.support.v4.provider.DocumentFile;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.widget.Toast;
+import base.util.FileUtil;
+import base.util.PermissionUtil;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
@@ -52,12 +54,12 @@ public class RenameDialog extends DialogFragment {
             File from = mFileHolder.getFile();
             File dest = new File(mFileHolder.getFile().getParent() + File.separator + to);
 
-            if (FileUtils.isAndroid5() && FileUtils.isOnExtSdCard(from, mContext) && !dest.exists() && !TextUtils.isEmpty(to)) {
+            if (PermissionUtil.isAndroid5() && FileUtil.isOnExtSdCard(from, mContext) && !dest.exists() && !TextUtils.isEmpty(to)) {
                 DocumentFile documentFile;
                 if (from.isDirectory()) {
-                    documentFile = FileUtils.getDocumentFile(from, true, false, mContext);
+                    documentFile = FileUtil.getDocumentFile(from, true, false, mContext);
                 } else {
-                    documentFile = FileUtils.getDocumentFile(from, false, false, mContext);
+                    documentFile = FileUtil.getDocumentFile(from, false, false, mContext);
                 }
                 if(documentFile != null) {
                     res = documentFile.renameTo(to);

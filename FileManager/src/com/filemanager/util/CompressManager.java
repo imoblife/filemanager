@@ -2,6 +2,7 @@ package com.filemanager.util;
 
 import android.support.v4.provider.DocumentFile;
 import base.util.FileUtil;
+import base.util.PermissionUtil;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.*;
@@ -122,7 +123,7 @@ public class CompressManager {
 		protected void onPreExecute() {
 			FileOutputStream out = null;
 			zipDirectory = new File(fileOut);
-            zipDirectoryDocumentFile = FileUtils.getDocumentFile(zipDirectory, false, true, mContext);
+            zipDirectoryDocumentFile = FileUtil.getDocumentFile(zipDirectory, false, true, mContext);
             progressDialog = new ProgressDialog(mContext);
 			progressDialog.setCancelable(false);
 			progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
@@ -139,7 +140,7 @@ public class CompressManager {
 			progressDialog.show();
 			progressDialog.setProgress(0);
 			try {
-                if (FileUtils.isAndroid5() && zipDirectoryDocumentFile != null) {
+                if (PermissionUtil.isAndroid5() && zipDirectoryDocumentFile != null) {
 
                     OutputStream tmp = mContext.getContentResolver().openOutputStream(zipDirectoryDocumentFile.getUri());
                     zos = new ZipOutputStream(new BufferedOutputStream(tmp));

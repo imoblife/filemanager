@@ -68,9 +68,9 @@ public class ExtractManager {
             if (dir.exists()) {
                 return;
             }
-            if (FileUtils.isAndroid5() && FileUtils.isOnExtSdCard(dir, context)) {
+            if (PermissionUtil.isAndroid5() && FileUtil.isOnExtSdCard(dir, context)) {
 
-                if (FileUtils.getDocumentFile(dir, true, true, context) == null) {
+                if (FileUtil.getDocumentFile(dir, true, true, context) == null) {
                     throw new RuntimeException("Can not create dir " + dir);
                 }
 
@@ -94,8 +94,8 @@ public class ExtractManager {
             BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
             BufferedOutputStream outputStream = null;
 
-            DocumentFile documentFile = FileUtils.getDocumentFile(outputFile, false, true, context);
-            if (FileUtils.isAndroid5() && documentFile != null) {
+            DocumentFile documentFile = FileUtil.getDocumentFile(outputFile, false, true, context);
+            if (PermissionUtil.isAndroid5() && documentFile != null) {
 
                 OutputStream tmp = context.getContentResolver().openOutputStream(documentFile.getUri());
                 outputStream = new BufferedOutputStream(tmp);

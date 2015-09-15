@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.widget.Toast;
+import base.util.FileUtil;
+import base.util.PermissionUtil;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
@@ -64,9 +66,9 @@ public class MultiDeleteDialog extends DialogFragment {
 		 * @returns 0 if successful, error value otherwise.
 		 */
 		private void recursiveDelete(File file) {
-            if (FileUtils.isAndroid5() && (FileUtils.getDocumentFile(file, false, false, mContext) != null
-                    || FileUtils.getDocumentFile(file, true, false, mContext) != null)) {
-                mResult = (FileUtils.deleteFile(file, mContext)) ? 1 : 0;
+            if (PermissionUtil.isAndroid5() && (FileUtil.getDocumentFile(file, false, false, mContext) != null
+                    || FileUtil.getDocumentFile(file, true, false, mContext) != null)) {
+                mResult = (FileUtil.deleteFile(file, mContext)) ? 1 : 0;
             } else {
                 File[] files = file.listFiles();
                 if (files != null && files.length != 0)

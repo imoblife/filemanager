@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import base.util.FileUtil;
+import base.util.PermissionUtil;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.File;
@@ -101,7 +102,7 @@ public class CopyHelper {
 	private boolean performCopy(File dest) {
 		boolean res = true;
 		try {
-            if (FileUtils.isAndroid5()) {
+            if (PermissionUtil.isAndroid5()) {
                 for (FileHolder fh : mClipboard) {
                     if (fh.getFile().isFile()) {
                         res &= copyFileAndroid5(
@@ -207,7 +208,7 @@ public class CopyHelper {
     private boolean copyFileAndroid5(File oldFile, File newFile) {
         try {
 
-            FileUtils.copyFile(oldFile, newFile, mContext);
+            FileUtil.copyFile(oldFile, newFile, mContext);
             // Request media scan
             MediaScannerUtils.informFileAdded(mContext, newFile);
         } catch (Exception e) {
@@ -229,7 +230,7 @@ public class CopyHelper {
 			}
 
             if (!result) {
-                documentFile = FileUtils.getDocumentFile(newFile, true, true, mContext);
+                documentFile = FileUtil.getDocumentFile(newFile, true, true, mContext);
                 if (documentFile == null) {
                     return false;
                 }
@@ -250,7 +251,7 @@ public class CopyHelper {
                 }
             }
 		} else {
-            res &= FileUtils.copyFile(oldFile, newFile, mContext);
+            res &= FileUtil.copyFile(oldFile, newFile, mContext);
         }
 
 		return res;
@@ -258,7 +259,7 @@ public class CopyHelper {
 
     private boolean cutFileAndroid5(File oldFile, File newFile) {
         try {
-            FileUtils.moveFile(oldFile, newFile, mContext);
+            FileUtil.moveFile(oldFile, newFile, mContext);
         } catch (Exception e) {
             return false;
         }
@@ -278,7 +279,7 @@ public class CopyHelper {
             }
 
             if (!result) {
-                documentFile = FileUtils.getDocumentFile(newFile, true, true, mContext);
+                documentFile = FileUtil.getDocumentFile(newFile, true, true, mContext);
                 if (documentFile == null) {
                     return false;
                 }
@@ -287,7 +288,7 @@ public class CopyHelper {
             // list all the directory contents
             String files[] = oldFile.list();
             if (files.length == 0) {
-                return FileUtils.deleteFile(oldFile, mContext);
+                return FileUtil.deleteFile(oldFile, mContext);
             }
 
             for (String file : files) {
@@ -302,7 +303,7 @@ public class CopyHelper {
                 }
             }
         } else {
-            res &= FileUtils.moveFile(oldFile, newFile, mContext);
+            res &= FileUtil.moveFile(oldFile, newFile, mContext);
         }
 
         return res;
@@ -318,7 +319,7 @@ public class CopyHelper {
 		boolean deleteOk = false;
 
 		File from;
-        if (FileUtils.isAndroid5()) {
+        if (PermissionUtil.isAndroid5()) {
             for (FileHolder fh : mClipboard) {
                 from = fh.getFile().getAbsoluteFile();
                 if (!from.isDirectory()) {
@@ -327,7 +328,7 @@ public class CopyHelper {
                     res &= cutFolderAndroid5(from, FileUtil.getFile(dest, fh.getName()));
                 }
 
-                deleteOk = FileUtils.deleteFile(from, mContext);
+                deleteOk = FileUtil.deleteFile(from, mContext);
                 if (deleteOk) {
                     MediaScannerUtils.informFileDeleted(mContext, from);
                     MediaScannerUtils.informFileAdded(mContext,

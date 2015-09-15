@@ -10,6 +10,8 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.provider.DocumentFile;
 import android.util.Log;
+import base.util.FileUtil;
+import base.util.PermissionUtil;
 import base.util.PreferenceDefault;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
@@ -45,8 +47,8 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
                                 try {
-                                    if (FileUtils.checkSdCardAndroid5(mContext.getApplicationContext()) && (text != null && text.length() != 0)
-                                            && FileUtils.isOnExtSdCard(new File(mIn + File.separator + text.toString()), mContext)) {
+                                    if (PermissionUtil.checkSdCardAndroid5(mContext.getApplicationContext()) && (text != null && text.length() != 0)
+                                            && FileUtil.isOnExtSdCard(new File(mIn + File.separator + text.toString()), mContext)) {
                                         triggerStorageAccessFramework(20);
                                     } else {
                                         createFolder(input, getActivity());
@@ -80,11 +82,11 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
                 }
                 dialog.show(getFragmentManager(), "OverwriteFileDialog");
             } else {
-                if(FileUtils.isAndroid5()){
+                if(PermissionUtil.isAndroid5()){
                     if (tbcreated.mkdirs()) {
                         Toast.makeText(c, R.string.create_dir_success, Toast.LENGTH_SHORT).show();
-                    } else if (FileUtils.isOnExtSdCard(tbcreated, mContext)) {
-                        DocumentFile documentFile = FileUtils.getDocumentFile(tbcreated, true, true, mContext);
+                    } else if (FileUtil.isOnExtSdCard(tbcreated, mContext)) {
+                        DocumentFile documentFile = FileUtil.getDocumentFile(tbcreated, true, true, mContext);
                         if (documentFile != null) {
                             Toast.makeText(c, R.string.create_dir_success, Toast.LENGTH_SHORT).show();
                         } else {
@@ -117,7 +119,7 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
     }
 
     private boolean deleteFolder(){
-        return FileUtils.deleteFile(tbcreated, c);
+        return FileUtil.deleteFile(tbcreated, c);
     }
 
     /**
@@ -136,7 +138,7 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && requestCode == FileUtils.REQUEST_STORAGE_CODE) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && requestCode == PermissionUtil.REQUEST_STORAGE_CODE) {
             onActivityResultLollipop(requestCode, resultCode, data);
         }
     }
@@ -156,7 +158,7 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public final void onActivityResultLollipop(final int requestCode, final int resultCode, final Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == FileUtils.REQUEST_STORAGE_CODE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == PermissionUtil.REQUEST_STORAGE_CODE) {
             Uri uri;
             // Get Uri from Storage Access Framework.
             uri = data.getData();
