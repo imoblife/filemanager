@@ -158,7 +158,11 @@ public class SimpleFileListFragment extends FileListFragment implements
         };
 
         if (PermissionUtil.checkSdCardAndroid5(getContext().getApplicationContext())) {
-            PermissionUtil.showStorageAccessDialog(this);
+            PermissionUtil.showStorageAccessDialog(this, new MaterialDialog.ButtonCallback() {
+                public void onNegative(MaterialDialog dialog) {
+                    PreferenceDefault.setBoolean(getContext(), PermissionUtil.KEY_USE_OLD_PATH, true);
+                }
+            });
         }
     }
 
