@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.provider.DocumentFile;
-import android.util.Log;
 import base.util.FileUtil;
 import base.util.PermissionUtil;
 import base.util.PreferenceDefault;
@@ -17,7 +16,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.dialogs.OverwriteFileDialog.Overwritable;
 import com.filemanager.lists.FileListFragment;
-import com.filemanager.util.FileUtils;
 import com.intents.FileManagerIntents;
 
 import android.app.Dialog;
@@ -47,7 +45,7 @@ public class CreateDirectoryDialog extends DialogFragment implements Overwritabl
                             @Override
                             public void onInput(MaterialDialog dialog, CharSequence input) {
                                 try {
-                                    if (PermissionUtil.checkSdCardAndroid5(mContext.getApplicationContext()) && (text != null && text.length() != 0)
+                                    if (!PermissionUtil.checkExSdCardWritable(mContext.getApplicationContext()) && (text != null && text.length() != 0)
                                             && FileUtil.isOnExtSdCard(new File(mIn + File.separator + text.toString()), mContext)) {
                                         triggerStorageAccessFramework(20);
                                     } else {
