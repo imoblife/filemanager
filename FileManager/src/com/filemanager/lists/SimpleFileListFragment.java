@@ -156,17 +156,29 @@ public class SimpleFileListFragment extends FileListFragment implements
                 }
             }
         };
-
-        if (!PermissionUtil.checkExSdCardWritable(getContext().getApplicationContext())) {
-            PermissionUtil.showStorageAccessDialog(this, new MaterialDialog.ButtonCallback() {
-                public void onNegative(MaterialDialog dialog) {
-                    PreferenceDefault.setBoolean(getContext(), PermissionUtil.KEY_USE_OLD_PATH, true);
-                }
-            });
-        }
     }
 
-    private void initCurrentSort(Context context) {
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		checkStorageAccess();
+	}
+
+	private void checkStorageAccess() {
+		try {
+			if (!PermissionUtil.checkExSdCardWritable(getContext().getApplicationContext())) {
+				PermissionUtil.showStorageAccessDialog(this, new MaterialDialog.ButtonCallback() {
+					public void onNegative(MaterialDialog dialog) {
+						PreferenceDefault.setBoolean(getContext(), PermissionUtil.KEY_USE_OLD_PATH, true);
+					}
+				});
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void initCurrentSort(Context context) {
         mPreference = new Preference(context);
         mCurrentSort = mPreference.getInt(Preference.PREFS_KEY_SORT_TYPE, Preference.SORT_TYPE_DEFAULT);
     }
