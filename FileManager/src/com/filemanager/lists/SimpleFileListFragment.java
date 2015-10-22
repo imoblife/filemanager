@@ -3,6 +3,7 @@ package com.filemanager.lists;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -170,6 +171,11 @@ public class SimpleFileListFragment extends FileListFragment implements
 				PermissionUtil.showStorageAccessDialog(this, new MaterialDialog.ButtonCallback() {
 					public void onNegative(MaterialDialog dialog) {
 						PreferenceDefault.setBoolean(getContext(), PermissionUtil.KEY_USE_OLD_PATH, true);
+					}
+				}, new DialogInterface.OnCancelListener() {
+					@Override
+					public void onCancel(DialogInterface dialog) {
+
 					}
 				});
 			}
