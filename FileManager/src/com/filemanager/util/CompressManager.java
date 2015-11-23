@@ -204,18 +204,23 @@ public class CompressManager {
 			} catch (NullPointerException e) {
 				Log.e(TAG, "zos was null and couldn't be closed", e);
 			}
-			cancelCompression = true;
-			progressDialog.cancel();
-			if (result == error) {
-				Toast.makeText(mContext, R.string.compressing_error,
-						Toast.LENGTH_SHORT).show();
-			} else if (result == success) {
-				Toast.makeText(mContext, R.string.compressing_success,
-						Toast.LENGTH_SHORT).show();
-			}
 
-			if (onCompressFinishedListener != null)
-				onCompressFinishedListener.compressFinished();
+			try {
+				cancelCompression = true;
+				progressDialog.cancel();
+				if (result == error) {
+					Toast.makeText(mContext, R.string.compressing_error,
+							Toast.LENGTH_SHORT).show();
+				} else if (result == success) {
+					Toast.makeText(mContext, R.string.compressing_success,
+							Toast.LENGTH_SHORT).show();
+				}
+
+				if (onCompressFinishedListener != null)
+					onCompressFinishedListener.compressFinished();
+			} catch (Throwable t) {
+				t.printStackTrace();
+			}
 		}
 	}
 
