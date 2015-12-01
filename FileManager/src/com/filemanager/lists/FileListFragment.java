@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -282,6 +283,8 @@ public abstract class FileListFragment extends BaseListFragment {
 					}
 					setLoading(false);
 					updateClipboardInfo();
+
+					onDirectoryContentShowed();
 					break;
 				case DirectoryScanner.MESSAGE_SET_PROGRESS:
 					// Irrelevant.
@@ -362,4 +365,6 @@ public abstract class FileListFragment extends BaseListFragment {
 	public String getFilename() {
 		return mFilename;
 	}
+
+	protected abstract void onDirectoryContentShowed();
 }

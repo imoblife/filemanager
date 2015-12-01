@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.*;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
@@ -118,7 +119,7 @@ public class SimpleFileListFragment extends FileListFragment implements
             keyword = bundle.getString(FileManagerActivity.EXTRA_PATH_KEYWORD);
             if (!TextUtils.isEmpty(keyword)) {
                 mAdapter.setHighlightKeyword(keyword);
-            }
+			}
         }
         getListView().setOnItemLongClickListener(this);
 
@@ -163,6 +164,20 @@ public class SimpleFileListFragment extends FileListFragment implements
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		checkStorageAccess();
+	}
+
+	@Override
+	protected void onDirectoryContentShowed() {
+		if(getListView() != null) {
+			getListView().post(new Runnable() {
+				@Override
+				public void run() {
+					final int p = mAdapter.findHighlightPosition();
+					int s = (int) MathUtil.clamp(0, p, p);
+					getListView().setSelection(s);
+				}
+			});
+		}
 	}
 
 	private void checkStorageAccess() {

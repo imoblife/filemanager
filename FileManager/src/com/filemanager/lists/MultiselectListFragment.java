@@ -92,6 +92,10 @@ public class MultiselectListFragment extends FileListFragment {
 				});
 	}
 
+	@Override
+	protected void onDirectoryContentShowed() {
+	}
+
 //	@Override
 //	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 //		inflater.inflate(R.menu.options_multiselect, menu);

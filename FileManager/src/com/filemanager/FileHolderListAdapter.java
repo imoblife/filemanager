@@ -143,8 +143,10 @@ public class FileHolderListAdapter extends BaseAdapter {
 		}
 
         if (!TextUtils.isEmpty(mKeyword) && mKeyword.equals(file.getName())) {
-            holder.content.setBackgroundResource(R.drawable.base_card_press);
-        }
+            holder.content.setPressed(true);
+        } else {
+			holder.content.setPressed(false);
+		}
         return convertView;
 	}
 
@@ -169,6 +171,17 @@ public class FileHolderListAdapter extends BaseAdapter {
     public void setHighlightKeyword(String keyword) {
         mKeyword = keyword;
     }
+
+	public int findHighlightPosition() {
+		for(int i = 0; i < getCount(); i++) {
+			FileHolder item = (FileHolder) getItem(i);
+			if(!TextUtils.isEmpty(mKeyword)
+					&& mKeyword.equals(item.getName())) {
+				return i;
+			}
+		}
+		return -1;
+	}
 
     public void clearFileChildrenCache(){
         mFileListsSize.clear();

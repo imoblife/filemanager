@@ -221,8 +221,7 @@ public class FileUtils {
         try {
             File path = FileUtil.getPathWithoutFilename(file);
             Bundle bundle = new Bundle();
-            bundle.putString(FileManagerActivity.EXTRA_FILE_URI,
-                    path.getAbsolutePath());
+            bundle.putString(FileManagerActivity.EXTRA_FILE_URI, path.getAbsolutePath());
             if (keyword != null) {
                 bundle.putString(FileManagerActivity.EXTRA_PATH_KEYWORD, keyword);
             }

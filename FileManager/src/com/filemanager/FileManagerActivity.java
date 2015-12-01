@@ -119,8 +119,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
         boolean pathBarClickable = true;
         String keyword = null;
         if (getIntent().getStringExtra(EXTRA_FILE_URI) != null) {
-			data = FileUtil.getFile(Uri.parse(getIntent().getStringExtra(
-					EXTRA_FILE_URI)));
+			data = FileUtil.getFile(Uri.parse(getIntent().getStringExtra(EXTRA_FILE_URI)));
 			if (getIntent().getStringExtra(EXTRA_CHANGE_TITLE) != null) {
 				setTitle(getIntent().getStringExtra(EXTRA_CHANGE_TITLE));
 			}
