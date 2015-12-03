@@ -287,7 +287,7 @@ public class CopyHelper {
 
             // list all the directory contents
             String files[] = oldFile.list();
-            if (files.length == 0) {
+            if (files != null &&  files.length == 0) {
                 return FileUtil.deleteFile(oldFile, mContext);
             }
 
