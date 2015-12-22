@@ -1,8 +1,6 @@
 package com.filemanager.occupancy;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -414,6 +412,10 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         private FileHolder mFileHolder;
 
         public DeleteDialog(FileHolder holder) {
+            if (getActivity() == null) {
+                return;
+            }
+
             mFileHolder = holder;
             MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
             builder.title(holder.getFile().getName());
