@@ -77,10 +77,14 @@ public class SearchListResultAdapter extends BaseAdapter {
         String name = arrayList.get(position).getName();
         SpannableStringBuilder style = new SpannableStringBuilder(name);
         if (!TextUtils.isEmpty(mQueryWord)) {
-            int start = (name.toLowerCase()).indexOf(mQueryWord.toLowerCase());
-            int end = start + mQueryWord.length();
-            style.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.search_highlight)), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-            holder.primaryInfo.setText(style);
+            try {
+                int start = (name.toLowerCase()).indexOf(mQueryWord.toLowerCase());
+                int end = start + mQueryWord.length();
+                style.setSpan(new ForegroundColorSpan(context.getResources().getColor(R.color.search_highlight)), start, end, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+                holder.primaryInfo.setText(style);
+            } catch (Exception e) {
+                holder.primaryInfo.setText(name);
+            }
         } else {
             holder.primaryInfo.setText(name);
         }
