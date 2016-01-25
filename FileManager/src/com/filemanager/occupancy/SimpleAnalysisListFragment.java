@@ -443,28 +443,34 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         private FileTreeNode<String> node;
 
         public ConfirmDialog(FileHolder holder) {
-            node = holder.getFileNode();
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-            builder.title(getString(R.string.really_delete, holder.getName()));
-            builder.positiveText(android.R.string.ok);
-            builder.icon(holder.getIcon());
-            builder.negativeText(android.R.string.cancel);
-            builder.callback(new MaterialDialog.ButtonCallback() {
-                @Override
-                public void onPositive(MaterialDialog dialog) {
-                    RefreshTreeNodeRunnable refreshTreeNodeRunnable = new RefreshTreeNodeRunnable(node, mHandler);
-                    setLoading(true);
-                    hideBottomLayout();
-                    mExecutors.execute(refreshTreeNodeRunnable);
-                }
-            });
+            try {
+                node = holder.getFileNode();
+                MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
+                builder.title(getString(R.string.really_delete, holder.getName()));
+                builder.positiveText(android.R.string.ok);
+                builder.icon(holder.getIcon());
+                builder.negativeText(android.R.string.cancel);
+                builder.callback(new MaterialDialog.ButtonCallback() {
+                    @Override
+                    public void onPositive(MaterialDialog dialog) {
+                        RefreshTreeNodeRunnable refreshTreeNodeRunnable = new RefreshTreeNodeRunnable(node, mHandler);
+                        setLoading(true);
+                        hideBottomLayout();
+                        mExecutors.execute(refreshTreeNodeRunnable);
+                    }
+                });
 
-            alertDialog = builder.build();
-            alertDialog.setCancelable(true);
+                alertDialog = builder.build();
+                alertDialog.setCancelable(true);
+            } catch(Throwable t) {
+                t.printStackTrace();
+            }
         }
 
         public void show() {
-            alertDialog.show();
+            if(alertDialog != null) {
+                alertDialog.show();
+            }
         }
     }
 
