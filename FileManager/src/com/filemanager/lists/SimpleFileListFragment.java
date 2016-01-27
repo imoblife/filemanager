@@ -163,8 +163,6 @@ public class SimpleFileListFragment extends FileListFragment implements
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		String s = getActivity().getIntent().toString();
-		Log.i(TAG, "onActivityCreated: " + s);
 		checkStorageAccess();
 	}
 
