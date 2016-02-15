@@ -1,0 +1,39 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "23.0.2"
+
+//    defaultConfig {
+//        minSdkVersion 15
+//        targetSdkVersion 23
+//        versionCode 1
+//        versionName "1.0"
+//    }
+ sourceSets {
+        main {
+            manifest.srcFile 'FileManager/AndroidManifest.xml'
+            java.srcDirs = ['FileManager/src']
+            resources.srcDirs = ['FileManager/src']
+            aidl.srcDirs = ['FileManager/src']
+            renderscript.srcDirs = ['FileManager/src']
+            res.srcDirs = ['FileManager/res']
+            assets.srcDirs = ['FileManager/assets']
+        }
+
+        instrumentTest.setRoot('tests')
+        debug.setRoot('build-types/debug')
+        release.setRoot('build-types/release')
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'FileManager/libs', include: ['*.jar'])
+    compile project(':All-In-One-Toolbox:Toolbox_BaseLibrary')
+}
