@@ -137,9 +137,13 @@ public class FileHolderListAdapter extends BaseAdapter {
         holder.tertiaryInfo.setText(tertiaryInfo);
 
 		if (shouldLoadIcon(item)) {
-			if (mThumbnailLoader != null) {
-				mThumbnailLoader.loadImage(item, holder.icon);
-			}
+            try {
+                if (mThumbnailLoader != null) {
+                    mThumbnailLoader.loadImage(item, holder.icon);
+                }
+            }catch (OutOfMemoryError outOfMemoryError){
+            }catch (Exception e){
+            }
 		}
 
         if (!TextUtils.isEmpty(mKeyword) && mKeyword.equals(file.getName())) {
