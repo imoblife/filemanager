@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!-- 
  * Copyright (C) 2007-2008 OpenIntents.org
  *
@@ -32,7 +32,7 @@
     <string name="menu_rename">名前の変更</string>
     <string name="menu_send">送信</string>
     <string name="menu_open">開く</string>
-    <string name="menu_move">Cut</string>
+    <string name="menu_move">少し</string>
     <string name="menu_copy">コピー</string>
     <string name="menu_details">詳細情報</string>
     <string name="menu_more">もっと</string>
@@ -114,26 +114,26 @@
     <string name="compressing_error">アイテムを圧縮することができませんでした</string>
     <string name="extracting_success">アイテムは問題なく解凍されました。</string>
     <string name="extracting_error">アイテムを解凍することができませんでした。</string>
-    <string name="extracting">Extracting…</string>
-    <string name="compressing">Compressing…</string>
+    <string name="extracting">抽出中...</string>
+    <string name="compressing">圧縮中...</string>
     
     <string name="menu_bookmarks">ブックマーク</string>
-    <string name="menu_search">Search</string>
-    <string name="menu_create_folder">Create folder</string>
-    <string name="menu_paste">Paste</string>
-    <string name="menu_multiselect">Multiselect</string>
+    <string name="menu_search">検索</string>
+    <string name="menu_create_folder">フォルダを作る</string>
+    <string name="menu_paste">ペースト</string>
+    <string name="menu_multiselect">複数選択</string>
     <string name="menu_settings">設定</string>
 
-    <string name="menu_create_shortcut">Create shortcut</string>
-    <string name="send_chooser_title">Send using:</string>
+    <string name="menu_create_shortcut">ショートカットを作成</string>
+    <string name="send_chooser_title">送信</string>
     
-    <string name="menu_check_all">Check all</string>
-    <string name="menu_uncheck_all">Uncheck all</string>
+    <string name="menu_check_all">すべてチェックする</string>
+    <string name="menu_uncheck_all">すべてチェックをはずす</string>
 
-    <string name="selected">selected</string>
-    <string name="no_selection">No items checked</string>
+    <string name="selected">選択</string>
+    <string name="no_selection">何もチェックされていません</string>
     
-    <string name="bookmark_empty">No bookmarks added.</string>
+    <string name="bookmark_empty">ブックマークされていません</string>
     <string name="bookmark_added">ブックマークが追加されました</string>
     <string name="bookmark_already_exists">このファイルは既にブックマークしてあります</string>
     <string name="bookmarks">ブックマーク</string>
@@ -143,32 +143,50 @@
     <string name="search_settings_descr">Files and folders in storage</string>
     <string name="preference_search_title">Clear history</string>
     <string name="preference_search_category">Search</string>
-    <string name="preference_search_dialog_message">Clear search history?</string>
-    <string name="search_history_cleared">Search history cleared</string>
+    <string name="preference_search_dialog_message">検索履歴を消去しますか？</string>
+    <string name="search_history_cleared">検索履歴が消去されました</string>
     
-    <string name="item_icon">Item icon</string>
+    <string name="item_icon">アイテムアイコン</string>
 
-    <string name="file_scanning">Scanning…</string>
+    <string name="file_scanning">スキャン中です...</string>
 
     <string name="delete_success">Successfully deleted</string>
-    <string name="delete_failure">Some files not deleted</string>
-    <string name="deleting">Deleting…</string>
-    <string name="rename_success">Successfully renamed</string>
-    <string name="rename_failure">Couldn\'t rename</string>
-    <string name="loading">Loading…</string>
-    <string name="create_dir_success">Successfully created directory</string>
-    <string name="create_dir_failure">Couldn\'t create directory</string>
-    <string name="compressed_file_name">Zip file name</string>
-    <string name="file_exists">File exists</string>
-    <string name="overwrite_question">Overwrite old file?</string>
+    <string name="delete_failure">いくつかのファイルが削除されませんでした</string>
+    <string name="deleting">削除中...</string>
+    <string name="rename_success">名前が変更されました</string>
+    <string name="rename_failure">名前の変更ができませんでした</string>
+    <string name="loading">ローディング...</string>
+    <string name="create_dir_success">ディレクトリが作成されました</string>
+    <string name="create_dir_failure">ディレクトリが作成できませんでした</string>
+    <string name="compressed_file_name">ZIPファイル名</string>
+    <string name="file_exists">ファイルがあります</string>
+    <string name="overwrite_question">古いファイルを上書きしますか？</string>
     
-    <string name="directory_pick">Select current directory</string>
+    <string name="directory_pick">現在のディレクトリを選択する</string>
     
-    <string name="copying">Copying…</string>
-    <string name="copied">Successfully copied</string>
-    <string name="copy_error">Some or all items couldn\'t be copied!</string>
-    <string name="moving">Moving…</string>
-    <string name="moved">Successfully moved</string>
-    <string name="move_error">Some or all items couldn\'t be moved!</string>
-    <string name="nothing_to_paste">Nothing to paste. Copy or cut files first.</string>
+    <string name="copying">コピー中です....</string>
+    <string name="copied">コピーされました</string>
+    <string name="copy_error">いくつか、若しくはすべてのアイテムがコピーできません</string>
+    <string name="moving">移動中です....</string>
+    <string name="moved">移動できました</string>
+    <string name="move_error">いくつか、若しくはすべてのアイテムが移動できませんで</string>
+    <string name="nothing_to_paste">ペーストするものがありません。コピー若しくは切り取り</string>
+
+<!--5.2.0 for filemanager menu-->
+    <string name="file_sort">ソート</string>
+    <string name="file_sort_dialog_title">ソート</string>
+    <string name="file_sort_by_name">名前</string>
+    <string name="file_sort_by_time">更新日</string>
+    <string name="file_sort_by_default"> デフォルト</string>
+    <string name="storage_analysis">ファイルサイズ</string>
+
+<!--5.2.0 file search dialog text-->
+    <string name="file_search_message">検索中です</string>
+    <string name="file_search_no_result">（何もマッチしませんでした）</string>
+
+    <!--storage analysis text-->
+    <string name="storage_analysis_delete">削除</string>
+    <string name="storage_analysis_avail_size">使用可能：%s</string>
+    <string name="storage_analysis_total_size">/トータル：%s</string>
+    <string name="storage_analysis_scan_count">スキャン中： %s アイテムが解析されました...</string>
 </resources>
