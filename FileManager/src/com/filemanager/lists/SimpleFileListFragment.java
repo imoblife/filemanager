@@ -402,9 +402,13 @@ public class SimpleFileListFragment extends FileListFragment implements
 						Toast.LENGTH_LONG).show();
 			return true;
 		} else if (id == R.id.menu_multiselect) {
-			Intent intent = new Intent(FileManagerIntents.ACTION_MULTI_SELECT);
-			intent.putExtra(FileManagerIntents.EXTRA_DIR_PATH, getPath());
-			startActivityForResult(intent, REQUEST_CODE_MULTISELECT);
+			try {
+				Intent intent = new Intent(FileManagerIntents.ACTION_MULTI_SELECT);
+				intent.putExtra(FileManagerIntents.EXTRA_DIR_PATH, getPath());
+				startActivityForResult(intent, REQUEST_CODE_MULTISELECT);
+			} catch(Throwable t) {
+				t.printStackTrace();
+			}
             return true;
         } else if (id == MENU_ID_SORT) {
             new SortDialog();
