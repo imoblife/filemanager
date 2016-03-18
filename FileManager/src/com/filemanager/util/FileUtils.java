@@ -184,27 +184,29 @@ public class FileUtils {
     }
 
     public static String getNameWithoutExtension(File f) {
-        return f.getName().substring(
-                0,
-                f.getName().length()
-                        - FileUtil.getExtension(FileUtil.getUri(f).toString()).length());
+        int end = f.getName().length() - FileUtil.getExtension(FileUtil.getUri(f).toString()).length();
+        return f.getName().substring(0, end);
     }
 
-    public static void locateFile(Context context, String uri, String title) {
-        locateFile(context, new File(uri), title);
+    public static void locate(Context context, String uri, String title) {
+        locateAndHighlight(context, new File(uri), title);
     }
 
-    public static void locateFile(Context context, String uri) {
-        locateFile(context, new File(uri), null);
+    public static void locate(Context context, File file, String title) {
+        locateAndHighlight(context, file, title);
     }
 
-    public static void locateFile(Context context, File file, String title) {
+    public static void locate(Context context, String uri) {
+        locateAndHighlight(context, new File(uri), null);
+    }
+
+    public static void locateAndHighlight(Context context, File file, String title) {
         try {
-            File path = FileUtil.getPathWithoutFilename(file);
             Bundle bundle = new Bundle();
-            bundle.putString(FileManagerActivity.EXTRA_FILE_URI, path.getAbsolutePath());
+            bundle.putString(FileManagerActivity.EXTRA_FILE_URI, file.getAbsolutePath());
             if (title != null) {
                 bundle.putString(FileManagerActivity.EXTRA_CHANGE_TITLE, title);
+                bundle.putString(FileManagerActivity.EXTRA_PATH_KEYWORD, title);
             }
             bundle.putBoolean(FileManagerActivity.EXTRA_PATH_CLICK, false);
             Intent intent = new Intent(context, FileManagerActivity.class);
@@ -214,42 +216,5 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void locateFileAndHighlight(Context context, File file, String keyword) {
-//        try {
-        FileUtil.getPathWithoutFilename()
-
-            Bundle bundle = new Bundle();
-        bundle.putString(FileManagerActivity.EXTRA_FILE_URI, file.getAbsolutePath());
-            if (keyword != null) {
-                bundle.putString(FileManagerActivity.EXTRA_PATH_KEYWORD, keyword);
-            }
-            bundle.putBoolean(FileManagerActivity.EXTRA_PATH_CLICK, false);
-            Intent intent = new Intent(context, FileManagerActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtras(bundle);
-            context.startActivity(intent);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-    }
-
-
-    public static void locateFolderAndHighlight(Context context, File file, String keyword) {
-//        try {
-        Bundle bundle = new Bundle();
-        bundle.putString(FileManagerActivity.EXTRA_FILE_URI, file.getAbsolutePath());
-        if (keyword != null) {
-            bundle.putString(FileManagerActivity.EXTRA_PATH_KEYWORD, keyword);
-        }
-        bundle.putBoolean(FileManagerActivity.EXTRA_PATH_CLICK, false);
-        Intent intent = new Intent(context, FileManagerActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtras(bundle);
-        context.startActivity(intent);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
     }
 }
