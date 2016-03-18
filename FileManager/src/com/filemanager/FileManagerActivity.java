@@ -131,21 +131,19 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 		}
 
 		// Add fragment only if it hasn't already been added.
-		mFragment = (SimpleFileListFragment) getSupportFragmentManager()
-				.findFragmentByTag(FRAGMENT_TAG);
+		mFragment = (SimpleFileListFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
 		if (mFragment == null) {
 			mFragment = new SimpleFileListFragment();
 			Bundle args = new Bundle();
 			if (data == null) {
-                args.putString(
-                        FileManagerIntents.EXTRA_DIR_PATH,
-                        Environment.getExternalStorageState().equals(
-                                Environment.MEDIA_MOUNTED) ? PreferenceHelper
-                                .getSdcardPath(getApplicationContext()) : "/");
-            }else {
-                args.putString(FileManagerIntents.EXTRA_DIR_PATH,
-                        data.toString());
-            }
+				String sdcardPath = PreferenceHelper.getSdcardPath(getApplicationContext());
+				String value = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? sdcardPath : "/";
+				Log.i(getClass().getSimpleName(), "LOC::onCreate " + value);
+				args.putString(FileManagerIntents.EXTRA_DIR_PATH, value);
+			} else {
+				Log.i(getClass().getSimpleName(), "LOC::onCreate " + data.toString());
+				args.putString(FileManagerIntents.EXTRA_DIR_PATH, data.toString());
+			}
             args.putBoolean(EXTRA_PATH_CLICK, pathBarClickable);
             if (!TextUtils.isEmpty(keyword)) {
                 args.putString(EXTRA_PATH_KEYWORD, keyword);

@@ -218,9 +218,10 @@ public class FileUtils {
 
     public static void locateFileAndHighlight(Context context, File file, String keyword) {
 //        try {
-            File path = FileUtil.getPathWithoutFilename(file);
+        FileUtil.getPathWithoutFilename()
+
             Bundle bundle = new Bundle();
-            bundle.putString(FileManagerActivity.EXTRA_FILE_URI, path.getAbsolutePath());
+        bundle.putString(FileManagerActivity.EXTRA_FILE_URI, file.getAbsolutePath());
             if (keyword != null) {
                 bundle.putString(FileManagerActivity.EXTRA_PATH_KEYWORD, keyword);
             }

@@ -88,19 +88,20 @@ public class SimpleFileListFragment extends FileListFragment implements
 		// the view.
 		/*	LinearLayout base_titlebar_ll = (LinearLayout) view.findViewById(R.id.base_titlebar_ll);
 			base_titlebar_ll.setOnClickListener(new OnClickListener() {
-
 				@Override
 				public void onClick(View v) {
 					// TODO Auto-generated method stub
 					getActivity().finish();
 				}
 			});*/
+
+		Log.i(getClass().getSimpleName(), "LOC::onViewCreated " + getPath());
+
 		if (savedInstanceState == null)
 			mPathBar.setInitialDirectory(getPath());
 		else
 		mPathBar.cd(getPath());
 		mPathBar.setOnDirectoryChangedListener(new OnDirectoryChangedListener() {
-
 			@Override
             public void directoryChanged(File newCurrentDir, FileHolder fileHolder) {
                 open(new FileHolder(newCurrentDir, getActivity()));
@@ -379,8 +380,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 			Bundle args = new Bundle();
 			args.putString(FileManagerIntents.EXTRA_DIR_PATH, getPath());
 			dialog.setArguments(args);
-			dialog.show(getActivity().getSupportFragmentManager(),
-                    CreateDirectoryDialog.class.getName());
+			dialog.show(getActivity().getSupportFragmentManager(), CreateDirectoryDialog.class.getName());
 			return true;
 		} else if (id == R.id.menu_media_scan_include) {
 			includeInMediaScan();

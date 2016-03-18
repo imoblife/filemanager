@@ -127,8 +127,7 @@ public abstract class FileListFragment extends BaseListFragment {
 		// Init flipper
 		mFlipper = (ViewFlipper) view.findViewById(R.id.flipper);
 		mClipboardInfo = view.findViewById(R.id.clipboard_info);
-		mClipboardContent = (TextView) view
-				.findViewById(R.id.clipboard_content);
+		mClipboardContent = (TextView) view.findViewById(R.id.clipboard_content);
 
 		mClipboardContent.setOnClickListener(new View.OnClickListener() {
 
