@@ -36,7 +36,7 @@
     <string name="menu_exclude_from_media_scan">Виключити з медіа сканування</string>
     <string name="menu_bookmark">Закладка</string>
     <string name="create_new_folder">Створити нову папку</string>
-    <string name="folder_name">Ім'я папки</string>
+    <string name="folder_name">Ім\'я папки</string>
     <string name="this_folder_is_empty">Ця папка порожня.</string>
     <string name="really_delete">Ви дійсно хочете видалити %s?</string>
     <string name="title_warning_some_may_not_work">Попередження</string>
@@ -147,7 +147,7 @@
     <string name="file_exists">Файл існує</string>
     <string name="overwrite_question">Переписати старий файл?</string>
     <string name="directory_pick">Виберіть поточний каталог</string>
-    <string name="filename_hint">Ім'я файлу</string>
+    <string name="filename_hint">Ім\'я файлу</string>
     <string name="choose_filename">Імя файлу не може бути порожнім!</string>
     <string name="pick_button_default">Виберіть файл</string>
     <string name="copying">Копіювання&#8230; </string>
@@ -158,14 +158,14 @@
     <string name="move_error">Деякі або всі елементи не можуть бути переміщені!</string>
     <string name="nothing_to_paste">Нічого не вставлено. Спочатку виріжте або скопіюйте файли.</string>
 
-    <plurals name="clipboard_info_items_to_copy">
+    <string-array name="clipboard_info_items_to_copy">
         <item quantity="one">%1$d пункт скопіювати</item>
         <item quantity="other">%1$d пункт скопіювати</item>
-    </plurals>
-    <plurals name="clipboard_info_items_to_move">
+    </string-array>
+    <string-array name="clipboard_info_items_to_move">
         <item quantity="one">%1$d Щоб перемістити елемент</item>
         <item quantity="other">%1$d items to move</item>
-    </plurals>
+    </string-array>
 
     <string name="clipboard_undo">Відмінити</string>
     <string name="clipboard_dismiss">Відхиляти</string>
