@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?><!--
+ * Copyright (C) 2007-2008 OpenIntents.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+
+
+-->
+<resources>
+
+    <string name="about_translators">Перекладач-кредити</string>
+    <string name="about_comments">Управління файлами на SD-карті за допомогою диспетчера OI File Manager.</string>
+
+
+    <string name="app_name">OI File Manager</string>
+    <string name="menu_delete">Видалити</string>
+    <string name="menu_rename">Перейменувати</string>
+    <string name="menu_send">Послати</string>
+    <string name="menu_open">Відкрити</string>
+    <string name="menu_move">Вирізати</string>
+    <string name="menu_copy"> Копія</string>
+    <string name="menu_details">Деталі</string>
+    <string name="menu_more"> Більше</string>
+    <string name="menu_compress">Стиснути (ZIP)</string>
+    <string name="menu_extract">Розпакувати (ZIP)</string>
+    <string name="menu_include_in_media_scan">Включіть в медіа-сканування</string>
+    <string name="menu_exclude_from_media_scan">Виключити з медіа сканування</string>
+    <string name="menu_bookmark">Закладка</string>
+    <string name="create_new_folder">Створити нову папку</string>
+    <string name="folder_name">Ім\'я папки</string>
+    <string name="this_folder_is_empty">Ця папка порожня.</string>
+    <string name="really_delete">Ви дійсно хочете видалити %s?</string>
+    <string name="title_warning_some_may_not_work">Попередження</string>
+    <string name="warning_some_may_not_work">Деякі з таких параметрів можуть не працювати.</string>
+    <string name="show_warning_again">Показувати попередження знову</string>
+
+    <string name="really_delete_multiselect">Ви дійсно хочете видалити %d файли?</string>
+    <string name="multiselect_title">Виберіть кілька файлів</string>
+    <string name="pick_title">Збирач файлів</string>
+
+    <string name="details_type">Тип</string>
+    <string name="details_type_folder">Папка</string>
+    <string name="details_type_file">Файл/</string>
+    <string name="details_type_other">Інший</string>
+    <string name="details_size">Розмір</string>
+    <string name="details_permissions">Дозволи</string>
+    <string name="details_hidden">Прихований</string>
+    <string name="details_lastmodified">Остання зміна</string>
+    <string name="details_yes">Так</string>
+    <string name="details_no">Немає</string>
+    <string name="copied_file_name">Копіювати %s</string>
+
+    <string name="copied_file_name_2">Копіювати %1$d з %2$s</string>
+    <string name="media_scan_included">Ця папка буде включена в наступне медіа-сканування.</string>
+    <string name="media_scan_excluded">Ця папка буде виключена під час наступного сканування носія.</string>
+    <string name="error_generic">Виникла помилка: </string>
+    <string name="error_media_scan">Неможливо змінити параметри перевірки медіа.</string>
+    <string name="send_not_available">Немає доступних додатків для відправки.</string>
+    <string name="application_not_available">Додаток не доступний</string>
+
+    <string name="settings"> Налаштування</string>
+    <string name="preference_advanced_features">Розширені можливості</string>
+    <string name="preference_mediascan_title">Виключити з медіа сканування</string>
+    <string name="preference_mediascan_summary_on">Показувати пункт меню, щоб виключити папки з медіа сканування.</string>
+    <string name="preference_mediascan_summary_off">Приховати пункт меню, щоб виключити папки з медіа сканування.</string>
+    <string name="preference_showallwarning_title">Показати всі попередження</string>
+    <string name="preference_showallwarning_summary_on">Показати всі попереджувальні повідомлення</string>
+    <string name="preference_showallwarning_summary_off">Пригнічувати попереджувальні повідомлення</string>
+    <string name="preference_displayhiddenfiles_title">Відображення прихованих файлів</string>
+    <string name="preference_displayhiddenfiles_summary_on">Відображення прихованих файлів</string>
+    <string name="preference_displayhiddenfiles_summary_off"> Приховати приховані файли</string>
+    <string name="preference_sort_settings">Настройки сортування</string>
+    <string name="preference_sortby">Сортувати за</string>
+    <string name="preference_sortby_ascending"> В порядку зростання</string>
+    <string name="preference_sortby_ascending_summary_on"> Сортування в порядку зростання</string>
+    <string name="preference_sortby_ascending_summary_off">Сортування в порядку убування</string>
+
+    <string-array name="preference_sortby_names">
+        <item> Ім\'я</item>
+        <item> Розмір</item>
+        <item>Остання зміна</item>
+        <item>Розширення файлу</item>
+    </string-array>
+
+    <string name="preference_usedarktheme_title">Використовуйте темну тему (потрібно перезапуск програми)</string>
+    <string name="preference_usedarktheme_summary_on">Темна тема обрана</string>
+    <string name="preference_usedarktheme_summary_off">Легка тема обрана</string>
+
+    <string name="saveas_no_file_picked">Ви не \'т вибрали жодного файлу.</string>
+    <string name="saveas_error">Сталася помилка.</string>
+    <string name="saveas_file_saved">Файл успішно збережений!</string>
+
+    <string name="compressing_success">Елемент успішно стиснено</string>
+    <string name="compressing_error">Не вдалося стиснути цей файл</string>
+    <string name="extracting_success"> Елемент успішно вилучений</string>
+    <string name="extracting_error"> Не вдалося витягти деталь</string>
+    <string name="extracting">Розпакування ...&#8230; </string>
+    <string name="compressing">Стискання ...&#8230; </string>
+    <string name="menu_bookmarks">Закладки</string>
+    <string name="menu_search">Пошук</string>
+    <string name="menu_create_folder">Створити папку</string>
+    <string name="menu_paste">Клейстер</string>
+    <string name="menu_multiselect">Множинний вибір</string>
+    <string name="menu_settings">Настройки</string>
+    <string name="menu_donate">Пожертвувати</string>
+
+    <string name="menu_create_shortcut">Створити ярлик</string>
+    <string name="send_chooser_title">Надіслати за допомогою:</string>
+    <string name="menu_check_all">Перевірити все</string>
+    <string name="menu_uncheck_all"> Скасувати все</string>
+    <string name="selected">Обраний</string>
+    <string name="no_selection">Нічого не перевірено</string>
+    <string name="bookmark_empty">Закладки не додані.</string>
+    <string name="bookmark_added">Закладку додано</string>
+    <string name="bookmark_already_exists">Цей файл вже є закладкою</string>
+    <string name="bookmarks">Закладки</string>
+
+    <string name="search_hint">Пошук файлів</string>
+    <string name="query_error">Помилка запиту</string>
+    <string name="search_settings_descr">Файли і папки в сховищі</string>
+    <string name="preference_search_title">Очистити історію</string>
+    <string name="preference_search_category">Пошук</string>
+    <string name="preference_search_dialog_message">Очистити історію пошуку?</string>
+    <string name="search_history_cleared">Історія пошуку видалена</string>
+
+    <string name="item_icon">Ярлик елемента</string>
+    <string name="file_scanning">Сканування&#8230; </string>
+
+    <string name="delete_success">Успішно видалено</string>
+    <string name="delete_failure">Деякі файли не видаляються</string>
+    <string name="deleting">Видалення&#8230;</string>
+    <string name="rename_success">Успішно перейменовано</string>
+    <string name="rename_failure"> Перейменування не вдалося</string>
+    <string name="loading">Завантаженння&#8230; </string>
+    <string name="create_dir_success">Rаталог eспішно створено</string>
+    <string name="create_dir_failure"> Неможливо створити каталог</string>
+    <string name="compressed_file_name"> Zip файл</string>
+    <string name="file_exists">Файл існує</string>
+    <string name="overwrite_question">Переписати старий файл?</string>
+    <string name="directory_pick">Виберіть поточний каталог</string>
+    <string name="filename_hint">Ім\'я файлу</string>
+    <string name="choose_filename">Імя файлу не може бути порожнім!</string>
+    <string name="pick_button_default">Виберіть файл</string>
+    <string name="copying">Копіювання&#8230; </string>
+    <string name="copied">Успішно скопійовано</string>
+    <string name="copy_error"> Деякі або всі елементи не скопійовані!</string>
+    <string name="moving">Переміщення&#8230;</string>
+    <string name="moved"> Успішно переміщено</string>
+    <string name="move_error">Деякі або всі елементи не можуть бути переміщені!</string>
+    <string name="nothing_to_paste">Нічого не вставлено. Спочатку виріжте або скопіюйте файли.</string>
+
+    <string-array name="clipboard_info_items_to_copy">
+        <item quantity="one">%1$d пункт скопіювати</item>
+        <item quantity="other">%1$d пункт скопіювати</item>
+    </string-array>
+    <string-array name="clipboard_info_items_to_move">
+        <item quantity="one">%1$d Щоб перемістити елемент</item>
+        <item quantity="other">%1$d items to move</item>
+    </string-array>
+
+    <string name="clipboard_undo">Відмінити</string>
+    <string name="clipboard_dismiss">Відхиляти</string>
+    <string name="preference_usebestmatch_title">Використовуйте кращий додаток для іконок</string>
+    <string name="preference_usebestmatch_summary_off">використайте останній встановлений додаток</string>
+    <string name="preference_usebestmatch_summary_on">використайте найбільш підходяще додаток</string>
+
+    <string name="paste">Вставити</string>
+
+    <!--5.2.0 for filemanager menu-->
+    <string name="file_sort">Сортувати за</string>
+    <string name="file_sort_dialog_title">Сортувати за</string>
+    <string name="file_sort_by_name">ім\'я</string>
+    <string name="file_sort_by_time">В останнє змінено</string>
+    <string name="file_sort_by_default">За замовчуванням</string>
+    <string name="storage_analysis">Великі файли</string>
+
+    <!--5.2.0 file search dialog text-->
+    <string name="file_search_message">Йде пошук ...</string>
+    <string name="file_search_no_result">(Жодого результату не знайдено)</string>
+
+    <!--storage analysis text-->
+    <string name="storage_analysis_delete"> Видалити</string>
+    <string name="storage_analysis_avail_size">Доступно:%s</string>
+    <string name="storage_analysis_total_size">/ Разом:%s</string>
+    <string name="storage_analysis_scan_count">Сканування: %s елементів досліджено...</string>
+
+</resources>
