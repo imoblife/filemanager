@@ -42,7 +42,7 @@ public class CopyHelper {
 
 	public static CopyHelper get(Context c) {
 		if (instance == null) {
-			instance = new CopyHelper(c);
+			instance = new CopyHelper(c.getApplicationContext());
 		}
 		return instance;
 	}
