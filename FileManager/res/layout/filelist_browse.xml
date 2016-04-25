@@ -9,7 +9,8 @@
         android:id="@+id/pathbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/topBar_height"
-        android:background="@drawable/base_bg" >
+        android:gravity="center_vertical"
+        android:background="@color/grey_f9f9f9" >
     </com.filemanager.view.PathBar>
 
     <include layout="@layout/filelist" />

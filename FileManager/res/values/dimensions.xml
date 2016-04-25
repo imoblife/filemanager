@@ -1,6 +1,6 @@
 <resources>
-    <dimen name="topBar_height">48dp</dimen>
-    <dimen name="topBar_height_big">56dp</dimen>
+    <dimen name="topBar_height">36dp</dimen>
+    <dimen name="topBar_height_big">36dp</dimen>
 
     <!-- Side margins for file list -->
     <dimen name="list_margin">8dp</dimen>

@@ -3,6 +3,7 @@ package com.filemanager.view;
 import java.io.File;
 import java.util.HashMap;
 
+import android.view.Gravity;
 import com.filemanager.R;
 
 import android.content.Context;
@@ -167,7 +168,8 @@ public class PathBar extends ViewFlipper {
 		mPathButtons = new PathButtonLayout(getContext());
 		{
 			android.widget.LinearLayout.LayoutParams layoutParams = new android.widget.LinearLayout.LayoutParams(
-					LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+					LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
+            layoutParams.gravity = Gravity.CENTER_VERTICAL;
 
 			mPathButtons.setLayoutParams(layoutParams);
 			mPathButtons.setNavigationBar(this);

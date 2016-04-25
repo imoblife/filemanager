@@ -209,7 +209,7 @@ public class SimpleFileListFragment extends FileListFragment implements
         mSearchActionBarLayout = (LinearLayout) root.findViewById(R.id.titlebar_ad_ll);
         mSearchActionBarLayout.setVisibility(View.VISIBLE);
         ImageView search = (ImageView) mSearchActionBarLayout.findViewById(R.id.titlebar_ad_iv);
-        search.setImageResource(R.drawable.ic_action_search);
+        search.setImageResource(R.drawable.icon_menu_search);
         mSearchActionBarLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
