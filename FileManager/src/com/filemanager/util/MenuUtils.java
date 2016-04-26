@@ -157,7 +157,8 @@ public abstract class MenuUtils {
 		} else if (id == R.id.menu_move) {
 			CopyHelper.get(navigator.getActivity()).cut(fItems);
 			navigator.updateClipboardInfo();
-			return true;
+            navigator.getActivity().finish();
+            return true;
 			
 			// Refresh options menu
 			// if(VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
@@ -165,7 +166,8 @@ public abstract class MenuUtils {
 		} else if (id == R.id.menu_copy) {
 			CopyHelper.get(navigator.getActivity()).copy(fItems);
 			navigator.updateClipboardInfo();
-			return true;
+            navigator.getActivity().finish();
+            return true;
 			// Refresh options menu
 			// if(VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB)
 			// ActionbarRefreshHelper.activity_invalidateOptionsMenu(navigator.getActivity());

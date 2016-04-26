@@ -13,6 +13,7 @@ import com.filemanager.files.FileHolder;
 import com.filemanager.view.ViewHolder;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -76,6 +77,11 @@ public class FileHolderListAdapter extends BaseAdapter {
 		else
 			mItemLayoutId = R.layout.item_filelist;
 	}
+
+    public void setData(ArrayList<FileHolder> list){
+        mItems = list;
+        notifyDataSetChanged();
+    }
 
 	/**
 	 * Creates a new list item view, along with it's ViewHolder set as a tag.

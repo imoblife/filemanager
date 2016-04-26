@@ -315,26 +315,43 @@ public class CopyHelper {
 	 * @return false if ANY error has occurred. This may mean that some files have been successfully moved, but not all. 
 	 */
 	private boolean performCut(File dest) {
-		boolean res = true;
-		boolean deleteOk = false;
+        boolean res = true;
+        boolean deleteOk = false;
+        boolean createOk = false;
 
-		File from;
+        File from;
         if (PermissionUtil.isAndroid5()) {
             for (FileHolder fh : mClipboard) {
                 from = fh.getFile().getAbsoluteFile();
-                if (!from.isDirectory()) {
-                    res &= cutFileAndroid5(from, FileUtil.getFile(dest, fh.getName()));
-                } else {
-                    res &= cutFolderAndroid5(from, FileUtil.getFile(dest, fh.getName()));
-                }
+                try {
+                    if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
+                        res = false;
+                    } else {
+                        if (!from.isDirectory()) {
+                            createOk = cutFileAndroid5(from, FileUtil.getFile(dest, fh.getName()));
+                        } else {
+                            createOk = cutFolderAndroid5(from, FileUtil.getFile(dest, fh.getName()));
+                        }
 
-                deleteOk = FileUtil.deleteFile(from, mContext);
-                if (deleteOk) {
-                    MediaScannerUtils.informFileDeleted(mContext, from);
-                    MediaScannerUtils.informFileAdded(mContext,
-							FileUtil.getFile(dest, fh.getName()));
-                }
+                        res &= createOk;
 
+                        if (createOk) {
+                            deleteOk = FileUtil.deleteFile(from, mContext);
+                            if (deleteOk) {
+                                MediaScannerUtils.informFileDeleted(mContext, from);
+                                MediaScannerUtils.informFileAdded(mContext,
+                                        FileUtil.getFile(dest, fh.getName()));
+                            }
+                        } else {
+                            deleteOk = false;
+                        }
+                        res &= deleteOk;
+
+                    }
+
+                } catch (Exception e) {
+                    res = false;
+                }
             }
 
         } else {
@@ -342,21 +359,21 @@ public class CopyHelper {
                 from = fh.getFile().getAbsoluteFile();
 
                 deleteOk = fh.getFile().renameTo(
-						FileUtil.getFile(dest, fh.getName()));
+                        FileUtil.getFile(dest, fh.getName()));
 
                 // Inform media scanner
                 if (deleteOk) {
                     MediaScannerUtils.informFileDeleted(mContext, from);
                     MediaScannerUtils.informFileAdded(mContext,
-							FileUtil.getFile(dest, fh.getName()));
+                            FileUtil.getFile(dest, fh.getName()));
                 }
 
                 res &= deleteOk;
             }
         }
 
-		return res;
-	}
+        return res;
+    }
 
 	/**
 	 * Paste the copied/cut items.
