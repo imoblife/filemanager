@@ -1,10 +1,12 @@
 package com.filemanager.lists;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.MenuUtils;
+import com.filemanager.util.Preference;
 import com.filemanager.view.LegacyActionContainer;
 
 import android.os.Bundle;
@@ -30,8 +32,9 @@ import android.widget.Toast;
  */
 public class MultiselectListFragment extends FileListFragment {
 	private LegacyActionContainer mLegacyActionContainer;
+    private Preference mPreference;
 
-	@Override
+    @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.filelist_legacy_multiselect, null);
@@ -62,9 +65,21 @@ public class MultiselectListFragment extends FileListFragment {
 				getActivity().finish();
 			}
 		});
-		mAdapter.setItemLayout(R.layout.item_filelist_multiselect);
 
-		// Init members
+        mPreference = new Preference(getContext());
+
+        mCurrentSort = mPreference.getInt(Preference.PREFS_KEY_SORT_TYPE, Preference.SORT_TYPE_DEFAULT);
+
+        if (mCurrentSort == Preference.SORT_TYPE_NAME) {
+            Collections.sort(mFiles, new SimpleFileListFragment.ComparatorByAlphabet());
+        } else if (mCurrentSort == Preference.SORT_TYPE_MODIFY_TIME) {
+            Collections.sort(mFiles, new SimpleFileListFragment.ComparatorByLastModified());
+        }
+        mAdapter.setItemLayout(R.layout.item_filelist_multiselect);
+        mAdapter.setData(mFiles);
+
+
+        // Init members
 		mLegacyActionContainer = (LegacyActionContainer) view
 				.findViewById(R.id.action_container);
 		mLegacyActionContainer.setMenuResource(R.menu.multiselect);
