@@ -308,7 +308,7 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
     }
 
 	public String getTrackModule() {
-		return getClass().getSimpleName();
+		return "v6_file_manager";
 	}
 
     @Override
