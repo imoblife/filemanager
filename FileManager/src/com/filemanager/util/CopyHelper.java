@@ -316,8 +316,8 @@ public class CopyHelper {
 	 */
 	private boolean performCut(File dest) {
         boolean res = true;
-        boolean deleteOk = false;
-        boolean createOk = false;
+        boolean deleteOk = true;
+        boolean createOk = true;
 
         File from;
         if (PermissionUtil.isAndroid5()) {
@@ -336,17 +336,10 @@ public class CopyHelper {
                         res &= createOk;
 
                         if (createOk) {
-                            deleteOk = FileUtil.deleteFile(from, mContext);
-                            if (deleteOk) {
                                 MediaScannerUtils.informFileDeleted(mContext, from);
                                 MediaScannerUtils.informFileAdded(mContext,
                                         FileUtil.getFile(dest, fh.getName()));
-                            }
-                        } else {
-                            deleteOk = false;
                         }
-                        res &= deleteOk;
-
                     }
 
                 } catch (Exception e) {
