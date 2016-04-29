@@ -14,7 +14,7 @@
     <com.filemanager.view.LegacyActionContainer
         android:id="@+id/action_container"
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/topBar_height"
+        android:layout_height="48dp"
         android:background="@drawable/base_bg" />
 
 </LinearLayout>
