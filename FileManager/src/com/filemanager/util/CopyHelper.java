@@ -100,42 +100,50 @@ public class CopyHelper {
 	 * @return false if ANY error has occurred. This may mean that some files have been successfully copied, but not all. 
 	 */
 	private boolean performCopy(File dest) {
-		boolean res = true;
-		try {
+        boolean res = true;
+        try {
             if (PermissionUtil.isAndroid5()) {
                 for (FileHolder fh : mClipboard) {
-                    if (fh.getFile().isFile()) {
-                        res &= copyFileAndroid5(
-                                fh.getFile(),
-                                FileUtils.createUniqueCopyName(mContext, dest,
-                                        fh.getName()));
+                    if (dest.getAbsolutePath().contains(fh.getFile().getAbsolutePath())) {
+                        res &= false;
                     } else {
-                        res &= copyFolderAndroid5(
-                                fh.getFile(),
-                                FileUtils.createUniqueCopyName(mContext, dest,
-                                        fh.getName()));
+                        if (fh.getFile().isFile()) {
+                            res &= copyFileAndroid5(
+                                    fh.getFile(),
+                                    FileUtils.createUniqueCopyName(mContext, dest,
+                                            fh.getName()));
+                        } else {
+                            res &= copyFolderAndroid5(
+                                    fh.getFile(),
+                                    FileUtils.createUniqueCopyName(mContext, dest,
+                                            fh.getName()));
+                        }
                     }
                 }
             } else {
 
                 for (FileHolder fh : mClipboard) {
-                    if (fh.getFile().isFile())
-                        res &= copyFile(
-                                fh.getFile(),
-                                FileUtils.createUniqueCopyName(mContext, dest,
-                                        fh.getName()));
-                    else
-                        res &= copyFolder(
-                                fh.getFile(),
-                                FileUtils.createUniqueCopyName(mContext, dest,
-                                        fh.getName()));
+                    if (dest.getAbsolutePath().contains(fh.getFile().getAbsolutePath())) {
+                        res &= false;
+                    } else {
+                        if (fh.getFile().isFile())
+                            res &= copyFile(
+                                    fh.getFile(),
+                                    FileUtils.createUniqueCopyName(mContext, dest,
+                                            fh.getName()));
+                        else
+                            res &= copyFolder(
+                                    fh.getFile(),
+                                    FileUtils.createUniqueCopyName(mContext, dest,
+                                            fh.getName()));
+                    }
                 }
             }
         } catch (Exception e) {
-			Log.w(getClass().getSimpleName(), e);
-		}
-		return res;
-	}
+            Log.w(getClass().getSimpleName(), e);
+        }
+        return res;
+    }
 
 	/**
 	 * Copy a file.
@@ -325,7 +333,7 @@ public class CopyHelper {
                 from = fh.getFile().getAbsoluteFile();
                 try {
                     if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
-                        res = false;
+                        res &= false;
                     } else {
                         if (!from.isDirectory()) {
                             createOk = cutFileAndroid5(from, FileUtil.getFile(dest, fh.getName()));
@@ -336,9 +344,9 @@ public class CopyHelper {
                         res &= createOk;
 
                         if (createOk) {
-                                MediaScannerUtils.informFileDeleted(mContext, from);
-                                MediaScannerUtils.informFileAdded(mContext,
-                                        FileUtil.getFile(dest, fh.getName()));
+                            MediaScannerUtils.informFileDeleted(mContext, from);
+                            MediaScannerUtils.informFileAdded(mContext,
+                                    FileUtil.getFile(dest, fh.getName()));
                         }
                     }
 
@@ -349,19 +357,27 @@ public class CopyHelper {
 
         } else {
             for (FileHolder fh : mClipboard) {
-                from = fh.getFile().getAbsoluteFile();
+                try {
+                    from = fh.getFile().getAbsoluteFile();
 
-                deleteOk = fh.getFile().renameTo(
-                        FileUtil.getFile(dest, fh.getName()));
+                    if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
+                        res &= false;
+                    } else {
+                        deleteOk = fh.getFile().renameTo(
+                                FileUtil.getFile(dest, fh.getName()));
 
-                // Inform media scanner
-                if (deleteOk) {
-                    MediaScannerUtils.informFileDeleted(mContext, from);
-                    MediaScannerUtils.informFileAdded(mContext,
-                            FileUtil.getFile(dest, fh.getName()));
+                        // Inform media scanner
+                        if (deleteOk) {
+                            MediaScannerUtils.informFileDeleted(mContext, from);
+                            MediaScannerUtils.informFileAdded(mContext,
+                                    FileUtil.getFile(dest, fh.getName()));
+                        }
+
+                        res &= deleteOk;
+                    }
+                } catch (Exception e) {
+                    res = false;
                 }
-
-                res &= deleteOk;
             }
         }
 
