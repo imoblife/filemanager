@@ -100,7 +100,7 @@ public class CopyHelper {
 	 * @return false if ANY error has occurred. This may mean that some files have been successfully copied, but not all. 
 	 */
 	private boolean performCopy(File dest) {
-        boolean res = true;
+        boolean res = false;
         try {
             if (PermissionUtil.isAndroid5()) {
                 for (FileHolder fh : mClipboard) {
@@ -323,62 +323,66 @@ public class CopyHelper {
 	 * @return false if ANY error has occurred. This may mean that some files have been successfully moved, but not all. 
 	 */
 	private boolean performCut(File dest) {
-        boolean res = true;
+        boolean res = false;
         boolean deleteOk = true;
         boolean createOk = true;
 
-        File from;
-        if (PermissionUtil.isAndroid5()) {
-            for (FileHolder fh : mClipboard) {
-                from = fh.getFile().getAbsoluteFile();
-                try {
-                    if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
-                        res &= false;
-                    } else {
-                        if (!from.isDirectory()) {
-                            createOk = cutFileAndroid5(from, FileUtil.getFile(dest, fh.getName()));
-                        } else {
-                            createOk = cutFolderAndroid5(from, FileUtil.getFile(dest, fh.getName()));
-                        }
-
-                        res &= createOk;
-
-                        if (createOk) {
-                            MediaScannerUtils.informFileDeleted(mContext, from);
-                            MediaScannerUtils.informFileAdded(mContext,
-                                    FileUtil.getFile(dest, fh.getName()));
-                        }
-                    }
-
-                } catch (Exception e) {
-                    res = false;
-                }
-            }
-
-        } else {
-            for (FileHolder fh : mClipboard) {
-                try {
+        try {
+            File from;
+            if (PermissionUtil.isAndroid5()) {
+                for (FileHolder fh : mClipboard) {
                     from = fh.getFile().getAbsoluteFile();
+                    try {
+                        if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
+                            res &= false;
+                        } else {
+                            if (!from.isDirectory()) {
+                                createOk = cutFileAndroid5(from, FileUtil.getFile(dest, fh.getName()));
+                            } else {
+                                createOk = cutFolderAndroid5(from, FileUtil.getFile(dest, fh.getName()));
+                            }
 
-                    if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
-                        res &= false;
-                    } else {
-                        deleteOk = fh.getFile().renameTo(
-                                FileUtil.getFile(dest, fh.getName()));
+                            res &= createOk;
 
-                        // Inform media scanner
-                        if (deleteOk) {
-                            MediaScannerUtils.informFileDeleted(mContext, from);
-                            MediaScannerUtils.informFileAdded(mContext,
-                                    FileUtil.getFile(dest, fh.getName()));
+                            if (createOk) {
+                                MediaScannerUtils.informFileDeleted(mContext, from);
+                                MediaScannerUtils.informFileAdded(mContext,
+                                        FileUtil.getFile(dest, fh.getName()));
+                            }
                         }
 
-                        res &= deleteOk;
+                    } catch (Exception e) {
+                        res = false;
                     }
-                } catch (Exception e) {
-                    res = false;
+                }
+
+            } else {
+                for (FileHolder fh : mClipboard) {
+                    try {
+                        from = fh.getFile().getAbsoluteFile();
+
+                        if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
+                            res &= false;
+                        } else {
+                            deleteOk = fh.getFile().renameTo(
+                                    FileUtil.getFile(dest, fh.getName()));
+
+                            // Inform media scanner
+                            if (deleteOk) {
+                                MediaScannerUtils.informFileDeleted(mContext, from);
+                                MediaScannerUtils.informFileAdded(mContext,
+                                        FileUtil.getFile(dest, fh.getName()));
+                            }
+
+                            res &= deleteOk;
+                        }
+                    } catch (Exception e) {
+                        res = false;
+                    }
                 }
             }
+        } catch (Exception e) {
+
         }
 
         return res;
