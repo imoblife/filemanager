@@ -17,7 +17,7 @@
         <com.pnikosis.materialishprogress.ProgressWheel
                 android:id="@+id/progress_wheel"
                 style="@style/materialProgress"
-                wheel:matProg_barColor="@color/base_blue"/>
+                wheel:matProg_barColor="@color/blue_1ca0ec"/>
 
         <TextView
                 android:id="@+id/tv_loading_default"
