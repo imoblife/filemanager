@@ -30,15 +30,13 @@ public class SearchService extends IntentService {
     @Override
     public void onStart(Intent intent, int startId) {
         super.onStart(intent, startId);
-        EventBus.getDefault().register(this);
     }
 
     @Override
 	public void onCreate() {
 		super.onCreate();
-
+		EventBus.getDefault().register(this);
 		lbm = LocalBroadcastManager.getInstance(getApplicationContext());
-
 		searcher = new SearchCore(this);
 	}
 
