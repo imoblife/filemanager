@@ -173,9 +173,14 @@ public class SimpleFileListFragment extends FileListFragment implements
 			getListView().post(new Runnable() {
 				@Override
 				public void run() {
-					final int p = mAdapter.findHighlightPosition();
-					int s = (int) MathUtil.clamp(0, p, p);
-					getListView().setSelection(s);
+					try {
+						if (isAdded()) {
+							final int p = mAdapter.findHighlightPosition();
+							int s = (int) MathUtil.clamp(0, p, p);
+							getListView().setSelection(s);
+						}
+					} catch (Throwable ignored) {
+					}
 				}
 			});
 		}
