@@ -205,7 +205,7 @@ public class SearchableActivity extends BaseTitlebarListActivity {
     }
 
     public String getTrackModule() {
-        return getClass().getSimpleName();
+        return "v6_file_search";
     }
 
     private void stopSearchFileTask() {
