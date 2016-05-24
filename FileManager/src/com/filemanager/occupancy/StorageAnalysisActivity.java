@@ -14,7 +14,6 @@ import base.util.PreferenceHelper;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import com.filemanager.DistributionLibraryFragmentActivity;
 import com.filemanager.R;
-import com.filemanager.bookmarks.BookmarkListActivity;
 import com.filemanager.files.FileHolder;
 import com.filemanager.util.FileUtils;
 import com.intents.FileManagerIntents;
@@ -125,22 +124,6 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
         this.setActionVisibility(View.GONE);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int id = item.getItemId();
-        if (id == R.id.menu_search) {
-            onSearchRequested();
-            return true;
-
-        } else if (id == android.R.id.home) {
-            mFragment.browseToHome();
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-
-    }
 
     // The following methods should properly handle back button presses on every
     // API Level.
@@ -173,9 +156,6 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
         switch (requestCode) {
             case REQUEST_CODE_BOOKMARKS:
                 if (resultCode == RESULT_OK && data != null) {
-                    mFragment.openInformingPathBar(new FileHolder(new File(data
-                            .getStringExtra(BookmarkListActivity.KEY_RESULT_PATH)),
-                            this));
                 }
                 break;
             default:

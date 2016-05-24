@@ -27,7 +27,6 @@ public class IntentFilterActivity extends BaseTitlebarFragmentActivity {
 
 	@Override
 	public void onCreate(Bundle savedInstance) {
-		UIUtils.setThemeFor(this);
 
 		super.onCreate(savedInstance);
 

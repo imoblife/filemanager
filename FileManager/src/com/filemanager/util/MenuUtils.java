@@ -25,8 +25,6 @@ import java.util.List;
 
 import base.util.FileUtil;
 import com.filemanager.*;
-import com.filemanager.bookmarks.BookmarksProvider;
-import com.filemanager.compatibility.ActionbarRefreshHelper;
 import com.filemanager.dialogs.*;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.FileListFragment;

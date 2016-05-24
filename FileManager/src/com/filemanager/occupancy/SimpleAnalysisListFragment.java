@@ -44,8 +44,6 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     private PathBar mPathBar;
     private boolean mActionsEnabled = true;
 
-    private int mSingleSelectionMenu = R.menu.context;
-    private int mMultiSelectionMenu = R.menu.multiselect;
 
     private LinearLayout mSearchActionBarLayout;
 
@@ -306,12 +304,6 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         }
     }
 
-    protected void setLongClickMenus(int singleSelectionResource,
-                                     int multiSelectionResource) {
-        mSingleSelectionMenu = singleSelectionResource;
-        mMultiSelectionMenu = multiSelectionResource;
-    }
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.simple_file_list, menu);
@@ -321,16 +313,6 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         // We only know about ".nomedia" once scanning is finished.
-        boolean showMediaScanMenuItem = PreferenceActivity
-                .getMediaScanFromPreference(getActivity());
-            menu.findItem(R.id.menu_media_scan_include).setVisible(false);
-            menu.findItem(R.id.menu_media_scan_exclude).setVisible(false);
-
-        if (CopyHelper.get(getActivity()).canPaste()) {
-            menu.findItem(R.id.menu_paste).setVisible(true);
-        } else {
-            menu.findItem(R.id.menu_paste).setVisible(false);
-        }
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.filemanager.view;
 import java.io.File;
 import java.util.HashMap;
 
+import android.util.TypedValue;
 import android.view.Gravity;
 import com.filemanager.R;
 
@@ -220,6 +221,7 @@ public class PathBar extends ViewFlipper {
 			layoutParams.addRule(RelativeLayout.LEFT_OF, mGoButton.getId());
 
 			mPathEditText.setLayoutParams(layoutParams);
+            mPathEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, 13);
 			mPathEditText.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
 			mPathEditText.setImeOptions(EditorInfo.IME_ACTION_GO);
 			mPathEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {

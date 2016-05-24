@@ -39,7 +39,6 @@ import android.view.View;
 import base.util.PreferenceHelper;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
 
-import com.filemanager.bookmarks.BookmarkListActivity;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.SimpleFileListFragment;
 import com.filemanager.util.FileUtils;
@@ -202,19 +201,6 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 	public boolean onOptionsItemSelected(MenuItem item) {
 
 		int id = item.getItemId();
-		if (id == R.id.menu_search) {
-			onSearchRequested();
-			return true;
-
-		} else if (id == R.id.menu_bookmarks) {
-			startActivityForResult(new Intent(FileManagerActivity.this,
-					BookmarkListActivity.class), REQUEST_CODE_BOOKMARKS);
-			return true;
-		} else if (id == android.R.id.home) {
-			mFragment.browseToHome();
-			return true;
-		}
-
 		return super.onOptionsItemSelected(item);
 
 	}
@@ -250,9 +236,6 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 		switch (requestCode) {
 		case REQUEST_CODE_BOOKMARKS:
 			if (resultCode == RESULT_OK && data != null) {
-				mFragment.openInformingPathBar(new FileHolder(new File(data
-						.getStringExtra(BookmarkListActivity.KEY_RESULT_PATH)),
-						this));
 			}
 			break;
 		default:

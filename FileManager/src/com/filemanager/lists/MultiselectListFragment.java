@@ -116,22 +116,22 @@ public class MultiselectListFragment extends FileListFragment {
 //		inflater.inflate(R.menu.options_multiselect, menu);
 //	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		ListView list = getListView();
-		int id = item.getItemId();
-		if (id == R.id.check_all) {
-			for (int i = 0; i < mAdapter.getCount(); i++) {
-				list.setItemChecked(i, true);
-			}
-			return true;
-		} else if (id == R.id.uncheck_all) {
-			for (int i = 0; i < mAdapter.getCount(); i++) {
-				list.setItemChecked(i, false);
-			}
-			return true;
-		} else {
-			return false;
-		}
-	}
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		ListView list = getListView();
+//		int id = item.getItemId();
+//		if (id == R.id.check_all) {
+//			for (int i = 0; i < mAdapter.getCount(); i++) {
+//				list.setItemChecked(i, true);
+//			}
+//			return true;
+//		} else if (id == R.id.uncheck_all) {
+//			for (int i = 0; i < mAdapter.getCount(); i++) {
+//				list.setItemChecked(i, false);
+//			}
+//			return true;
+//		} else {
+//			return false;
+//		}
+//	}
 }
