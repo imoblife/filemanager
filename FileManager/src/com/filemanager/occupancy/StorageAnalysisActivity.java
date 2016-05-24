@@ -176,7 +176,7 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
 
 
     public String getTrackModule() {
-        return getClass().getSimpleName();
+        return "v6_storage_analysis";
     }
 
     @Override

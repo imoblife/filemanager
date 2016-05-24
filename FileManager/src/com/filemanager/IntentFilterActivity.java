@@ -167,4 +167,9 @@ public class IntentFilterActivity extends BaseTitlebarFragmentActivity {
 	public String getTrackModule() {
 		return TAG;
 	}
+
+	@Override
+	public boolean isTrackEnabled() {
+		return false;
+	}
 }

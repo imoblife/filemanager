@@ -137,10 +137,8 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 			if (data == null) {
 				String sdcardPath = PreferenceHelper.getSdcardPath(getApplicationContext());
 				String value = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? sdcardPath : "/";
-				Log.i(getClass().getSimpleName(), "LOC::onCreate " + value);
 				args.putString(FileManagerIntents.EXTRA_DIR_PATH, value);
 			} else {
-				Log.i(getClass().getSimpleName(), "LOC::onCreate " + data.toString());
 				args.putString(FileManagerIntents.EXTRA_DIR_PATH, data.toString());
 			}
             args.putBoolean(EXTRA_PATH_CLICK, pathBarClickable);
