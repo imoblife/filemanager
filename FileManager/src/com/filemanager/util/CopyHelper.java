@@ -394,23 +394,26 @@ public class CopyHelper {
 	 * @param listener Listener that will be informed on operation finish. CAN'T BE NULL.
 	 */
 	public void paste(File copyTo, OnOperationFinishedListener listener) {
-		mListener = listener;
+        mListener = listener;
 
-		// Quick check just to make sure. Normally this should never be the case as the path we get is not user-generated.
-		if (!copyTo.isDirectory())
-			return;
+        try {
+            // Quick check just to make sure. Normally this should never be the case as the path we get is not user-generated.
+            if (!copyTo.isDirectory())
+                return;
 
-		switch (mOperation) {
-		case COPY:
-			new CopyAsync().execute(copyTo);
-			break;
-		case CUT:
-			new MoveAsync().execute(copyTo);
-			break;
-		default:
-			return;
-		}
-	}
+            switch (mOperation) {
+                case COPY:
+                    new CopyAsync().execute(copyTo);
+                    break;
+                case CUT:
+                    new MoveAsync().execute(copyTo);
+                    break;
+                default:
+                    return;
+            }
+        } catch (Exception e) {
+        }
+    }
 
 	private class CopyAsync extends ModernAsyncTask<File, Void, Boolean> {
 		@Override
