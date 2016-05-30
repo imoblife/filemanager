@@ -288,11 +288,16 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
         }
     }
 
+	@Override
+	public boolean isTrackEnabled() {
+		return true;
+	}
+
 	public String getTrackModule() {
 		return "v6_file_manager";
 	}
 
-    @Override
+	@Override
     public boolean onTitlebarBackClick(View view) {
         if (VERSION.SDK_INT > VERSION_CODES.DONUT) {
             if (mFragment.pressBack()) {

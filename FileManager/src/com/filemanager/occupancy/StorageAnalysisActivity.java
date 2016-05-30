@@ -180,6 +180,11 @@ public class StorageAnalysisActivity extends DistributionLibraryFragmentActivity
     }
 
     @Override
+    public boolean isTrackEnabled() {
+        return true;
+    }
+
+    @Override
     public boolean onTitlebarBackClick(View view) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.DONUT) {
             if (mFragment.pressBack()) {
