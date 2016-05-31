@@ -5,10 +5,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.filemanager.files.FileHolder;
 import com.filemanager.view.ViewHolder;
 
@@ -23,6 +20,7 @@ public class FileHolderListAdapter extends BaseAdapter {
 	private Context mContext;
 	private int mItemLayoutId = R.layout.item_filelist;
     private HashMap<File,Integer> mFileListsSize;
+    private boolean mIsSelectMod = false;
 
 	// Thumbnail specific
 	private ThumbnailLoader mThumbnailLoader;
@@ -41,7 +39,32 @@ public class FileHolderListAdapter extends BaseAdapter {
 		mThumbnailLoader = new ThumbnailLoader(c);
 	}
 
-	public Context getContext() {
+    public boolean isSelectMod() {
+        return mIsSelectMod;
+    }
+
+    public void setSelectMod(boolean selectMod) {
+        this.mIsSelectMod = selectMod;
+        notifyDataSetChanged();
+    }
+
+    public int getSelectedItemCount() {
+        int result = 0;
+        for (FileHolder item : mItems) {
+            if (item.isSelect) {
+                result++;
+            }
+        }
+        return result;
+    }
+
+    public void toggleAllItemState(boolean selected) {
+        for (FileHolder item : mItems) {
+            item.isSelect = selected;
+        }
+    }
+
+    public Context getContext() {
 		return mContext;
 	}
 
@@ -98,6 +121,7 @@ public class FileHolderListAdapter extends BaseAdapter {
 		holder.secondaryInfo = (TextView) view
 				.findViewById(R.id.secondary_info);
 		holder.tertiaryInfo = (TextView) view.findViewById(R.id.tertiary_info);
+        holder.checkBox = (CheckBox) view.findViewById(R.id.checkbox_cb);
 
 		view.setTag(holder);
 		return view;
@@ -118,6 +142,10 @@ public class FileHolderListAdapter extends BaseAdapter {
 				.getFormattedModificationDate(mContext));
 		// Hide directories' size as it's irrelevant if we can't recursively
 		// find it.
+        holder.checkBox.setVisibility(mIsSelectMod ? View.VISIBLE : View.GONE);
+        if (mIsSelectMod) {
+            holder.checkBox.setChecked(item.isSelect);
+        }
 
         String tertiaryInfo;
         File file = item.getFile();
@@ -195,5 +223,17 @@ public class FileHolderListAdapter extends BaseAdapter {
 
     public void clearFileChildrenCache(){
         mFileListsSize.clear();
+    }
+
+    public void startProcessingThumbnailLoaderQueue() {
+        if (mThumbnailLoader != null) {
+            mThumbnailLoader.startProcessingLoaderQueue();
+        }
+    }
+
+    public void stopProcessingThumbnailLoaderQueue() {
+        if (mThumbnailLoader != null) {
+            mThumbnailLoader.stopProcessingLoaderQueue();
+        }
     }
 }

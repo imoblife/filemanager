@@ -24,6 +24,7 @@ public class FileHolder implements Parcelable, Comparable<FileHolder> {
 	private String mExtension;
 	private long mSize;
     private FileTreeNode<String> mFileTreeNode;
+    public boolean isSelect = false;
 
 	public FileHolder(File f, Context c) {
 		mFile = f;
