@@ -1,18 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
     <include layout="@layout/base_titlebar2" />
 
+    <com.iconics.view.IconicsTextView
+        android:id="@+id/tv_select"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentRight="true"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textColor="@color/blue_1ca0ec"/>
+
     <com.filemanager.view.PathBar
         android:id="@+id/pathbar"
+        android:layout_below="@+id/titlebar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/topBar_height"
         android:gravity="center_vertical"
         android:background="@color/grey_f1f1f1" >
     </com.filemanager.view.PathBar>
 
-    <include layout="@layout/filelist" />
+    <include layout="@layout/filelist"
+        android:layout_below="@+id/pathbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"/>
 
-</LinearLayout>
+</RelativeLayout>

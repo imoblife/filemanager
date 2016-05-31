@@ -32,76 +32,74 @@ import android.webkit.MimeTypeMap;
 
 public class MimeTypes {
 
-	private Map<String, String> mMimeTypes = new HashMap<String, String>();
-	private Map<String, Integer> mIcons = new HashMap<String, Integer>();
+    private static MimeTypes mimeTypes;
 
-	/**
-	 * Use this instead of the default constructor to get a prefilled object.
-	 */
-	public static MimeTypes newInstance(Context c) {
-		MimeTypes mimeTypes = null;
-		MimeTypeParser mtp = null;
-		try {
-			mtp = new MimeTypeParser(c, c.getPackageName());
-		} catch (Exception e) {
-			// Should never happen
-		}
+    private Map<String, String> mExtensionsToTypes = new HashMap<>();
+    private Map<String, Integer> mTypesToIcons = new HashMap<>();
 
-		try {
-			XmlResourceParser in = c.getResources().getXml(R.xml.mimetypes);
-			mimeTypes = mtp.fromXmlResource(in);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+    /**
+     * Use this instead of the default constructor to get a prefilled object.
+     */
+    public static MimeTypes newInstance(Context c) {
+        MimeTypes mimeTypes = null;
+        MimeTypeParser mtp = null;
+        try {
+            mtp = new MimeTypeParser(c, c.getPackageName());
+        } catch (Exception e) {
+            // Should never happen
+        }
 
-		return mimeTypes;
-	}
+        try {
+            XmlResourceParser in = c.getResources().getXml(R.xml.mimetypes);
+            mimeTypes = mtp.fromXmlResource(in);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-	/* I think the type and extension names are switched (type contains .png, extension contains x/y),
-	 * but maybe it's on purpouse, so I won't change it.
-	 */
-	public void put(String type, String extension, int icon) {
-		put(type, extension);
-		mIcons.put(extension, icon);
-	}
+        return mimeTypes;
+    }
 
-	public void put(String type, String extension) {
-		// Convert extensions to lower case letters for easier comparison
-		extension = extension.toLowerCase();
+    public void put(String extension, String type, int icon){
+        put(extension, type);
+        mTypesToIcons.put(type, icon);
+    }
 
-		mMimeTypes.put(type, extension);
-	}
+    public void put(String extension, String type) {
+        // Convert extensions to lower case letters for easier comparison
+        extension = extension.toLowerCase();
+        mExtensionsToTypes.put(extension, type);
+    }
 
-	public String getMimeType(String filename) {
-		String extension = FileUtil.getExtension(filename);
+    public String getMimeType(String filename) {
+        String extension = FileUtil.getExtension(filename);
 
-		// Let's check the official map first. Webkit has a nice extension-to-MIME map.
-		// Be sure to remove the first character from the extension, which is the "." character.
-		if (extension.length() > 0) {
-			String webkitMimeType = MimeTypeMap.getSingleton()
-					.getMimeTypeFromExtension(extension.substring(1));
+        // Let's check the official map first. Webkit has a nice extension-to-MIME map.
+        // Be sure to remove the first character from the extension, which is the "." character.
+        if (extension.length() > 0) {
+            String webkitMimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension.substring(1));
 
-			if (webkitMimeType != null) {
-				// Found one. Let's take it!
-				return webkitMimeType;
-			}
-		}
+            if (webkitMimeType != null) {
+                // Found one. Let's take it!
+                return webkitMimeType;
+            }
+        }
 
-		// Convert extensions to lower case letters for easier comparison
-		extension = extension.toLowerCase();
+        // Convert extensions to lower case letters for easier comparison
+        extension = extension.toLowerCase();
 
-		String mimetype = mMimeTypes.get(extension);
+        String mimetype = mExtensionsToTypes.get(extension);
 
-		if (mimetype == null)
-			mimetype = "*/*";
+        if(mimetype == null) {
+            mimetype = "*/*";
+        }
 
-		return mimetype;
-	}
+        return mimetype;
+    }
 
-	public int getIcon(String mimetype) {
-		Integer iconResId = mIcons.get(mimetype);
-		if (iconResId == null)
-			return 0; // Invalid identifier
-		return iconResId;
-	}
+    public int getIcon(String mimetype){
+        Integer iconResId = mTypesToIcons.get(mimetype);
+        if(iconResId == null)
+            return 0; // Invalid identifier
+        return iconResId;
+    }
 }

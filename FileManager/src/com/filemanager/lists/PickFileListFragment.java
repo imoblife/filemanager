@@ -30,7 +30,6 @@ public class PickFileListFragment extends SimpleFileListFragment{
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		setLongClickMenus(R.menu.context_pick, R.menu.multiselect);
 	}
 	
 	@Override

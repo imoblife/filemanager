@@ -308,4 +308,9 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
         }
         return true;
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
 }

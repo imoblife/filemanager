@@ -110,11 +110,14 @@ public abstract class FileListFragment extends BaseListFragment {
 		getListView().setOnScrollListener(new AbsListView.OnScrollListener() {
 			@Override
 			public void onScrollStateChanged(AbsListView view, int scrollState) {
-				if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
-					mAdapter.setScrolling(false);
-				} else
-					mAdapter.setScrolling(true);
-			}
+                if (scrollState == OnScrollListener.SCROLL_STATE_IDLE) {
+                    mAdapter.setScrolling(false);
+                    startUpdatingFileIcons();
+                } else {
+                    mAdapter.setScrolling(true);
+                    stopUpdatingFileIcons();
+                }
+            }
 
 			@Override
 			public void onScroll(AbsListView view, int firstVisibleItem,
@@ -179,6 +182,14 @@ public abstract class FileListFragment extends BaseListFragment {
 		mScanner.start();
 
 	}
+
+    private void startUpdatingFileIcons() {
+        mAdapter.startProcessingThumbnailLoaderQueue();
+    }
+
+    private void stopUpdatingFileIcons() {
+        mAdapter.stopProcessingThumbnailLoaderQueue();
+    }
 
 	@Override
 	public void onDestroy() {

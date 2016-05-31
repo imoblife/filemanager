@@ -17,8 +17,10 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import base.util.*;
+import base.util.ui.titlebar.BaseTitlebarFragmentActivity;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
+import base.util.ui.titlebar.TitlebarView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.FileManagerActivity;
 import com.filemanager.PreferenceActivity;
@@ -33,6 +35,7 @@ import com.filemanager.util.FileUtils;
 import com.filemanager.view.PathBar;
 import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
+import com.iconics.view.IconicsTextView;
 import com.intents.FileManagerIntents;
 
 import java.io.File;
@@ -61,10 +64,6 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 
     private PathBar mPathBar;
-	private boolean mActionsEnabled = true;
-
-	private int mSingleSelectionMenu = R.menu.context;
-	private int mMultiSelectionMenu = R.menu.multiselect;
 
     private LinearLayout mSearchActionBarLayout;
 
@@ -72,16 +71,22 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     private Preference mPreference;
 
+    private IconicsTextView mSelectModeView;
+    private SelectModeListener mSelectModeListener;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.filelist_browse, null);
 	}
 
-	@Override
+    @Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 
+        mSelectModeView = (IconicsTextView) view.findViewById(R.id.tv_select);
+        mSelectModeView.setVisibility(View.GONE);
+        mSelectModeListener = new SelectModeListener();
+        mSelectModeView.setOnClickListener(mSelectModeListener);
 		// Pathbar init.
 		mPathBar = (PathBar) view.findViewById(R.id.pathbar);
 
@@ -219,59 +224,47 @@ public class SimpleFileListFragment extends FileListFragment implements
         });
     }
 
-	/**
-	 * Override this to handle initialization of list item long clicks.
-	 */
-	void initContextualActions() {
-        //		if (mActionsEnabled) {
-        //			if (VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-		registerForContextMenu(getListView());
-        //			} else {
-        //				FileMultiChoiceModeHelper multiChoiceModeHelper = new FileMultiChoiceModeHelper(
-        //						mSingleSelectionMenu, mMultiSelectionMenu);
-        //				multiChoiceModeHelper.setListView(getListView());
-        //				multiChoiceModeHelper.setPathBar(mPathBar);
-        //				multiChoiceModeHelper.setContext(this);
-        //				getListView()
-        //						.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
-        //			}
-        //			setHasOptionsMenu(true);
-        //		}
+    private void updateSelectButtonState(int selectedItemCount){
+        if (selectedItemCount == 0) {
+            mSelectModeView.setVisibility(View.GONE);
+            mSearchActionBarLayout.setVisibility(View.VISIBLE);
+            ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.VISIBLE);
+            mPathBar.setPathButtonClickable(true);
+
+        } else if (selectedItemCount == mAdapter.getCount()) {
+            mSelectModeView.setVisibility(View.VISIBLE);
+            mSelectModeView.setText("{FMT_ICON_SELECT_NONE}");
+            mSearchActionBarLayout.setVisibility(View.GONE);
+            ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
+            mPathBar.setPathButtonClickable(false);
+        } else {
+            mSelectModeView.setVisibility(View.VISIBLE);
+            mSelectModeView.setText("{FMT_ICON_SELECT_ALL}");
+            mSearchActionBarLayout.setVisibility(View.GONE);
+            ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
+            mPathBar.setPathButtonClickable(false);
+
+        }
     }
-
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View view,
-			ContextMenuInfo menuInfo) {
-//		MenuInflater inflater = new MenuInflater(getActivity());
-//
-//		// Obtain context menu info
-//		AdapterView.AdapterContextMenuInfo info;
-//		try {
-//			info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-//		} catch (ClassCastException e) {
-//			e.printStackTrace();
-//			return;
-//		}
-//
-//		MenuUtils.fillContextMenu((FileHolder) mAdapter.getItem(info.position),
-//                menu, mSingleSelectionMenu, inflater, getActivity());
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		FileHolder fh = (FileHolder) mAdapter
-				.getItem(((AdapterContextMenuInfo) item.getMenuInfo()).position);
-		return MenuUtils.handleSingleSelectionAction(this, item, fh,
-				getActivity());
-	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
 		FileHolder item = (FileHolder) mAdapter.getItem(position);
-        mPreviousPosition = getListView().getFirstVisiblePosition();
-		openInformingPathBar(item);
-        mPathBar.updatePosition(mPreviousPosition);
+        if (mAdapter.isSelectMod()) {
+            item.isSelect = !item.isSelect;
+            int selectedItemCount = mAdapter.getSelectedItemCount();
+            updateSelectButtonState(selectedItemCount);
+            if (selectedItemCount == 0) {
+                mAdapter.setSelectMod(false);
+            }
+            mAdapter.notifyDataSetChanged();
+        } else {
+            mSelectModeView.setVisibility(View.GONE);
+            mPreviousPosition = getListView().getFirstVisiblePosition();
+            openInformingPathBar(item);
+            mPathBar.updatePosition(mPreviousPosition);
+        }
     }
 
     @Override
@@ -330,11 +323,6 @@ public class SimpleFileListFragment extends FileListFragment implements
 		refresh();
 	}
 
-	protected void setLongClickMenus(int singleSelectionResource,
-			int multiSelectionResource) {
-		mSingleSelectionMenu = singleSelectionResource;
-		mMultiSelectionMenu = multiSelectionResource;
-	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -362,11 +350,6 @@ public class SimpleFileListFragment extends FileListFragment implements
 		} else {
 			menu.findItem(R.id.menu_paste).setVisible(false);
 		}
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		return handleOptionMenu(item.getItemId());
 	}
 
 	private boolean handleOptionMenu(int id) {
@@ -422,7 +405,11 @@ public class SimpleFileListFragment extends FileListFragment implements
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         if (mAdapter != null && mAdapter.getItem(position) != null) {
-            new OperationDialog((FileHolder) mAdapter.getItem(position));
+//            new OperationDialog((FileHolder) mAdapter.getItem(position));
+            FileHolder item = (FileHolder) mAdapter.getItem(position);
+            item.isSelect = true;
+            mAdapter.setSelectMod(true);
+            updateSelectButtonState(1);
             return true;
         } else {
             return false;
@@ -514,15 +501,6 @@ public class SimpleFileListFragment extends FileListFragment implements
         mAdapter.clearFileChildrenCache();
     }
 
-    /**
-	 * Set whether to show menu and selection actions. Must be set before
-	 * OnViewCreated is called.
-	 * 
-	 * @param enabled
-	 */
-	public void setActionsEnabled(boolean enabled) {
-		mActionsEnabled = enabled;
-	}
 
 	@Override
 	public void onSaveInstanceState(Bundle outState) {
@@ -700,6 +678,22 @@ public class SimpleFileListFragment extends FileListFragment implements
             getActivity().getContentResolver().takePersistableUriPermission(uri, takeFlags);
         } else {
             return;
+        }
+    }
+
+
+    private class SelectModeListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View view) {
+            if (mAdapter.getSelectedItemCount() == mAdapter.getCount()) {
+                mAdapter.toggleAllItemState(false);
+                mAdapter.setSelectMod(false);
+            } else {
+                mAdapter.toggleAllItemState(true);
+                mAdapter.notifyDataSetChanged();
+            }
+            updateSelectButtonState(mAdapter.getSelectedItemCount());
         }
     }
 }
