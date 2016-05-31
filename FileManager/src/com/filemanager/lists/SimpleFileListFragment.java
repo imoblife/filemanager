@@ -84,23 +84,13 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 		// Pathbar init.
 		mPathBar = (PathBar) view.findViewById(R.id.pathbar);
-		// Handle mPath differently if we restore state or just initially create
-		// the view.
-		/*	LinearLayout base_titlebar_ll = (LinearLayout) view.findViewById(R.id.base_titlebar_ll);
-			base_titlebar_ll.setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					getActivity().finish();
-				}
-			});*/
 
-		Log.i(getClass().getSimpleName(), "LOC::onViewCreated " + getPath());
-
-		if (savedInstanceState == null)
+		if (savedInstanceState == null) {
 			mPathBar.setInitialDirectory(getPath());
-		else
-		mPathBar.cd(getPath());
+		}
+		else {
+			mPathBar.cd(getPath());
+		}
 		mPathBar.setOnDirectoryChangedListener(new OnDirectoryChangedListener() {
 			@Override
             public void directoryChanged(File newCurrentDir, FileHolder fileHolder) {
@@ -108,8 +98,9 @@ public class SimpleFileListFragment extends FileListFragment implements
             }
         });
         if (savedInstanceState != null
-				&& savedInstanceState.getBoolean(INSTANCE_STATE_PATHBAR_MODE))
+				&& savedInstanceState.getBoolean(INSTANCE_STATE_PATHBAR_MODE)) {
 			mPathBar.switchToManualInput();
+		}
 		// Removed else clause as the other mode is the default. It seems faster
 		// this way on Nexus S.
 
