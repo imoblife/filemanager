@@ -385,6 +385,26 @@ public abstract class MenuUtils {
 		}
 	}
 
+    public static void sendFileList(ArrayList<FileHolder> list, Context context) {
+        Intent intent = new Intent(Intent.ACTION_SEND_MULTIPLE);
+        ArrayList<Uri> uris = new ArrayList<Uri>();
+        intent.setType("text/plain");
+
+        for (FileHolder fh : list) {
+            uris.add(FileUtil.getUri(fh.getFile()));
+        }
+
+        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+
+        try {
+            context.startActivity(Intent.createChooser(intent,
+                    context.getString(R.string.send_chooser_title)));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(context, R.string.send_not_available,
+                    Toast.LENGTH_SHORT).show();
+        }
+    }
+
 	/**
 	 * Call this to show the dialog that informs the user about possibly broken
 	 * options in the "More" dialog.

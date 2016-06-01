@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.filemanager.view.FileOperationLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/operation_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@drawable/bg_white_with_top_line"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp">
+
+    <com.iconics.view.IconicsTextView
+        android:id="@+id/tv_opt_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="{FMT_ICON_DELETE}"
+        android:textColor="@color/grey_999999"
+        android:textSize="20sp"
+        android:background="@drawable/bg_action_container_button"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_weight="1" />
+
+    <com.iconics.view.IconicsTextView
+        android:id="@+id/tv_opt_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="{FMT_ICON_CUT}"
+        android:textColor="@color/grey_999999"
+        android:textSize="20sp"
+        android:background="@drawable/bg_action_container_button"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_weight="1" />
+
+    <com.iconics.view.IconicsTextView
+        android:id="@+id/tv_opt_3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="{FMT_ICON_COPY}"
+        android:textColor="@color/grey_999999"
+        android:textSize="20sp"
+        android:background="@drawable/bg_action_container_button"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_weight="1" />
+
+    <com.iconics.view.IconicsTextView
+        android:id="@+id/tv_opt_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="{FMT_ICON_ZIP}"
+        android:textColor="@color/grey_999999"
+        android:textSize="20sp"
+        android:background="@drawable/bg_action_container_button"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="10dp"
+        android:layout_weight="1" />
+
+    <com.iconics.view.IconicsTextView
+        android:id="@+id/tv_opt_5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="{FMT_ICON_MORE}"
+        android:textColor="@color/grey_999999"
+        android:textSize="20sp"
+        android:background="@drawable/bg_action_container_button"/>
+
+
+</com.filemanager.view.FileOperationLayout>

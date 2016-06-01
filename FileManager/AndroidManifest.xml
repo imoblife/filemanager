@@ -52,7 +52,7 @@
     -->
 
     <uses-sdk
-        android:minSdkVersion="4"
+        android:minSdkVersion="9"
         android:targetSdkVersion="19" />
     <!--
              If targetSdkVersion is increased from 4 to 5 or higher, 

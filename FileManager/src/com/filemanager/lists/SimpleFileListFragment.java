@@ -13,14 +13,11 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import base.util.*;
 import base.util.ui.titlebar.BaseTitlebarFragmentActivity;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
-import base.util.ui.titlebar.TitlebarView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.FileManagerActivity;
 import com.filemanager.PreferenceActivity;
@@ -32,6 +29,7 @@ import com.filemanager.files.FileHolder;
 import com.filemanager.occupancy.StorageAnalysisActivity;
 import com.filemanager.util.*;
 import com.filemanager.util.FileUtils;
+import com.filemanager.view.FileOperationLayout;
 import com.filemanager.view.PathBar;
 import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
@@ -73,6 +71,8 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     private IconicsTextView mSelectModeView;
     private SelectModeListener mSelectModeListener;
+    private FileOperationLayout mFileOperationLayout;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -87,9 +87,13 @@ public class SimpleFileListFragment extends FileListFragment implements
         mSelectModeView.setVisibility(View.GONE);
         mSelectModeListener = new SelectModeListener();
         mSelectModeView.setOnClickListener(mSelectModeListener);
+        mFileOperationLayout = (FileOperationLayout) view.findViewById(R.id.operation_view);
+        mFileOperationLayout.setVisibility(View.GONE);
 		// Pathbar init.
 		mPathBar = (PathBar) view.findViewById(R.id.pathbar);
-		// Handle mPath differently if we restore state or just initially create
+
+        mFileOperationLayout.setDataAdapter(this, mAdapter);
+        // Handle mPath differently if we restore state or just initially create
 		// the view.
 		/*	LinearLayout base_titlebar_ll = (LinearLayout) view.findViewById(R.id.base_titlebar_ll);
 			base_titlebar_ll.setOnClickListener(new OnClickListener() {
@@ -236,6 +240,7 @@ public class SimpleFileListFragment extends FileListFragment implements
     private void updateSelectButtonState(int selectedItemCount){
         if (selectedItemCount == 0) {
             mSelectModeView.setVisibility(View.GONE);
+            mFileOperationLayout.setVisibility(View.GONE);
             mSearchActionBarLayout.setVisibility(View.VISIBLE);
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.VISIBLE);
             mPathBar.setPathButtonClickable(true);
@@ -243,26 +248,34 @@ public class SimpleFileListFragment extends FileListFragment implements
         } else if (selectedItemCount == mAdapter.getCount()) {
             mSelectModeView.setVisibility(View.VISIBLE);
             mSelectModeView.setText("{FMT_ICON_SELECT_NONE}");
-            mSearchActionBarLayout.setVisibility(View.GONE);
-            ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
-            mPathBar.setPathButtonClickable(false);
-        } else {
-            mSelectModeView.setVisibility(View.VISIBLE);
-            mSelectModeView.setText("{FMT_ICON_SELECT_ALL}");
+            mFileOperationLayout.setVisibility(View.VISIBLE);
             mSearchActionBarLayout.setVisibility(View.GONE);
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
             mPathBar.setPathButtonClickable(false);
 
+            mFileOperationLayout.updateOperationButtonState();
+        } else {
+            mSelectModeView.setVisibility(View.VISIBLE);
+            mSelectModeView.setText("{FMT_ICON_SELECT_ALL}");
+            mFileOperationLayout.setVisibility(View.VISIBLE);
+            mSearchActionBarLayout.setVisibility(View.GONE);
+            ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
+            mPathBar.setPathButtonClickable(false);
+
+            mFileOperationLayout.updateOperationButtonState();
         }
     }
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
-		FileHolder item = (FileHolder) mAdapter.getItem(position);
+        if (position >= mAdapter.getCount()) {
+            return;
+        }
+        FileHolder item = (FileHolder) mAdapter.getItem(position);
         if (mAdapter.isSelectMod()) {
             item.isSelect = !item.isSelect;
-            int selectedItemCount = mAdapter.getSelectedItemCount();
+            int selectedItemCount = mAdapter.getSelectedItemList().size();
             updateSelectButtonState(selectedItemCount);
             if (selectedItemCount == 0) {
                 mAdapter.setSelectMod(false);
@@ -413,6 +426,9 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mAdapter != null && position >= mAdapter.getCount()) {
+            return false;
+        }
         if (mAdapter != null && mAdapter.getItem(position) != null) {
 //            new OperationDialog((FileHolder) mAdapter.getItem(position));
             FileHolder item = (FileHolder) mAdapter.getItem(position);
@@ -506,6 +522,9 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     @Override
     public void refresh() {
+        mAdapter.setSelectMod(false);
+        mAdapter.toggleAllItemState(false);
+        updateSelectButtonState(0);
         super.refresh();
         mAdapter.clearFileChildrenCache();
     }
@@ -695,14 +714,14 @@ public class SimpleFileListFragment extends FileListFragment implements
 
         @Override
         public void onClick(View view) {
-            if (mAdapter.getSelectedItemCount() == mAdapter.getCount()) {
+            if (mAdapter.getSelectedItemList().size() == mAdapter.getCount()) {
                 mAdapter.toggleAllItemState(false);
                 mAdapter.setSelectMod(false);
             } else {
                 mAdapter.toggleAllItemState(true);
                 mAdapter.notifyDataSetChanged();
             }
-            updateSelectButtonState(mAdapter.getSelectedItemCount());
+            updateSelectButtonState(mAdapter.getSelectedItemList().size());
         }
     }
 }

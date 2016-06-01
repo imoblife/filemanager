@@ -48,14 +48,14 @@ public class FileHolderListAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public int getSelectedItemCount() {
-        int result = 0;
+    public ArrayList<FileHolder> getSelectedItemList() {
+        ArrayList<FileHolder> list = new ArrayList<>();
         for (FileHolder item : mItems) {
             if (item.isSelect) {
-                result++;
+                list.add(item);
             }
         }
-        return result;
+        return list;
     }
 
     public void toggleAllItemState(boolean selected) {
@@ -143,9 +143,17 @@ public class FileHolderListAdapter extends BaseAdapter {
 		// Hide directories' size as it's irrelevant if we can't recursively
 		// find it.
         holder.checkBox.setVisibility(mIsSelectMod ? View.VISIBLE : View.GONE);
+        int bottom = holder.content.getPaddingBottom();
+        int top = holder.content.getPaddingTop();
+        int right = holder.content.getPaddingRight();
+        int left = holder.content.getPaddingLeft();
         if (mIsSelectMod) {
             holder.checkBox.setChecked(item.isSelect);
+            holder.content.setBackgroundResource(item.isSelect ? R.drawable.item_selected : R.drawable.base_card_selector);
+        } else {
+            holder.content.setBackgroundResource(R.drawable.base_card_selector);
         }
+        holder.content.setPadding(left, top, right, bottom);
 
         String tertiaryInfo;
         File file = item.getFile();
