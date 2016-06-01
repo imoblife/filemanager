@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?><!-- http://www.360doc.com/content/12/0423/20/5087210_205979821.shtml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:bottom="-1.5dp"
+        android:left="-1.5dp"
+        android:right="-1.5dp"
+        android:top="-1.5dp">
+        <shape>
+            <solid android:color="#141ca0ec" />
+            <stroke
+                android:width="0.5dp"
+                android:color="@color/grey_e5e5e5" />
+        </shape>
+    </item>
+
+</layer-list>

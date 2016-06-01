@@ -173,6 +173,10 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 
 	// @Override
 	protected void onListItemClick(ListView l, View v, int position, long id) {
+        if (position >= mAdapter.getCount()) {
+            return;
+        }
+
         FileHolder fileHolder = (FileHolder) mAdapter.getItem(position);
 
         if (fileHolder == null) {

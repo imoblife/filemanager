@@ -223,6 +223,9 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        if (position >= mAdapter.getCount()) {
+            return;
+        }
 
         FileHolder item = (FileHolder) mAdapter.getItem(position);
         mPreviousPosition = getListView().getFirstVisiblePosition();
@@ -349,6 +352,9 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             if (mAdapter != null) {
+                if (position >= mAdapter.getCount()) {
+                    return false;
+                }
                 FileHolder holder = (FileHolder) mAdapter.getItem(position);
                 DeleteDialog deleteDialog = new DeleteDialog(holder);
                 deleteDialog.show();

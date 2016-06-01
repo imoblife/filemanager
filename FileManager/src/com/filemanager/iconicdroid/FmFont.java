@@ -122,8 +122,15 @@ public class FmFont implements ITypeface {
 
         FMT_ICON_COPY('\uE900'),
         FMT_ICON_CUT('\uE901'),
+        FMT_ICON_DELETE('\uE902'),
         FMT_ICON_SELECT_NONE('\uE903'),
-        FMT_ICON_SELECT_ALL('\uE904');
+        FMT_ICON_SELECT_ALL('\uE904'),
+        FMT_ICON_MORE('\uE905'),
+        FMT_ICON_RENAME('\uE906'),
+        FMT_ICON_SEND('\uE907'),
+        FMT_ICON_SHORT('\uE908'),
+        FMT_ICON_ZIP('\uE909'),
+        FMT_ICON_UNZIP('\uE91A');
 
 
         char character;

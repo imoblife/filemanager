@@ -17,6 +17,7 @@ import android.widget.AbsListView.OnScrollListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+import base.util.ViewUtil;
 import base.util.ui.fragment.BaseListFragment;
 
 import java.io.File;
@@ -179,6 +180,10 @@ public abstract class FileListFragment extends BaseListFragment {
 		mAdapter = new FileHolderListAdapter(mFiles, getActivity());
 
 		setListAdapter(mAdapter);
+        View footer = new View(getContext());
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewUtil.dip2px(getContext(), 56));
+        footer.setLayoutParams(params);
+        getListView().addFooterView(footer);
 		mScanner.start();
 
 	}

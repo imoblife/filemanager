@@ -13,14 +13,11 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.*;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.*;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import base.util.*;
 import base.util.ui.titlebar.BaseTitlebarFragmentActivity;
 import base.util.ui.titlebar.ISearchBarActionListener;
 import base.util.ui.titlebar.ITitlebarActionMenuListener;
-import base.util.ui.titlebar.TitlebarView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.FileManagerActivity;
 import com.filemanager.PreferenceActivity;
@@ -32,6 +29,7 @@ import com.filemanager.files.FileHolder;
 import com.filemanager.occupancy.StorageAnalysisActivity;
 import com.filemanager.util.*;
 import com.filemanager.util.FileUtils;
+import com.filemanager.view.FileOperationLayout;
 import com.filemanager.view.PathBar;
 import com.filemanager.view.PathBar.Mode;
 import com.filemanager.view.PathBar.OnDirectoryChangedListener;
@@ -73,6 +71,8 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     private IconicsTextView mSelectModeView;
     private SelectModeListener mSelectModeListener;
+    private FileOperationLayout mFileOperationLayout;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -87,8 +87,22 @@ public class SimpleFileListFragment extends FileListFragment implements
         mSelectModeView.setVisibility(View.GONE);
         mSelectModeListener = new SelectModeListener();
         mSelectModeView.setOnClickListener(mSelectModeListener);
+        mFileOperationLayout = (FileOperationLayout) view.findViewById(R.id.operation_view);
+        mFileOperationLayout.setVisibility(View.GONE);
 		// Pathbar init.
 		mPathBar = (PathBar) view.findViewById(R.id.pathbar);
+
+        mFileOperationLayout.setDataAdapter(this, mAdapter);
+        // Handle mPath differently if we restore state or just initially create
+		// the view.
+		/*	LinearLayout base_titlebar_ll = (LinearLayout) view.findViewById(R.id.base_titlebar_ll);
+			base_titlebar_ll.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					getActivity().finish();
+				}
+			});*/
 
 		if (savedInstanceState == null) {
 			mPathBar.setInitialDirectory(getPath());
