@@ -51,27 +51,6 @@ public abstract class FileListFragment extends BaseListFragment {
 	File mPreviousDirectory = null;
     int mPreviousPosition = 0;
 
-	// Not an anonymous inner class because of:
-	// http://stackoverflow.com/questions/2542938/sharedpreferences-onsharedpreferencechangelistener-not-being-called-consistently
-	private OnSharedPreferenceChangeListener preferenceListener = new OnSharedPreferenceChangeListener() {
-		@Override
-		public void onSharedPreferenceChanged(
-				SharedPreferences sharedPreferences, String key) {
-			// We only care for list-altering preferences. This could be
-			// dangerous though,
-			// as later contributors might not see this, and have their settings
-			// not work in realtime.
-			// Therefore this is commented out, since it's not likely the
-			// refresh is THAT heavy.
-			// *****************
-			// if (PreferenceActivity.PREFS_DISPLAYHIDDENFILES.equals(key)
-			// || PreferenceActivity.PREFS_SORTBY.equals(key)
-			// || PreferenceActivity.PREFS_ASCENDING.equals(key))
-
-			refresh();
-		}
-	};
-
 	protected FileHolderListAdapter mAdapter;
 	protected DirectoryScanner mScanner;
 	protected ArrayList<FileHolder> mFiles = new ArrayList<FileHolder>();
@@ -100,9 +79,6 @@ public abstract class FileListFragment extends BaseListFragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 
-		// Set auto refresh on preference change.
-		PreferenceManager.getDefaultSharedPreferences(getActivity())
-				.registerOnSharedPreferenceChangeListener(preferenceListener);
 
 		// Set list properties
 		getListView().setOnScrollListener(new AbsListView.OnScrollListener() {

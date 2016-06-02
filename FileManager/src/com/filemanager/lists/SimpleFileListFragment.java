@@ -519,11 +519,16 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     @Override
     public void refresh() {
-        mAdapter.setSelectMod(false);
-        mAdapter.toggleAllItemState(false);
-        updateSelectButtonState(0);
-        super.refresh();
-        mAdapter.clearFileChildrenCache();
+        try {
+            if (isAdded()) {
+                mAdapter.setSelectMod(false);
+                mAdapter.toggleAllItemState(false);
+                updateSelectButtonState(0);
+                super.refresh();
+                mAdapter.clearFileChildrenCache();
+            }
+        } catch (Exception e) {
+        }
     }
 
 
