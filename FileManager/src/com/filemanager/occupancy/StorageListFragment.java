@@ -47,9 +47,6 @@ public abstract class StorageListFragment extends BaseListFragment {
     private TextView mLoadingDefaultTextView;
     private TextView mLoadingTextView;
     private File mCurrentDirectory;
-    private View mClipboardInfo;
-    private TextView mClipboardContent;
-    private TextView mClipboardAction;
 
     protected FileTreeNode<String> mRootNode;
     protected FileTreeNode<String> mCurrentNode;
@@ -102,41 +99,7 @@ public abstract class StorageListFragment extends BaseListFragment {
         mLoadingDefaultTextView.setVisibility(View.GONE);
         mLoadingTextView = (TextView) view.findViewById(R.id.tv_loading);
         mLoadingTextView.setVisibility(View.VISIBLE);
-        mClipboardInfo = view.findViewById(R.id.clipboard_info);
-        mClipboardContent = (TextView) view
-                .findViewById(R.id.clipboard_content);
 
-        mClipboardContent.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (CopyHelper.get(getActivity()).canPaste())
-                    CopyHelper.get(getActivity()).paste(new File(getPath()),
-                            new CopyHelper.OnOperationFinishedListener() {
-                                public void operationFinished(boolean success) {
-                                    refresh();
-
-                                }
-                            });
-                else {
-                    Toast.makeText(getActivity(), R.string.nothing_to_paste,
-                            Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-
-        mClipboardAction = (TextView) view.findViewById(R.id.clipboard_action);
-        mClipboardAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                CopyHelper.get(getActivity()).clear();
-                updateClipboardInfo();
-
-                // if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-                // ActionbarRefreshHelper
-                // .activity_invalidateOptionsMenu(getActivity());
-            }
-        });
 
         // Get arguments
         if (savedInstanceState == null) {
@@ -265,24 +228,6 @@ public abstract class StorageListFragment extends BaseListFragment {
     }
 
     public void updateClipboardInfo() {
-        if (CopyHelper.get(getActivity()).canPaste()) {
-            mClipboardInfo.setVisibility(View.VISIBLE);
-            int count = CopyHelper.get(getActivity()).getItemsCount();
-            if (CopyHelper.Operation.COPY.equals(CopyHelper.get(getActivity())
-                    .getOperationType())) {
-                // mClipboardContent.setText(getResources().getQuantityString(
-                // R.plurals.clipboard_info_items_to_copy, count, count));
-                mClipboardContent.setText(getString(R.string.paste));
-                mClipboardAction.setText(getString(R.string.clipboard_dismiss));
-            } else if (CopyHelper.Operation.CUT.equals(CopyHelper.get(
-                    getActivity()).getOperationType())) {
-                mClipboardContent.setText(getResources().getQuantityString(
-                        R.plurals.clipboard_info_items_to_move, count, count));
-                mClipboardAction.setText(getString(R.string.clipboard_undo));
-            }
-        } else {
-            mClipboardInfo.setVisibility(View.GONE);
-        }
     }
 
     /**

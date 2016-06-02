@@ -2,15 +2,15 @@
              xmlns:wheel="http://schemas.android.com/apk/res-auto"
     android:id="@+id/flipper"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/base_bg"
+    android:layout_height="@dimen/cut_copy_dialog_height"
+    android:background="@color/white"
     android:inAnimation="@anim/fade_in"
     android:isScrollContainer="true"
     android:outAnimation="@anim/fade_out" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/cut_copy_dialog_height"
         android:gravity="center"
         android:orientation="vertical" >
 
@@ -24,25 +24,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/scanning"/>
-
-        <TextView
-                android:id="@+id/tv_loading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/scanning"
-                android:visibility="gone"/>
     </LinearLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="@dimen/cut_copy_dialog_height" >
 
         <FrameLayout
             android:id="@+id/list_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/clipboard_info"
+            android:layout_height="@dimen/cut_copy_dialog_height"
             android:layout_alignParentEnd="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
@@ -51,16 +42,16 @@
             android:orientation="vertical" >
 
             <ListView
-                android:id="@android:id/list"
+                android:id="@+id/dialog_list"
                 style="@style/base_card_listview"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="@dimen/cut_copy_dialog_height"
                 android:cacheColorHint="#00000000"
                 android:fastScrollEnabled="false" >
             </ListView>
 
             <TextView
-                android:id="@android:id/empty"
+                android:id="@+id/tv_empty"
                 style="@style/base_item_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

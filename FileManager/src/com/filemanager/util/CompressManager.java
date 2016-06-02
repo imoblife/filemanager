@@ -3,6 +3,8 @@ package com.filemanager.util;
 import android.support.v4.provider.DocumentFile;
 import base.util.FileUtil;
 import base.util.PermissionUtil;
+import com.afollestad.materialdialogs.MaterialDialog;
+import de.greenrobot.event.EventBus;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.*;
@@ -15,7 +17,6 @@ import java.util.zip.ZipOutputStream;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnDismissListener;
@@ -30,7 +31,7 @@ public class CompressManager {
 
 	private static final int BUFFER_SIZE = 1024;
 	private Context mContext;
-	private ProgressDialog progressDialog;
+	private MaterialDialog progressDialog;
 	private int fileCount;
 	private String fileOut;
 	private OnCompressFinishedListener onCompressFinishedListener = null;
@@ -78,18 +79,6 @@ public class CompressManager {
 		 * @returns 0 if successful, error value otherwise.
 		 */
 		private void compressFile(File file, String path) throws IOException {
-			progressDialog.setOnDismissListener(new OnDismissListener() {
-
-				@Override
-				public void onDismiss(DialogInterface progressDialog) {
-					if (cancelCompression == false) {
-						Log.e(TAG, "Dialog Dismissed");
-						Log.e(TAG, "Compression Cancel Attempted");
-						cancelCompression = true;
-						cancel(true);
-					}
-				}
-			});
 			if (!file.isDirectory()) {
 				byte[] buf = new byte[BUFFER_SIZE];
 				int len;
@@ -104,11 +93,11 @@ public class CompressManager {
 				in.close();
 				return;
 			}
-			if (file.list() == null || cancelCompression == true) {
+			if (file.list() == null || cancelCompression) {
 				return;
 			}
 			for (String fileName : file.list()) {
-				if (cancelCompression == true) {
+				if (cancelCompression) {
 					return;
 				}
 				File f = new File(file.getAbsolutePath() + File.separator
@@ -124,21 +113,25 @@ public class CompressManager {
 			FileOutputStream out = null;
 			zipDirectory = new File(fileOut);
             zipDirectoryDocumentFile = FileUtil.getDocumentFile(zipDirectory, false, true, mContext);
-            progressDialog = new ProgressDialog(mContext);
-			progressDialog.setCancelable(false);
-			progressDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface progressDialog,
-								int which) {
-							progressDialog.dismiss();
-							Log.e(TAG, "Dialog Dismiss Detected");
-						}
-					});
-			progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-			progressDialog.setMessage(mContext.getString(R.string.compressing));
-			progressDialog.show();
-			progressDialog.setProgress(0);
+
+            progressDialog = new MaterialDialog.Builder(mContext)
+                    .content(mContext.getString(R.string.compressing))
+                    .progress(false, fileCount, true)
+                    .cancelable(false)
+                    .positiveText(R.string.disableall_cancel)
+                    .positiveColorRes(R.color.blue_1ca0ec)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            if (!cancelCompression) {
+                                cancelCompression = true;
+                                cancel(true);
+                            }
+                        }
+                    })
+                    .build();
+            progressDialog.show();
+
 			try {
                 if (PermissionUtil.isAndroid5() && zipDirectoryDocumentFile != null) {
 
@@ -160,7 +153,7 @@ public class CompressManager {
 			}
 			List<FileHolder> list = params[0];
 			for (FileHolder file : list) {
-				if (cancelCompression == true) {
+				if (cancelCompression) {
 					return error;
 				}
 				try {

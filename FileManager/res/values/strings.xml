@@ -194,4 +194,10 @@
     <string name="storage_analysis_total_size">/Total：%s</string>
     <string name="storage_analysis_scan_count">Scanning： %s items analyzed...</string>
 
+    <!--6.2 text-->
+    <string name="file_dialog_operation_copy_title">Copy to</string>
+    <string name="file_dialog_operation_move_title">Move to</string>
+    <string name="file_dialog_operation_copy_button">COPY</string>
+    <string name="file_dialog_operation_move_button">MOVE</string>
+    <string name="file_dialog_operation_in_progress">In Progress</string>
 </resources>

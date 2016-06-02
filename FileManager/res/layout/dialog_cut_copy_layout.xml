@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.filemanager.view.CutAndCopyLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp">
+
+    <com.filemanager.view.PathBar
+        android:id="@+id/pathbar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/topBar_height"
+        android:gravity="center_vertical"
+        android:background="@color/white" >
+    </com.filemanager.view.PathBar>
+
+    <include layout="@layout/dialog_filelist"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cut_copy_dialog_height" />
+
+
+</com.filemanager.view.CutAndCopyLayout>

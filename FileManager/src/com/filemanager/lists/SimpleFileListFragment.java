@@ -394,16 +394,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 				Toast.makeText(getActivity(), R.string.nothing_to_paste,
 						Toast.LENGTH_LONG).show();
 			return true;
-		} else if (id == R.id.menu_multiselect) {
-			try {
-				Intent intent = new Intent(FileManagerIntents.ACTION_MULTI_SELECT);
-				intent.putExtra(FileManagerIntents.EXTRA_DIR_PATH, getPath());
-				startActivityForResult(intent, REQUEST_CODE_MULTISELECT);
-			} catch(Throwable t) {
-				t.printStackTrace();
-			}
-            return true;
-        } else if (id == MENU_ID_SORT) {
+		} else if (id == MENU_ID_SORT) {
             new SortDialog();
             return true;
         } else if (id == MENU_ID_STORAGE_ANALYSIS) {
@@ -506,8 +497,14 @@ public class SimpleFileListFragment extends FileListFragment implements
 	}
 
 	public boolean pressBack() {
-		return mPathBar.pressBack();
-	}
+        if (mAdapter != null && mAdapter.isSelectMod()) {
+            mAdapter.setSelectMod(false);
+            mAdapter.toggleAllItemState(false);
+            return true;
+        } else {
+            return mPathBar.pressBack();
+        }
+    }
 
     @Override
     public void refresh() {
@@ -526,12 +523,10 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 	public void onTitlebarActionMenuClick(int position) {
         if (position == 0) {
-            handleOptionMenu(R.id.menu_multiselect);
-        } else if (position == 1) {
             handleOptionMenu(R.id.menu_create_folder);
-        } else if (position == 2) {
+        } else if (position == 1) {
             handleOptionMenu(MENU_ID_SORT);
-        } else if (position == 3) {
+        } else if (position == 2) {
             handleOptionMenu(MENU_ID_STORAGE_ANALYSIS);
         }
     }

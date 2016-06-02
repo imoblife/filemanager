@@ -5,8 +5,10 @@ import android.support.v4.provider.DocumentFile;
 import android.util.Log;
 import android.widget.Toast;
 
+import base.util.CustomToast;
 import base.util.FileUtil;
 import base.util.PermissionUtil;
+import de.greenrobot.event.EventBus;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.File;
@@ -24,86 +26,98 @@ import com.filemanager.files.FileHolder;
  *
  */
 public class CopyHelper {
-	private static final int COPY_BUFFER_SIZE = 32 * 1024;
-	private static CopyHelper instance;
+    private static final int COPY_BUFFER_SIZE = 32 * 1024;
+    private static CopyHelper instance;
+    private boolean mCancelAction = false;
 
-	public static enum Operation {
-		COPY, CUT
-	}
+    public static enum Operation {
+        COPY, CUT
+    }
 
-	private Context mContext;
-	private List<FileHolder> mClipboard;
-	private Operation mOperation;
-	private OnOperationFinishedListener mListener;
+    private Context mContext;
+    private List<FileHolder> mClipboard;
+    private Operation mOperation;
+    private OnOperationFinishedListener mListener;
+    private OnOperationProgressListener mProgressListener;
+    private ModernAsyncTask mActionTask;
 
-	public CopyHelper(Context c) {
-		mContext = c;
-	}
 
-	public static CopyHelper get(Context c) {
-		if (instance == null) {
-			instance = new CopyHelper(c.getApplicationContext());
-		}
-		return instance;
-	}
+    public CopyHelper(Context c) {
+        mContext = c;
+    }
 
-	public int getItemsCount() {
-		if (canPaste()) {
-			return mClipboard.size();
-		} else {
-			return 0;
-		}
-	}
+    public static CopyHelper get(Context c) {
+        if (instance == null) {
+            instance = new CopyHelper(c.getApplicationContext());
+        }
+        return instance;
+    }
 
-	public void copy(List<FileHolder> tbc) {
-		mOperation = Operation.COPY;
+    public int getItemsCount() {
+        if (canPaste()) {
+            return mClipboard.size();
+        } else {
+            return 0;
+        }
+    }
 
-		mClipboard = tbc;
-	}
+    public void copy(List<FileHolder> tbc) {
+        mOperation = Operation.COPY;
 
-	public void copy(FileHolder tbc) {
-		ArrayList<FileHolder> tbcl = new ArrayList<FileHolder>();
-		tbcl.add(tbc);
-		copy(tbcl);
-	}
+        mClipboard = tbc;
+    }
 
-	public void cut(List<FileHolder> tbc) {
-		mOperation = Operation.CUT;
+    public void copy(FileHolder tbc) {
+        ArrayList<FileHolder> tbcl = new ArrayList<FileHolder>();
+        tbcl.add(tbc);
+        copy(tbcl);
+    }
 
-		mClipboard = tbc;
-	}
+    public void cut(List<FileHolder> tbc) {
+        mOperation = Operation.CUT;
 
-	public void cut(FileHolder tbc) {
-		ArrayList<FileHolder> tbcl = new ArrayList<FileHolder>();
-		tbcl.add(tbc);
-		cut(tbcl);
-	}
+        mClipboard = tbc;
+    }
 
-	public void clear() {
-		mClipboard.clear();
-	}
+    public void cut(FileHolder tbc) {
+        ArrayList<FileHolder> tbcl = new ArrayList<FileHolder>();
+        tbcl.add(tbc);
+        cut(tbcl);
+    }
 
-	/**
-	 * Call this to check whether there are file references on the clipboard. 
-	 */
-	public boolean canPaste() {
-		return mClipboard != null && !mClipboard.isEmpty();
-	}
+    public void clear() {
+        mClipboard.clear();
+    }
 
-	public Operation getOperationType() {
-		return mOperation;
-	}
+    /**
+     * Call this to check whether there are file references on the clipboard.
+     */
+    public boolean canPaste() {
+        return mClipboard != null && !mClipboard.isEmpty();
+    }
 
-	/**
-	 * Call this to actually copy.
-	 * @param dest The path to copy the clipboard into.
-	 * @return false if ANY error has occurred. This may mean that some files have been successfully copied, but not all. 
-	 */
-	private boolean performCopy(File dest) {
-        boolean res = false;
+    public Operation getOperationType() {
+        return mOperation;
+    }
+
+    /**
+     * Call this to actually copy.
+     *
+     * @param dest The path to copy the clipboard into.
+     * @return false if ANY error has occurred. This may mean that some files have been successfully copied, but not all.
+     */
+    private boolean performCopy(File dest) {
+        boolean res = true;
+        int progress = 0;
         try {
             if (PermissionUtil.isAndroid5()) {
                 for (FileHolder fh : mClipboard) {
+
+                    if (mCancelAction) {
+                        res = false;
+                        break;
+                    }
+
                     if (dest.getAbsolutePath().contains(fh.getFile().getAbsolutePath())) {
                         res &= false;
                     } else {
@@ -119,10 +133,19 @@ public class CopyHelper {
                                             fh.getName()));
                         }
                     }
+
+                    if (mProgressListener != null) {
+                        mProgressListener.onProgress(progress);
+                    }
+                    progress++;
                 }
             } else {
-
                 for (FileHolder fh : mClipboard) {
+                    if (mCancelAction) {
+                        res = false;
+                        break;
+                    }
+
                     if (dest.getAbsolutePath().contains(fh.getFile().getAbsolutePath())) {
                         res &= false;
                     } else {
@@ -137,7 +160,13 @@ public class CopyHelper {
                                     FileUtils.createUniqueCopyName(mContext, dest,
                                             fh.getName()));
                     }
+
+                    if (mProgressListener != null) {
+                        mProgressListener.onProgress(progress);
+                    }
+                    progress++;
                 }
+
             }
         } catch (Exception e) {
             Log.w(getClass().getSimpleName(), e);
@@ -145,77 +174,81 @@ public class CopyHelper {
         return res;
     }
 
-	/**
-	 * Copy a file.
-	 * @param oldFile File to copy.
-	 * @param newFile The file to be created.
-	 * @return Was copy successful?
-	 */
-	private boolean copyFile(File oldFile, File newFile) {
-		try {
-			FileInputStream input = new FileInputStream(oldFile);
-			FileOutputStream output = new FileOutputStream(newFile);
+    /**
+     * Copy a file.
+     *
+     * @param oldFile File to copy.
+     * @param newFile The file to be created.
+     * @return Was copy successful?
+     */
+    private boolean copyFile(File oldFile, File newFile) {
+        try {
+            FileInputStream input = new FileInputStream(oldFile);
+            FileOutputStream output = new FileOutputStream(newFile);
 
-			byte[] buffer = new byte[COPY_BUFFER_SIZE];
+            byte[] buffer = new byte[COPY_BUFFER_SIZE];
 
-			while (true) {
-				int bytes = input.read(buffer);
+            while (true) {
+                int bytes = input.read(buffer);
 
-				if (bytes <= 0) {
-					break;
-				}
+                if (bytes <= 0) {
+                    break;
+                }
 
-				output.write(buffer, 0, bytes);
-			}
+                output.write(buffer, 0, bytes);
+            }
 
-			output.close();
-			input.close();
+            output.close();
+            input.close();
 
-			// Request media scan
-			MediaScannerUtils.informFileAdded(mContext, newFile);
+            // Request media scan
+            MediaScannerUtils.informFileAdded(mContext, newFile);
 
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
-	}
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
 
-	/**
-	 * Recursively copy a folder.
-	 * @param oldFile Folder to copy.
-	 * @param newFile The dir to be created.
-	 * @return Was copy successful?
-	 */
-	private boolean copyFolder(File oldFile, File newFile) {
-		boolean res = true;
+    /**
+     * Recursively copy a folder.
+     *
+     * @param oldFile Folder to copy.
+     * @param newFile The dir to be created.
+     * @return Was copy successful?
+     */
+    private boolean copyFolder(File oldFile, File newFile) {
+        boolean res = true;
 
-		if (oldFile.isDirectory()) {
-			// if directory not exists, create it
-			if (!newFile.exists()) {
-				newFile.mkdir();
-				// System.out.println("Directory copied from " + src + "  to " + dest);
-			}
+        if (oldFile.isDirectory()) {
+            // if directory not exists, create it
+            if (!newFile.exists()) {
+                newFile.mkdir();
+                // System.out.println("Directory copied from " + src + "  to " + dest);
+            }
 
-			// list all the directory contents
-			String files[] = oldFile.list();
+            // list all the directory contents
+            String files[] = oldFile.list();
 
-			for (String file : files) {
-				// construct the src and dest file structure
-				File srcFile = new File(oldFile, file);
-				File destFile = new File(newFile, file);
-				// recursive copy
-				res &= copyFolder(srcFile, destFile);
-			}
-		} else {
-			res &= copyFile(oldFile, newFile);
-		}
+            for (String file : files) {
+                // construct the src and dest file structure
+                File srcFile = new File(oldFile, file);
+                File destFile = new File(newFile, file);
+                // recursive copy
+                res &= copyFolder(srcFile, destFile);
+            }
+        } else {
+            res &= copyFile(oldFile, newFile);
+        }
 
-		return res;
-	}
+        return res;
+    }
 
     private boolean copyFileAndroid5(File oldFile, File newFile) {
         try {
-
+            if (mCancelAction) {
+                return false;
+            }
             FileUtil.copyFile(oldFile, newFile, mContext);
             // Request media scan
             MediaScannerUtils.informFileAdded(mContext, newFile);
@@ -225,58 +258,12 @@ public class CopyHelper {
         return true;
     }
 
-	private boolean copyFolderAndroid5(File oldFile, File newFile) {
-		boolean res = true;
-        DocumentFile documentFile = null;
-
-		if (oldFile.isDirectory()) {
-            boolean result = false;
-			// if directory not exists, create it
-			if (!newFile.exists()) {
-                result = newFile.mkdir();
-                // System.out.println("Directory copied from " + src + "  to " + dest);
-			}
-
-            if (!result) {
-                documentFile = FileUtil.getDocumentFile(newFile, true, true, mContext);
-                if (documentFile == null) {
-                    return false;
-                }
-            }
-
-			// list all the directory contents
-			String files[] = oldFile.list();
-
-			for (String file : files) {
-				// construct the src and dest file structure
-				File srcFile = new File(oldFile, file);
-				File destFile = new File(newFile, file);
-				// recursive copy
-                if(srcFile.isDirectory()) {
-                    res &= copyFolderAndroid5(srcFile, destFile);
-                }else {
-                    res &= copyFileAndroid5(srcFile, destFile);
-                }
-            }
-		} else {
-            res &= FileUtil.copyFile(oldFile, newFile, mContext);
-        }
-
-		return res;
-	}
-
-    private boolean cutFileAndroid5(File oldFile, File newFile) {
-        try {
-            FileUtil.moveFile(oldFile, newFile, mContext);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean cutFolderAndroid5(File oldFile, File newFile) {
+    private boolean copyFolderAndroid5(File oldFile, File newFile) {
         boolean res = true;
         DocumentFile documentFile = null;
+        if (mCancelAction) {
+            return false;
+        }
 
         if (oldFile.isDirectory()) {
             boolean result = false;
@@ -295,7 +282,62 @@ public class CopyHelper {
 
             // list all the directory contents
             String files[] = oldFile.list();
-            if (files != null &&  files.length == 0) {
+
+            for (String file : files) {
+                // construct the src and dest file structure
+                File srcFile = new File(oldFile, file);
+                File destFile = new File(newFile, file);
+                // recursive copy
+                if (srcFile.isDirectory()) {
+                    res &= copyFolderAndroid5(srcFile, destFile);
+                } else {
+                    res &= copyFileAndroid5(srcFile, destFile);
+                }
+            }
+        } else {
+            res &= FileUtil.copyFile(oldFile, newFile, mContext);
+        }
+
+        return res;
+    }
+
+    private boolean cutFileAndroid5(File oldFile, File newFile) {
+        try {
+            if (mCancelAction) {
+                return false;
+            }
+            FileUtil.moveFile(oldFile, newFile, mContext);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean cutFolderAndroid5(File oldFile, File newFile) {
+        boolean res = true;
+        DocumentFile documentFile = null;
+
+        if (mCancelAction) {
+            return false;
+        }
+        if (oldFile.isDirectory()) {
+            boolean result = false;
+            // if directory not exists, create it
+            if (!newFile.exists()) {
+                result = newFile.mkdir();
+                // System.out.println("Directory copied from " + src + "  to " + dest);
+            }
+
+            if (!result) {
+                documentFile = FileUtil.getDocumentFile(newFile, true, true, mContext);
+                if (documentFile == null) {
+                    return false;
+                }
+            }
+
+            // list all the directory contents
+            String files[] = oldFile.list();
+            if (files != null && files.length == 0) {
                 return FileUtil.deleteFile(oldFile, mContext);
             }
 
@@ -304,9 +346,9 @@ public class CopyHelper {
                 File srcFile = new File(oldFile, file);
                 File destFile = new File(newFile, file);
                 // recursive copy
-                if(srcFile.isDirectory()) {
+                if (srcFile.isDirectory()) {
                     res &= cutFolderAndroid5(srcFile, destFile);
-                }else {
+                } else {
                     res &= cutFileAndroid5(srcFile, destFile);
                 }
             }
@@ -317,21 +359,29 @@ public class CopyHelper {
         return res;
     }
 
-	/**
-	 * Call this to actually move.
-	 * @param dest The path to move the clipboard into.
-	 * @return false if ANY error has occurred. This may mean that some files have been successfully moved, but not all. 
-	 */
-	private boolean performCut(File dest) {
-        boolean res = false;
+    /**
+     * Call this to actually move.
+     *
+     * @param dest The path to move the clipboard into.
+     * @return false if ANY error has occurred. This may mean that some files have been successfully moved, but not all.
+     */
+    private boolean performCut(File dest) {
+        boolean res = true;
         boolean deleteOk = true;
         boolean createOk = true;
+        int progress = 0;
 
         try {
             File from;
             if (PermissionUtil.isAndroid5()) {
                 for (FileHolder fh : mClipboard) {
                     from = fh.getFile().getAbsoluteFile();
+
+                    if (mCancelAction) {
+                        res = false;
+                        break;
+                    }
+
                     try {
                         if (dest.getAbsolutePath().contains(from.getAbsolutePath())) {
                             res &= false;
@@ -354,10 +404,19 @@ public class CopyHelper {
                     } catch (Exception e) {
                         res = false;
                     }
+                    if (mProgressListener != null) {
+                        mProgressListener.onProgress(progress);
+                    }
+                    progress++;
                 }
 
             } else {
                 for (FileHolder fh : mClipboard) {
+
+                    if (mCancelAction) {
+                        res = false;
+                        break;
+                    }
                     try {
                         from = fh.getFile().getAbsoluteFile();
 
@@ -379,6 +438,10 @@ public class CopyHelper {
                     } catch (Exception e) {
                         res = false;
                     }
+                    if (mProgressListener != null) {
+                        mProgressListener.onProgress(progress);
+                    }
+                    progress++;
                 }
             }
         } catch (Exception e) {
@@ -388,13 +451,25 @@ public class CopyHelper {
         return res;
     }
 
-	/**
-	 * Paste the copied/cut items.
-	 * @param copyTo Path to paste to.
-	 * @param listener Listener that will be informed on operation finish. CAN'T BE NULL.
-	 */
-	public void paste(File copyTo, OnOperationFinishedListener listener) {
+    public void paste(File copyTo, OnOperationFinishedListener listener) {
+        paste(copyTo, listener, null);
+    }
+
+    /**
+     * Paste the copied/cut items.
+     *
+     * @param copyTo   Path to paste to.
+     * @param listener Listener that will be informed on operation finish. CAN'T BE NULL.
+     */
+    public void paste(File copyTo, OnOperationFinishedListener listener, OnOperationProgressListener progressListener) {
         mListener = listener;
+        mProgressListener = progressListener;
+        try {
+            EventBus.getDefault().register(this);
+        } catch (Exception e) {
+        }
+
+        mCancelAction = false;
 
         try {
             // Quick check just to make sure. Normally this should never be the case as the path we get is not user-generated.
@@ -403,10 +478,10 @@ public class CopyHelper {
 
             switch (mOperation) {
                 case COPY:
-                    new CopyAsync().execute(copyTo);
+                    mActionTask =  new CopyAsync().execute(copyTo);
                     break;
                 case CUT:
-                    new MoveAsync().execute(copyTo);
+                    mActionTask = new MoveAsync().execute(copyTo);
                     break;
                 default:
                     return;
@@ -415,68 +490,83 @@ public class CopyHelper {
         }
     }
 
-	private class CopyAsync extends ModernAsyncTask<File, Void, Boolean> {
-		@Override
-		protected void onPreExecute() {
-			Toast.makeText(mContext, R.string.copying, Toast.LENGTH_SHORT)
-					.show();
-		}
+    private class CopyAsync extends ModernAsyncTask<File, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            CustomToast.getInstance().toast(mContext, mContext.getResources().getString(R.string.copying), Toast.LENGTH_SHORT);
+        }
 
-		@Override
-		protected Boolean doInBackground(File... params) {
-			return performCopy(params[0]);
-		}
+        @Override
+        protected Boolean doInBackground(File... params) {
+            return performCopy(params[0]);
+        }
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			Toast.makeText(mContext,
-					result ? R.string.copied : R.string.copy_error,
-					Toast.LENGTH_SHORT).show();
+        @Override
+        protected void onPostExecute(Boolean result) {
+            CustomToast.getInstance().toast(mContext,
+                    result ? mContext.getResources().getString(R.string.copied) : mContext.getResources().getString(R.string.copy_error), Toast.LENGTH_SHORT);
 
-			// Clear as the references have been invalidated.
-			mClipboard.clear();
+            // Clear as the references have been invalidated.
+            mClipboard.clear();
 
-			if (mListener != null) {
-				mListener.operationFinished(result);
-				// Invalidate listener. 
-				mListener = null;
-			}
-		}
-	}
+            if (mListener != null) {
+                mListener.operationFinished(result);
+                // Invalidate listener.
+                mListener = null;
+            }
+            try {
+                EventBus.getDefault().unregister(this);
+            } catch (Exception e) {
+            }
+        }
+    }
 
-	private class MoveAsync extends ModernAsyncTask<File, Void, Boolean> {
-		@Override
-		protected void onPreExecute() {
-			Toast.makeText(mContext, R.string.moving, Toast.LENGTH_SHORT)
-					.show();
-		}
+    private class MoveAsync extends ModernAsyncTask<File, Void, Boolean> {
+        @Override
+        protected void onPreExecute() {
+            CustomToast.getInstance().toast(mContext, mContext.getResources().getString(R.string.moving), Toast.LENGTH_SHORT);
+        }
 
-		@Override
-		protected Boolean doInBackground(File... params) {
-			return performCut(params[0]);
-		}
+        @Override
+        protected Boolean doInBackground(File... params) {
+            return performCut(params[0]);
+        }
 
-		@Override
-		protected void onPostExecute(Boolean result) {
-			Toast.makeText(mContext,
-					result ? R.string.moved : R.string.move_error,
-					Toast.LENGTH_SHORT).show();
+        @Override
+        protected void onPostExecute(Boolean result) {
+            CustomToast.getInstance().toast(mContext,
+                    result ? mContext.getResources().getString(R.string.moved) : mContext.getResources().getString(R.string.move_error), Toast.LENGTH_SHORT);
 
-			// Clear as the references have been invalidated.
-			mClipboard.clear();
+            // Clear as the references have been invalidated.
+            mClipboard.clear();
 
-			if (mListener != null) {
-				mListener.operationFinished(result);
-				// Invalidate listener. 
-				mListener = null;
-			}
-		}
-	}
+            if (mListener != null) {
+                mListener.operationFinished(result);
+                // Invalidate listener.
+                mListener = null;
+            }
+            try {
+                EventBus.getDefault().unregister(this);
+            } catch (Exception e) {
+            }
+        }
+    }
 
-	public interface OnOperationFinishedListener {
-		/**
-		 * @param success Whether the operation was entirely successful.
-		 */
-		public void operationFinished(boolean success);
-	}
+    public interface OnOperationFinishedListener {
+        /**
+         * @param success Whether the operation was entirely successful.
+         */
+        public void operationFinished(boolean success);
+    }
+
+    public interface OnOperationProgressListener {
+        public void onProgress(int progress);
+    }
+
+    public void onEvent(CancelEvent event) {
+        mCancelAction = true;
+        if (mActionTask != null && mActionTask.getStatus() == ModernAsyncTask.Status.RUNNING) {
+            mActionTask.cancel(true);
+        }
+    }
 }

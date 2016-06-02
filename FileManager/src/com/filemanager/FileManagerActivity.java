@@ -166,42 +166,6 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 		this.setActionVisibility(View.VISIBLE);
 	}
 
-	// @Override
-	// public boolean onCreateOptionsMenu(Menu menu) {
-	// MenuInflater inflater = new MenuInflater(this);
-	// inflater.inflate(R.menu.main, menu);
-	//
-	// // mDistribution.onCreateOptionsMenu(menu);
-	// return true;
-	// }
-
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		// Generate any additional actions that can be performed on the
-		// overall list. This allows other applications to extend
-		// our menu with their own actions.
-		Intent intent = new Intent(null, getIntent().getData());
-		intent.addCategory(Intent.CATEGORY_ALTERNATIVE);
-		// menu.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-		// new ComponentName(this, NoteEditor.class), null, intent, 0, null);
-
-		// Workaround to add icons:
-		MenuIntentOptionsWithIcons menu2 = new MenuIntentOptionsWithIcons(this,
-				menu);
-		menu2.addIntentOptions(Menu.CATEGORY_ALTERNATIVE, 0, 0,
-				new ComponentName(this, FileManagerActivity.class), null,
-				intent, 0, null);
-
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-
-		int id = item.getItemId();
-		return super.onOptionsItemSelected(item);
-
-	}
 
 	// The following methods should properly handle back button presses on every
 	// API Level.
@@ -272,12 +236,10 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 					QuickAction.VERTICAL);
 			qa.setOnActionItemClickListener(this);
 			qa.addActionItem(new ActionItem(0,
-					getString(R.string.menu_multiselect), null), true);
-			qa.addActionItem(new ActionItem(1,
 					getString(R.string.create_new_folder), null), true);
-            qa.addActionItem(new ActionItem(2, getString(R.string.file_sort),
+            qa.addActionItem(new ActionItem(1, getString(R.string.file_sort),
                     null), true);
-            qa.addActionItem(new ActionItem(3, getString(R.string.storage_analysis),
+            qa.addActionItem(new ActionItem(2, getString(R.string.storage_analysis),
                     null), false);
             qa.show(view);
 		}
