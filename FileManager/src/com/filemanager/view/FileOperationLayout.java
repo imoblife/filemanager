@@ -1,6 +1,5 @@
 package com.filemanager.view;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -13,6 +12,7 @@ import android.widget.LinearLayout;
 import base.util.FileUtil;
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
+import com.filemanager.dialogs.CopyAndCutDialog;
 import com.filemanager.dialogs.MultiCompressDialog;
 import com.filemanager.dialogs.MultiDeleteDialog;
 import com.filemanager.dialogs.RenameDialog;
@@ -20,6 +20,7 @@ import com.filemanager.files.FileHolder;
 import com.filemanager.iconicdroid.FmFont;
 import com.filemanager.lists.FileListFragment;
 import com.filemanager.lists.SimpleFileListFragment;
+import com.filemanager.util.CopyHelper;
 import com.filemanager.util.MenuUtils;
 import com.iconics.IconFontDrawable;
 import com.iconics.typeface.IIcon;
@@ -127,6 +128,21 @@ public class FileOperationLayout extends LinearLayout {
         mOperationView4 = (IconicsTextView) findViewById(R.id.tv_opt_4);
         mOperationView5 = (IconicsTextView) findViewById(R.id.tv_opt_5);
 
+        mOperationView2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CopyHelper.get(mContext).cut(mAdapter.getSelectedItemList());
+                handleCutAndCopyAction();
+            }
+        });
+
+        mOperationView3.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CopyHelper.get(mContext).copy(mAdapter.getSelectedItemList());
+                handleCutAndCopyAction();
+            }
+        });
         mOperationView1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,6 +159,18 @@ public class FileOperationLayout extends LinearLayout {
             }
         });
 
+    }
+
+    private void handleCutAndCopyAction() {
+        DialogFragment dialog = new CopyAndCutDialog();
+        dialog.setTargetFragment(mFragment, 0);
+        Bundle args = new Bundle();
+        args.putParcelableArrayList(
+                FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER,
+                new ArrayList<Parcelable>(mAdapter.getSelectedItemList()));
+        dialog.setArguments(args);
+        dialog.show(mFragment.getFragmentManager(),
+                CopyAndCutDialog.class.getName());
     }
 
     private void compressFileList() {

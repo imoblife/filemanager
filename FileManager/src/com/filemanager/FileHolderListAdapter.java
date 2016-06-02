@@ -10,6 +10,7 @@ import com.filemanager.files.FileHolder;
 import com.filemanager.view.ViewHolder;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +27,8 @@ public class FileHolderListAdapter extends BaseAdapter {
 	private ThumbnailLoader mThumbnailLoader;
 	private boolean scrolling = false;
     private String mKeyword;
+    private boolean mIsOnlyShowDir = false;
+    private DirFilter mDirFilter;
 
 	//	private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
@@ -37,6 +40,7 @@ public class FileHolderListAdapter extends BaseAdapter {
 
         mFileListsSize = new HashMap<>();
 		mThumbnailLoader = new ThumbnailLoader(c);
+        mDirFilter = new DirFilter();
 	}
 
     public boolean isSelectMod() {
@@ -46,6 +50,14 @@ public class FileHolderListAdapter extends BaseAdapter {
     public void setSelectMod(boolean selectMod) {
         this.mIsSelectMod = selectMod;
         notifyDataSetChanged();
+    }
+
+    public boolean isOnlyShowDiy() {
+        return mIsOnlyShowDir;
+    }
+
+    public void setOnlyShowDir(boolean onlyShowDir) {
+        this.mIsOnlyShowDir = onlyShowDir;
     }
 
     public ArrayList<FileHolder> getSelectedItemList() {
@@ -158,7 +170,8 @@ public class FileHolderListAdapter extends BaseAdapter {
         String tertiaryInfo;
         File file = item.getFile();
         if (!mFileListsSize.containsKey(file)) {
-            String[] files = file.list();
+            String[] files = file.list(mIsOnlyShowDir ? mDirFilter : null);
+
             if (files != null) {
                 mFileListsSize.put(file, files.length);
                 tertiaryInfo = file.isDirectory() ? files.length + " "
@@ -242,6 +255,15 @@ public class FileHolderListAdapter extends BaseAdapter {
     public void stopProcessingThumbnailLoaderQueue() {
         if (mThumbnailLoader != null) {
             mThumbnailLoader.stopProcessingLoaderQueue();
+        }
+    }
+
+    private class DirFilter implements FilenameFilter{
+
+        @Override
+        public boolean accept(File dir, String filename) {
+            File file = new File(dir, filename);
+            return file.isDirectory();
         }
     }
 }

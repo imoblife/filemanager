@@ -6,4 +6,7 @@
     <dimen name="list_margin">8dp</dimen>
     <dimen name="list_margin_big">32dp</dimen>
     <dimen name="list_margin_huge">56dp</dimen>
+
+    <dimen name="cut_copy_dialog_height">216dp</dimen>
+
 </resources>

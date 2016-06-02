@@ -11,9 +11,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.FileListFragment;
-import com.filemanager.lists.MultiselectListFragment;
-import com.filemanager.util.FileUtils;
-import com.filemanager.util.MediaScannerUtils;
 import com.intents.FileManagerIntents;
 import imoblife.android.os.ModernAsyncTask;
 
@@ -23,6 +20,7 @@ import java.util.List;
 public class MultiDeleteDialog extends DialogFragment {
 	private List<FileHolder> mFileHolders;
     private Context mContext;
+    private boolean mCancel = false;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +35,6 @@ public class MultiDeleteDialog extends DialogFragment {
                 .title(getString(R.string.really_delete_multiselect, mFileHolders.size()))
                 .positiveText(android.R.string.ok)
                 .negativeText(android.R.string.cancel)
-                .iconRes(android.R.drawable.ic_dialog_alert)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onPositive(MaterialDialog dialog) {
@@ -58,7 +55,7 @@ public class MultiDeleteDialog extends DialogFragment {
 		 * If 0 some failed, if 1 all succeeded. 
 		 */
 		private int mResult = 1;
-		private MaterialDialog dialog = new MaterialDialog.Builder(getActivity()).progressIndeterminateStyle(false).progress(true, 0).build();
+		private MaterialDialog dialog;
 
 		/**
 		 * Recursively delete a file or directory and all of its children.
@@ -66,14 +63,25 @@ public class MultiDeleteDialog extends DialogFragment {
 		 * @returns 0 if successful, error value otherwise.
 		 */
 		private void recursiveDelete(File file) {
+
+            if (mCancel) {
+                return;
+            }
             if (PermissionUtil.isAndroid5() && (FileUtil.getDocumentFile(file, false, false, mContext) != null
                     || FileUtil.getDocumentFile(file, true, false, mContext) != null)) {
+
+                if (mCancel) {
+                    return;
+                }
                 mResult = (FileUtil.deleteFile(file, mContext)) ? 1 : 0;
             } else {
                 File[] files = file.listFiles();
                 if (files != null && files.length != 0)
                     // If it's a directory delete all children.
                     for (File childFile : files) {
+                        if (mCancel) {
+                            break;
+                        }
                         if (childFile.isDirectory()) {
                             recursiveDelete(childFile);
                         } else {
@@ -87,25 +95,49 @@ public class MultiDeleteDialog extends DialogFragment {
 		}
 		
 		@Override
-		protected void onPreExecute() {		
-			dialog.setContent(getActivity().getString(R.string.deleting));
-			dialog.show();
-		}
+		protected void onPreExecute() {
+            mCancel = false;
+            dialog = new MaterialDialog.Builder(getActivity())
+                    .content(mContext.getString(R.string.deleting))
+                    .progress(false, mFileHolders.size(), true)
+                    .cancelable(false)
+                    .positiveText(R.string.disableall_cancel)
+                    .positiveColorRes(R.color.blue_1ca0ec)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            if (!mCancel) {
+                                mCancel = true;
+                                cancel(true);
+                            }
+                        }
+                    })
+                    .build();
+
+            dialog.show();
+        }
 		
 		@Override
 		protected Void doInBackground(Void... params) {
-			for(FileHolder fh : mFileHolders)
-				recursiveDelete(fh.getFile());
-			return null;
+            int progress = 0;
+            for (FileHolder fh : mFileHolders) {
+                if (mCancel) {
+                    break;
+                }
+                recursiveDelete(fh.getFile());
+                try {
+                    dialog.setProgress(progress);
+                } catch (Exception e) {
+                }
+                progress++;
+            }
+            return null;
 		}
 
 		@Override
 		protected void onPostExecute(Void result) {
 			try {
 				Toast.makeText(dialog.getContext(), mResult == 0 ? R.string.delete_failure : R.string.delete_success, Toast.LENGTH_LONG).show();
-                if (getTargetFragment() instanceof MultiselectListFragment && mResult == 1) {
-                    ((FileListFragment) getTargetFragment()).getListView().clearChoices();
-                }
                 ((FileListFragment) getTargetFragment()).refresh();
 				dialog.dismiss();
 				

@@ -15,7 +15,7 @@
         android:padding="16dp"
         android:text="{FMT_ICON_DELETE}"
         android:textColor="@color/grey_999999"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:background="@drawable/bg_action_container_button"/>
 
     <View
@@ -30,7 +30,7 @@
         android:padding="16dp"
         android:text="{FMT_ICON_CUT}"
         android:textColor="@color/grey_999999"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:background="@drawable/bg_action_container_button"/>
 
     <View
@@ -45,7 +45,7 @@
         android:padding="16dp"
         android:text="{FMT_ICON_COPY}"
         android:textColor="@color/grey_999999"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:background="@drawable/bg_action_container_button"/>
 
     <View
@@ -60,7 +60,7 @@
         android:padding="16dp"
         android:text="{FMT_ICON_ZIP}"
         android:textColor="@color/grey_999999"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:background="@drawable/bg_action_container_button"/>
 
     <View
@@ -75,7 +75,7 @@
         android:padding="16dp"
         android:text="{FMT_ICON_MORE}"
         android:textColor="@color/grey_999999"
-        android:textSize="20sp"
+        android:textSize="20dp"
         android:background="@drawable/bg_action_container_button"/>
 
 
