@@ -241,6 +241,7 @@ public class SimpleFileListFragment extends FileListFragment implements
     private void updateSelectButtonState(int selectedItemCount){
         if (selectedItemCount == 0) {
             mSelectModeView.setVisibility(View.GONE);
+            mFileOperationLayout.setVisibility(View.GONE);
             mSearchActionBarLayout.setVisibility(View.VISIBLE);
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.VISIBLE);
             mPathBar.setPathButtonClickable(true);
@@ -248,26 +249,34 @@ public class SimpleFileListFragment extends FileListFragment implements
         } else if (selectedItemCount == mAdapter.getCount()) {
             mSelectModeView.setVisibility(View.VISIBLE);
             mSelectModeView.setText("{FMT_ICON_SELECT_NONE}");
-            mSearchActionBarLayout.setVisibility(View.GONE);
-            ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
-            mPathBar.setPathButtonClickable(false);
-        } else {
-            mSelectModeView.setVisibility(View.VISIBLE);
-            mSelectModeView.setText("{FMT_ICON_SELECT_ALL}");
+            mFileOperationLayout.setVisibility(View.VISIBLE);
             mSearchActionBarLayout.setVisibility(View.GONE);
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
             mPathBar.setPathButtonClickable(false);
 
+            mFileOperationLayout.updateOperationButtonState();
+        } else {
+            mSelectModeView.setVisibility(View.VISIBLE);
+            mSelectModeView.setText("{FMT_ICON_SELECT_ALL}");
+            mFileOperationLayout.setVisibility(View.VISIBLE);
+            mSearchActionBarLayout.setVisibility(View.GONE);
+            ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
+            mPathBar.setPathButtonClickable(false);
+
+            mFileOperationLayout.updateOperationButtonState();
         }
     }
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
 
-		FileHolder item = (FileHolder) mAdapter.getItem(position);
+        if (position >= mAdapter.getCount()) {
+            return;
+        }
+        FileHolder item = (FileHolder) mAdapter.getItem(position);
         if (mAdapter.isSelectMod()) {
             item.isSelect = !item.isSelect;
-            int selectedItemCount = mAdapter.getSelectedItemCount();
+            int selectedItemCount = mAdapter.getSelectedItemList().size();
             updateSelectButtonState(selectedItemCount);
             if (selectedItemCount == 0) {
                 mAdapter.setSelectMod(false);
@@ -409,6 +418,9 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        if (mAdapter != null && position >= mAdapter.getCount()) {
+            return false;
+        }
         if (mAdapter != null && mAdapter.getItem(position) != null) {
 //            new OperationDialog((FileHolder) mAdapter.getItem(position));
             FileHolder item = (FileHolder) mAdapter.getItem(position);
@@ -508,8 +520,16 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     @Override
     public void refresh() {
-        super.refresh();
-        mAdapter.clearFileChildrenCache();
+        try {
+            if (isAdded()) {
+                mAdapter.setSelectMod(false);
+                mAdapter.toggleAllItemState(false);
+                updateSelectButtonState(0);
+                super.refresh();
+                mAdapter.clearFileChildrenCache();
+            }
+        } catch (Exception e) {
+        }
     }
 
 
@@ -695,14 +715,14 @@ public class SimpleFileListFragment extends FileListFragment implements
 
         @Override
         public void onClick(View view) {
-            if (mAdapter.getSelectedItemCount() == mAdapter.getCount()) {
+            if (mAdapter.getSelectedItemList().size() == mAdapter.getCount()) {
                 mAdapter.toggleAllItemState(false);
                 mAdapter.setSelectMod(false);
             } else {
                 mAdapter.toggleAllItemState(true);
                 mAdapter.notifyDataSetChanged();
             }
-            updateSelectButtonState(mAdapter.getSelectedItemCount());
+            updateSelectButtonState(mAdapter.getSelectedItemList().size());
         }
     }
 }

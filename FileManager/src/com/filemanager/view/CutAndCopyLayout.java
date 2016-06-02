@@ -1,13 +1,14 @@
 package com.filemanager.view;
 
 import android.content.Context;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.*;
 import base.util.PreferenceHelper;
+import base.util.os.EnvironmentUtil;
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
 import com.filemanager.files.DirectoryContents;
@@ -87,7 +88,9 @@ public class CutAndCopyLayout extends LinearLayout {
         mListView.requestFocusFromTouch();
 
         String sdcardPath = PreferenceHelper.getSdcardPath(mContext.getApplicationContext());
-        mPath = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? sdcardPath : "/";
+//        mPath = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? sdcardPath : "/";
+//        mPath = EnvironmentUtil.getStoragePath(mContext, false);
+        mPath = !TextUtils.isEmpty(EnvironmentUtil.getStoragePath(mContext, true)) ? EnvironmentUtil.getStoragePath(mContext, true) : "/";
         mPathBar.setInitialDirectory(mPath);
 
         mPathBar.setOnDirectoryChangedListener(new PathBar.OnDirectoryChangedListener() {
