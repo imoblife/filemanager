@@ -14,12 +14,14 @@ import base.util.PreferenceDefault;
 import base.util.os.EnvironmentUtil;
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
+import com.filemanager.dialogs.ChangeDialogButtonEvent;
 import com.filemanager.files.DirectoryContents;
 import com.filemanager.files.DirectoryScanner;
 import com.filemanager.files.FileHolder;
 import com.filemanager.lists.SimpleFileListFragment;
 import com.filemanager.util.MimeTypes;
 import com.filemanager.util.Preference;
+import de.greenrobot.event.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -126,6 +128,9 @@ public class CutAndCopyLayout extends LinearLayout {
                     mPathBar.setInitialDirectory(item.getFile().getAbsolutePath());
                 } else {
                     openInformingPathBar(item);
+                    ChangeDialogButtonEvent event = new ChangeDialogButtonEvent();
+                    event.isRootPath = false;
+                    EventBus.getDefault().post(event);
                 }
             }
         });
@@ -149,6 +154,9 @@ public class CutAndCopyLayout extends LinearLayout {
             mFiles.add(new FileHolder(new File(mExSdPath), drawable, mContext));
         }
         mAdapter.notifyDataSetChanged();
+        ChangeDialogButtonEvent event = new ChangeDialogButtonEvent();
+        event.isRootPath = true;
+        EventBus.getDefault().post(event);
     }
 
     public void openInformingPathBar(FileHolder item) {

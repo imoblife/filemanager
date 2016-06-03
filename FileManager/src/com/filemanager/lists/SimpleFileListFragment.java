@@ -509,6 +509,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 	public boolean pressBack() {
         if (mAdapter != null && mAdapter.isSelectMod()) {
+            updateSelectButtonState(0);
             mAdapter.setSelectMod(false);
             mAdapter.toggleAllItemState(false);
             return true;
