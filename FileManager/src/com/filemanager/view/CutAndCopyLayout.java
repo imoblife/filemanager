@@ -1,13 +1,16 @@
 package com.filemanager.view;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.*;
-import base.util.PreferenceHelper;
+import base.util.FileUtil;
+import base.util.PreferenceDefault;
 import base.util.os.EnvironmentUtil;
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
@@ -31,10 +34,12 @@ public class CutAndCopyLayout extends LinearLayout {
     private int mCurrentSort = Preference.SORT_TYPE_DEFAULT;
 
     private String mPath;
+    private String mExSdPath;
 
     private Context mContext;
     private PathBar mPathBar;
     private ViewFlipper mFlipper;
+    private TextView mSelectSdTextView;
     private ListView mListView;
 
     private FileHolderListAdapter mAdapter;
@@ -61,8 +66,17 @@ public class CutAndCopyLayout extends LinearLayout {
         Preference preference = new Preference(mContext);
         mCurrentSort = preference.getInt(Preference.PREFS_KEY_SORT_TYPE, Preference.SORT_TYPE_DEFAULT);
 
-
         mFlipper = (ViewFlipper) findViewById(R.id.flipper);
+        mSelectSdTextView = (TextView) findViewById(R.id.tv_select_sd);
+        mSelectSdTextView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mScanner != null && mScanner.isRunning()) {
+                    mScanner.cancel();
+                }
+                initSdcardList();
+            }
+        });
         mPathBar = (PathBar) findViewById(R.id.pathbar);
         mListView = (ListView) findViewById(R.id.dialog_list);
         mListView.setEmptyView(findViewById(R.id.tv_empty));
@@ -87,11 +101,6 @@ public class CutAndCopyLayout extends LinearLayout {
         mListView.requestFocus();
         mListView.requestFocusFromTouch();
 
-        String sdcardPath = PreferenceHelper.getSdcardPath(mContext.getApplicationContext());
-//        mPath = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED) ? sdcardPath : "/";
-//        mPath = EnvironmentUtil.getStoragePath(mContext, false);
-        mPath = !TextUtils.isEmpty(EnvironmentUtil.getStoragePath(mContext, true)) ? EnvironmentUtil.getStoragePath(mContext, true) : "/";
-        mPathBar.setInitialDirectory(mPath);
 
         mPathBar.setOnDirectoryChangedListener(new PathBar.OnDirectoryChangedListener() {
             @Override
@@ -110,12 +119,36 @@ public class CutAndCopyLayout extends LinearLayout {
                     return;
                 }
                 FileHolder item = (FileHolder) mAdapter.getItem(i);
-                openInformingPathBar(item);
+                if (mPathBar.getVisibility() != VISIBLE) {
+                    mPathBar.setVisibility(VISIBLE);
+                }
+                if (mPathBar.getInitialDirectory() == null) {
+                    mPathBar.setInitialDirectory(item.getFile().getAbsolutePath());
+                } else {
+                    openInformingPathBar(item);
+                }
             }
         });
 
-        renewScanner();
-        mScanner.start();
+        setLoading(false);
+        initSdcardList();
+    }
+
+    private void initSdcardList() {
+        mPath = null;
+        mPathBar.setVisibility(INVISIBLE);
+        mPathBar.switchToStandardInput();
+        String internalSdcard = EnvironmentUtil.getStoragePath(mContext, false);
+        mExSdPath = EnvironmentUtil.getStoragePath(mContext, true);
+        mFiles.clear();
+        Drawable drawable = mContext.getResources().getDrawable(R.drawable.ic_sdcard);
+        if (!TextUtils.isEmpty(internalSdcard)) {
+            mFiles.add(new FileHolder(new File(internalSdcard), drawable, mContext));
+        }
+        if (!TextUtils.isEmpty(mExSdPath)) {
+            mFiles.add(new FileHolder(new File(mExSdPath), drawable, mContext));
+        }
+        mAdapter.notifyDataSetChanged();
     }
 
     public void openInformingPathBar(FileHolder item) {
@@ -173,7 +206,9 @@ public class CutAndCopyLayout extends LinearLayout {
     }
 
     public void refresh() {
-        mScanner.cancel();
+        if (mScanner != null && mScanner.isRunning()) {
+            mScanner.cancel();
+        }
         mScanner = null;
 
         // Indicate loading and start scanning.
@@ -221,5 +256,32 @@ public class CutAndCopyLayout extends LinearLayout {
                 e.printStackTrace();
             }
         }
+    }
+
+    public String getExSdPath() {
+        return mExSdPath;
+    }
+
+    public static boolean checkExSdCardWritable(Context context, String sdPath) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (PreferenceDefault.getTreeUris(context.getApplicationContext()).length == 0) {
+                return false;
+            } else {
+                String path = FileUtil.getFullPathFromTreeUri(PreferenceDefault.getTreeUris(context)[0], context.getApplicationContext());
+                boolean result = false;
+                if (sdPath.contains(path)) {
+                    try {
+                        result = FileUtil.isWritableNormalOrSaf(new File(path), context);
+
+                    } catch (Exception e) {
+                        PreferenceDefault.setTreeUris(context, "");
+                    }
+                }
+                return result;
+            }
+        }
+
+        return true;
     }
 }

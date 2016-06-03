@@ -146,5 +146,18 @@ public class MultiDeleteDialog extends DialogFragment {
 				e.printStackTrace();
 			}
 		}
-	}
+
+        @Override
+        protected void onCancelled(Void aVoid) {
+            try {
+                Toast.makeText(dialog.getContext(), mResult == 0 ? R.string.delete_failure : R.string.delete_success, Toast.LENGTH_LONG).show();
+                ((FileListFragment) getTargetFragment()).refresh();
+                dialog.dismiss();
+
+                mContext = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

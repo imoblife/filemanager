@@ -2,6 +2,7 @@ package com.filemanager.util;
 
 import android.support.v4.provider.DocumentFile;
 import base.util.*;
+import com.afollestad.materialdialogs.MaterialDialog;
 import imoblife.android.os.ModernAsyncTask;
 
 import java.io.*;
@@ -11,7 +12,6 @@ import java.util.zip.ZipFile;
 
 import com.filemanager.R;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
@@ -24,7 +24,7 @@ public class ExtractManager {
 
     private static final int BUFFER_SIZE = 1024;
     private Context context;
-    private ProgressDialog progressDialog;
+    private MaterialDialog progressDialog;
 	private OnExtractFinishedListener onExtractFinishedListener = null;
 
     public ExtractManager(Context context) {
@@ -38,6 +38,7 @@ public class ExtractManager {
     private class ExtractTask extends ModernAsyncTask<Object, Void, Integer> {
         private static final int success = 0;
         private static final int error = 1;
+        private boolean mCanceled = false;
 
         /**
          * count of extracted files to update the progress bar
@@ -52,6 +53,9 @@ public class ExtractManager {
                 ZipFile zipfile = new ZipFile(archive);
                 int fileCount = zipfile.size();
                 for (Enumeration e = zipfile.entries(); e.hasMoreElements();) {
+                    if (mCanceled) {
+                        return false;
+                    }
                     ZipEntry entry = (ZipEntry) e.nextElement();
                     unzipEntry(zipfile, entry, destinationPath);
                     isExtracted++;
@@ -83,14 +87,27 @@ public class ExtractManager {
         
         private void unzipEntry(ZipFile zipfile, ZipEntry entry,
                                 String outputDir) throws IOException {
+            if (mCanceled) {
+                return;
+            }
             if (entry.isDirectory()) {
                 createDir(new File(outputDir, entry.getName()));
                 return;
             }
             File outputFile = new File(outputDir, entry.getName());
+
+            if (mCanceled) {
+                return;
+            }
+
             if (!outputFile.getParentFile().exists()) {
                 createDir(outputFile.getParentFile());
             }
+
+            if (mCanceled) {
+                return;
+            }
+
             BufferedInputStream inputStream = new BufferedInputStream(zipfile.getInputStream(entry));
             BufferedOutputStream outputStream = null;
 
@@ -102,6 +119,11 @@ public class ExtractManager {
             } else {
                 outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
             }
+
+            if (mCanceled) {
+                return;
+            }
+
             try {
                 int len;
                 byte buf[] = new byte[BUFFER_SIZE];
@@ -116,12 +138,25 @@ public class ExtractManager {
 
         @Override
         protected void onPreExecute() {
-            progressDialog = new ProgressDialog(context);
-            progressDialog.setCancelable(false);
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            progressDialog.setMessage(context.getResources().getString(R.string.extracting));
+            mCanceled = false;
+            progressDialog = new MaterialDialog.Builder(context)
+                    .content(context.getString(R.string.extracting))
+                    .progress(false, 100, true)
+                    .cancelable(false)
+                    .positiveText(R.string.disableall_cancel)
+                    .positiveColorRes(R.color.blue_1ca0ec)
+                    .callback(new MaterialDialog.ButtonCallback() {
+                        @Override
+                        public void onPositive(MaterialDialog dialog) {
+                            if (!mCanceled) {
+                                mCanceled = true;
+                                cancel(true);
+                            }
+                        }
+                    })
+                    .build();
             progressDialog.show();
-            progressDialog.setProgress(0);
+
             isExtracted = 0;
         }
 
@@ -135,6 +170,7 @@ public class ExtractManager {
 
         @Override
         protected void onPostExecute(Integer result) {
+            mCanceled = true;
             progressDialog.cancel();
             if (result == error){
                 Toast.makeText(context, R.string.extracting_error, Toast.LENGTH_SHORT).show();
@@ -144,6 +180,20 @@ public class ExtractManager {
             
             if(onExtractFinishedListener != null)
             	onExtractFinishedListener.extractFinished();
+        }
+
+        @Override
+        protected void onCancelled(Integer result) {
+            mCanceled = true;
+            progressDialog.cancel();
+            if (result == error){
+                Toast.makeText(context, R.string.extracting_error, Toast.LENGTH_SHORT).show();
+            } else if (result == success){
+                Toast.makeText(context, R.string.extracting_success, Toast.LENGTH_SHORT).show();
+            }
+
+            if(onExtractFinishedListener != null)
+                onExtractFinishedListener.extractFinished();
         }
     }
     

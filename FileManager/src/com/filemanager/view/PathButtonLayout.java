@@ -3,17 +3,16 @@ package com.filemanager.view;
 import java.io.File;
 import java.util.HashMap;
 
+import android.text.TextUtils;
+import base.util.os.EnvironmentUtil;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
 import com.filemanager.occupancy.FileTreeNode;
 import com.filemanager.view.PathBar.Mode;
 
 import android.content.Context;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -24,10 +23,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.FrameLayout.LayoutParams;
-import android.widget.Toast;
 
 /**
  * This class handles the displaying of children in {@link Mode.STANDARD_INPUT},
@@ -67,7 +63,13 @@ class PathButtonLayout extends LinearLayout implements OnLongClickListener {
 		mPathDrawables.put("/storage/sdcard1", R.drawable.ic_navbar_sdcard);
 		mPathDrawables.put("/storage/sdcard2", R.drawable.ic_navbar_sdcard);
 		mPathDrawables.put("/", R.drawable.ic_navbar_home);
-	}
+        if (!TextUtils.isEmpty(EnvironmentUtil.getStoragePath(getContext(), false))) {
+            mPathDrawables.put(EnvironmentUtil.getStoragePath(getContext(), false), R.drawable.ic_navbar_sdcard);
+        }
+        if (!TextUtils.isEmpty(EnvironmentUtil.getStoragePath(getContext(), true))) {
+            mPathDrawables.put(EnvironmentUtil.getStoragePath(getContext(), true), R.drawable.ic_navbar_sdcard);
+        }
+    }
 
 	public void setNavigationBar(PathBar pathbar) {
 		mPathBar = pathbar;

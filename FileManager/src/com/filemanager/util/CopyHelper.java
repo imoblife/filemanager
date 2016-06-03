@@ -14,6 +14,7 @@ import imoblife.android.os.ModernAsyncTask;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -503,6 +504,15 @@ public class CopyHelper {
 
         @Override
         protected void onPostExecute(Boolean result) {
+            handleResult(result);
+        }
+
+        @Override
+        protected void onCancelled(Boolean result) {
+            handleResult(result);
+        }
+
+        private void handleResult(Boolean result) {
             CustomToast.getInstance().toast(mContext,
                     result ? mContext.getResources().getString(R.string.copied) : mContext.getResources().getString(R.string.copy_error), Toast.LENGTH_SHORT);
 
@@ -534,9 +544,17 @@ public class CopyHelper {
 
         @Override
         protected void onPostExecute(Boolean result) {
+            handleResult(result);
+        }
+
+        @Override
+        protected void onCancelled(Boolean result) {
+            handleResult(result);
+        }
+
+        private void handleResult(Boolean result) {
             CustomToast.getInstance().toast(mContext,
                     result ? mContext.getResources().getString(R.string.moved) : mContext.getResources().getString(R.string.move_error), Toast.LENGTH_SHORT);
-
             // Clear as the references have been invalidated.
             mClipboard.clear();
 
