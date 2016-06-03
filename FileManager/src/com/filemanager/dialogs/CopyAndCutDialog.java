@@ -5,10 +5,10 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import base.util.PermissionUtil;
 import base.util.PreferenceDefault;
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
@@ -27,10 +27,12 @@ public class CopyAndCutDialog extends DialogFragment {
     private boolean mIsCopy;
     private MaterialDialog mProgressDialog;
     private CutAndCopyLayout mContentView;
+    private MaterialDialog mDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
 
         mFileHolders = getArguments().getParcelableArrayList(FileManagerIntents.EXTRA_DIALOG_FILE_HOLDER);
     }
@@ -44,7 +46,7 @@ public class CopyAndCutDialog extends DialogFragment {
 
         mIsCopy = CopyHelper.get(getContext()).getOperationType().equals(CopyHelper.Operation.COPY);
         // Finally create the dialog
-        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
+        mDialog = new MaterialDialog.Builder(getActivity())
                 .title(mIsCopy ? R.string.file_dialog_operation_copy_title : R.string.file_dialog_operation_move_title)
                 .customView(mContentView, false)
                 .positiveText(mIsCopy ? R.string.file_dialog_operation_copy_button : R.string.file_dialog_operation_move_button)
@@ -107,9 +109,25 @@ public class CopyAndCutDialog extends DialogFragment {
                     }
                 })
                 .build();
-        return dialog;
+        mDialog.setActionButton(DialogAction.POSITIVE, null);
+        return mDialog;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    public void onEventMainThread(ChangeDialogButtonEvent event){
+
+        if (event.isRootPath) {
+            mDialog.setActionButton(DialogAction.POSITIVE, null);
+        } else {
+            mDialog.setActionButton(DialogAction.POSITIVE, mIsCopy ? getContext().getResources().getString(R.string.file_dialog_operation_copy_button) :
+                    getContext().getResources().getString(R.string.file_dialog_operation_move_button));
+        }
+    }
 
     private void showProgressDialog(int max){
         try {
