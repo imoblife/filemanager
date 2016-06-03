@@ -1,9 +1,14 @@
 package com.filemanager.dialogs;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
+import base.util.PermissionUtil;
+import base.util.PreferenceDefault;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.filemanager.R;
 import com.filemanager.files.FileHolder;
@@ -39,22 +44,42 @@ public class CopyAndCutDialog extends DialogFragment {
 
         mIsCopy = CopyHelper.get(getContext()).getOperationType().equals(CopyHelper.Operation.COPY);
         // Finally create the dialog
-        return new MaterialDialog.Builder(getActivity())
+        MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(mIsCopy ? R.string.file_dialog_operation_copy_title : R.string.file_dialog_operation_move_title)
                 .customView(mContentView, false)
                 .positiveText(mIsCopy ? R.string.file_dialog_operation_copy_button : R.string.file_dialog_operation_move_button)
                 .positiveColorRes(R.color.blue_1ca0ec)
                 .negativeText(R.string.dialog_cancle)
                 .negativeColorRes(R.color.grey_999999)
+                .autoDismiss(false)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
                     public void onNegative(MaterialDialog dialog) {
                         super.onNegative(dialog);
+                        dialog.dismiss();
                     }
 
                     @Override
                     public void onPositive(MaterialDialog dialog) {
                         super.onPositive(dialog);
+                        if (mContentView.getPath() == null) {
+                            return;
+                        }
+                        if (!TextUtils.isEmpty(mContentView.getExSdPath()) && (mContentView.getPath().contains(mContentView.getExSdPath()))
+                                && !CutAndCopyLayout.checkExSdCardWritable(getContext(), mContentView.getPath())) {
+                            PermissionUtil.showStorageAccessDialog(getTargetFragment(), new MaterialDialog.ButtonCallback() {
+                                public void onNegative(MaterialDialog dialog) {
+                                    PreferenceDefault.setBoolean(getContext(), PermissionUtil.KEY_USE_OLD_PATH, true);
+                                }
+                            }, new DialogInterface.OnCancelListener() {
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+
+                                }
+                            });
+                            return;
+                        }
+
                         showProgressDialog(mFileHolders.size());
                         CopyHelper.get(getContext()).paste(new File(mContentView.getPath()), new CopyHelper.OnOperationFinishedListener() {
                             public void operationFinished(boolean success) {
@@ -77,10 +102,14 @@ public class CopyAndCutDialog extends DialogFragment {
                                 }
                             }
                         });
+
+                        dialog.dismiss();
                     }
                 })
                 .build();
+        return dialog;
     }
+
 
     private void showProgressDialog(int max){
         try {
