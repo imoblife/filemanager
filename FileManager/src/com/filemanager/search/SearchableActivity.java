@@ -108,11 +108,6 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 				path = intent.getBundleExtra(SearchManager.APP_DATA).getString(
 						FileManagerIntents.EXTRA_SEARCH_INIT_PATH);
 
-			// Add query to recents.
-			SearchRecentSuggestions suggestions = new SearchRecentSuggestions(
-					this, RecentsSuggestionsProvider.AUTHORITY,
-					RecentsSuggestionsProvider.MODE);
-			suggestions.saveRecentQuery(query, null);
             setListAdapter(mAdapter);
 			// Register broadcast receivers
 			lbm.registerReceiver(new BroadcastReceiver() {
@@ -165,10 +160,6 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 	 * Clear the recents' history.
 	 */
 	public static void clearSearchRecents(Context c) {
-		SearchRecentSuggestions suggestions = new SearchRecentSuggestions(c,
-				RecentsSuggestionsProvider.AUTHORITY,
-				RecentsSuggestionsProvider.MODE);
-		suggestions.clearHistory();
 	}
 
 	// @Override

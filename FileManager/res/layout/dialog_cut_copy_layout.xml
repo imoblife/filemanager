@@ -16,10 +16,12 @@
             android:id="@+id/tv_select_sd"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/topBar_height"
-            android:text="SDCard "
+            android:text="@string/file_dialog_select_sdcard"
             android:gravity="center"
             android:textColor="@color/grey_999999"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:drawablePadding="2dp"
+            android:drawableRight="@drawable/path_divider"/>
 
         <com.filemanager.view.PathBar
             android:id="@+id/pathbar"

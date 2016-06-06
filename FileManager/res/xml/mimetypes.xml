@@ -50,7 +50,13 @@
 	<type extension=".txt" mimetype="text/plain" icon="@drawable/ic_launcher_text_plain" />
 	<type extension=".csv" mimetype="text/csv" icon="@drawable/ic_launcher_text_csv" />
 	<type extension=".xml" mimetype="text/xml" icon="@drawable/ic_launcher_text_xml" />
-	
+
+	<type extension=".ppt" mimetype="application/vnd.ms-powerpoint" icon="@drawable/ic_launcher_ppt" />
+
+	<type extension=".doc" mimetype="application/msword" icon="@drawable/ic_launcher_doc" />
+	<type extension=".xls" mimetype="application/vnd.ms-excel" icon="@drawable/ic_launcher_text_xls" />
+	<type extension=".xlsx" mimetype="application/vnd.ms-excel" icon="@drawable/ic_launcher_text_xls" />
+
 	<!-- Android specific -->
 	<type extension=".apk" mimetype="application/vnd.android.package-archive" icon="@drawable/ic_launcher_android_package" />
 	

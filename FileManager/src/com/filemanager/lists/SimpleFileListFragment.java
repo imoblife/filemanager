@@ -53,6 +53,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 
     private static final int MENU_ID_SORT = 253;
     private static final int MENU_ID_STORAGE_ANALYSIS = 254;
+    private static final int MENU_ID_CREATE_FOLDER= 255;
 
     private static final int SORT_BY_DEFAULT = Preference.SORT_TYPE_DEFAULT;
     private static final int SORT_BY_NAME = Preference.SORT_TYPE_NAME;
@@ -252,6 +253,7 @@ public class SimpleFileListFragment extends FileListFragment implements
             mFileOperationLayout.setVisibility(View.VISIBLE);
             mSearchActionBarLayout.setVisibility(View.GONE);
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
+            mPathBar.switchToStandardInput();
             mPathBar.setPathButtonClickable(false);
 
             mFileOperationLayout.updateOperationButtonState();
@@ -261,6 +263,7 @@ public class SimpleFileListFragment extends FileListFragment implements
             mFileOperationLayout.setVisibility(View.VISIBLE);
             mSearchActionBarLayout.setVisibility(View.GONE);
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
+            mPathBar.switchToStandardInput();
             mPathBar.setPathButtonClickable(false);
 
             mFileOperationLayout.updateOperationButtonState();
@@ -347,63 +350,18 @@ public class SimpleFileListFragment extends FileListFragment implements
 	}
 
 
-	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.simple_file_list, menu);
 
-	}
-
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		// We only know about ".nomedia" once scanning is finished.
-		boolean showMediaScanMenuItem = PreferenceActivity
-				.getMediaScanFromPreference(getActivity());
-		if (!mScanner.isRunning() && showMediaScanMenuItem) {
-			menu.findItem(R.id.menu_media_scan_include).setVisible(
-					mScanner.getNoMedia());
-			menu.findItem(R.id.menu_media_scan_exclude).setVisible(
-					!mScanner.getNoMedia());
-		} else {
-			menu.findItem(R.id.menu_media_scan_include).setVisible(false);
-			menu.findItem(R.id.menu_media_scan_exclude).setVisible(false);
-		}
-
-		if (CopyHelper.get(getActivity()).canPaste()) {
-			menu.findItem(R.id.menu_paste).setVisible(true);
-		} else {
-			menu.findItem(R.id.menu_paste).setVisible(false);
-		}
-	}
 
 	private boolean handleOptionMenu(int id) {
-		if (id == R.id.menu_create_folder) {
-			CreateDirectoryDialog dialog = new CreateDirectoryDialog();
-			dialog.setTargetFragment(this, 0);
-			Bundle args = new Bundle();
-			args.putString(FileManagerIntents.EXTRA_DIR_PATH, getPath());
-			dialog.setArguments(args);
-			dialog.show(getActivity().getSupportFragmentManager(), CreateDirectoryDialog.class.getName());
-			return true;
-		} else if (id == R.id.menu_media_scan_include) {
-			includeInMediaScan();
-			return true;
-		} else if (id == R.id.menu_media_scan_exclude) {
-			excludeFromMediaScan();
-			return true;
-		} else if (id == R.id.menu_paste) {
-			if (CopyHelper.get(getActivity()).canPaste())
-				CopyHelper.get(getActivity()).paste(new File(getPath()),
-						new CopyHelper.OnOperationFinishedListener() {
-							public void operationFinished(boolean success) {
-								refresh();
-
-							}
-						});
-			else
-				Toast.makeText(getActivity(), R.string.nothing_to_paste,
-						Toast.LENGTH_LONG).show();
-			return true;
-		} else if (id == MENU_ID_SORT) {
+        if (id == MENU_ID_CREATE_FOLDER) {
+            CreateDirectoryDialog dialog = new CreateDirectoryDialog();
+            dialog.setTargetFragment(this, 0);
+            Bundle args = new Bundle();
+            args.putString(FileManagerIntents.EXTRA_DIR_PATH, getPath());
+            dialog.setArguments(args);
+            dialog.show(getActivity().getSupportFragmentManager(), CreateDirectoryDialog.class.getName());
+            return true;
+        } else if (id == MENU_ID_SORT) {
             new SortDialog();
             return true;
         } else if (id == MENU_ID_STORAGE_ANALYSIS) {
@@ -544,7 +502,7 @@ public class SimpleFileListFragment extends FileListFragment implements
 
 	public void onTitlebarActionMenuClick(int position) {
         if (position == 0) {
-            handleOptionMenu(R.id.menu_create_folder);
+            handleOptionMenu(MENU_ID_CREATE_FOLDER);
         } else if (position == 1) {
             handleOptionMenu(MENU_ID_SORT);
         } else if (position == 2) {

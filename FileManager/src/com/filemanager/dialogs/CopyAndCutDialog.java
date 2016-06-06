@@ -121,6 +121,9 @@ public class CopyAndCutDialog extends DialogFragment {
 
     public void onEventMainThread(ChangeDialogButtonEvent event){
 
+        if (mDialog == null) {
+            return;
+        }
         if (event.isRootPath) {
             mDialog.setActionButton(DialogAction.POSITIVE, null);
         } else {

@@ -307,11 +307,6 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         }
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.simple_file_list, menu);
-
-    }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
@@ -348,6 +343,11 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
         }
     }
 
+    @Override
+    public void onTitlebarActionMenuClick(int positioon) {
+
+    }
+
     public class FileHolderLongClickListener implements AdapterView.OnItemLongClickListener {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -380,18 +380,6 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
 
         outState.putBoolean(INSTANCE_STATE_PATHBAR_MODE,
                 mPathBar.getMode() == PathBar.Mode.MANUAL_INPUT);
-    }
-
-    public void onTitlebarActionMenuClick(int position) {
-        if (position == 0) {
-            handleOptionMenu(R.id.menu_multiselect);
-        } else if (position == 1) {
-            handleOptionMenu(R.id.menu_create_folder);
-        } else if (position == 2) {
-            handleOptionMenu(MENU_ID_SORT);
-        } else if (position == 3) {
-            handleOptionMenu(MENU_ID_STORAGE_ANALYSIS);
-        }
     }
 
     private class DeleteDialog implements
