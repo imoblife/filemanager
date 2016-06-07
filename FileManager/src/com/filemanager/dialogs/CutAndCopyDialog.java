@@ -22,7 +22,7 @@ import de.greenrobot.event.EventBus;
 import java.io.File;
 import java.util.ArrayList;
 
-public class CopyAndCutDialog extends DialogFragment {
+public class CutAndCopyDialog extends DialogFragment {
     private ArrayList<FileHolder> mFileHolders;
     private boolean mIsCopy;
     private MaterialDialog mProgressDialog;

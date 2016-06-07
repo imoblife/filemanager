@@ -12,7 +12,7 @@ import android.widget.LinearLayout;
 import base.util.FileUtil;
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
-import com.filemanager.dialogs.CopyAndCutDialog;
+import com.filemanager.dialogs.CutAndCopyDialog;
 import com.filemanager.dialogs.MultiCompressDialog;
 import com.filemanager.dialogs.MultiDeleteDialog;
 import com.filemanager.dialogs.RenameDialog;
@@ -162,7 +162,7 @@ public class FileOperationLayout extends LinearLayout {
     }
 
     private void handleCutAndCopyAction() {
-        DialogFragment dialog = new CopyAndCutDialog();
+        DialogFragment dialog = new CutAndCopyDialog();
         dialog.setTargetFragment(mFragment, 0);
         Bundle args = new Bundle();
         args.putParcelableArrayList(
@@ -170,7 +170,7 @@ public class FileOperationLayout extends LinearLayout {
                 new ArrayList<Parcelable>(mAdapter.getSelectedItemList()));
         dialog.setArguments(args);
         dialog.show(mFragment.getFragmentManager(),
-                CopyAndCutDialog.class.getName());
+                CutAndCopyDialog.class.getName());
     }
 
     private void compressFileList() {
