@@ -29,6 +29,7 @@ public class FileHolderListAdapter extends BaseAdapter {
     private String mKeyword;
     private boolean mIsOnlyShowDir = false;
     private DirFilter mDirFilter;
+    private int mPadding = -1;
 
 	//	private ExecutorService executorService = Executors.newFixedThreadPool(3);
 
@@ -54,6 +55,14 @@ public class FileHolderListAdapter extends BaseAdapter {
 
     public boolean isOnlyShowDiy() {
         return mIsOnlyShowDir;
+    }
+
+    public int getPadding() {
+        return mPadding;
+    }
+
+    public void setPadding(int mPadding) {
+        this.mPadding = mPadding;
     }
 
     public void setOnlyShowDir(boolean onlyShowDir) {
@@ -161,11 +170,15 @@ public class FileHolderListAdapter extends BaseAdapter {
         int left = holder.content.getPaddingLeft();
         if (mIsSelectMod) {
             holder.checkBox.setChecked(item.isSelect);
-            holder.content.setBackgroundResource(item.isSelect ? R.drawable.item_selected : R.drawable.base_card_selector);
+            holder.content.setBackgroundResource(item.isSelect ? R.drawable.item_selected : R.drawable.item_selector);
         } else {
-            holder.content.setBackgroundResource(R.drawable.base_card_selector);
+            holder.content.setBackgroundResource(R.drawable.item_selector);
         }
-        holder.content.setPadding(left, top, right, bottom);
+        if (mPadding == -1) {
+            holder.content.setPadding(left, top, right, bottom);
+        } else {
+            holder.content.setPadding(mPadding, 0, mPadding, 0);
+        }
 
         String tertiaryInfo;
         File file = item.getFile();

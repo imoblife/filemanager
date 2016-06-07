@@ -37,54 +37,51 @@
             android:contentDescription="@string/item_icon"
             android:scaleType="fitXY" />
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/primary_info"
-                style="@style/base_item_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:layout_toRightOf="@id/icon"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_weight="1">
 
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="8dp"
-                android:orientation="horizontal" >
+                android:layout_toLeftOf="@+id/tertiary_info"
+                android:layout_marginRight="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/primary_info"
+                    style="@style/base_item_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
 
                 <TextView
                     android:id="@+id/secondary_info"
                     style="@style/base_item_detail"
-                    android:layout_width="fill_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/primary_info"
-                    android:layout_below="@+id/primary_info"
-                    android:layout_weight="1"
-                    android:maxLines="1"
-                    android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                <TextView
-                    android:id="@+id/tertiary_info"
-                    style="@style/base_item_detail"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@+id/secondary_info"
-                    android:layout_alignParentRight="true"
-                    android:layout_weight="1"
-                    android:gravity="right"
+                    android:layout_marginLeft="8dp"
+                    android:ellipsize="end"
                     android:maxLines="1"
                     android:textAppearance="?android:attr/textAppearanceSmall" />
             </LinearLayout>
-        </LinearLayout>
+
+            <TextView
+                android:id="@+id/tertiary_info"
+                style="@style/base_item_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="0dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:maxLines="1"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </RelativeLayout>
+
 
         <CheckBox
             android:id="@+id/checkbox_cb"
@@ -92,6 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:button="@drawable/base_checkbox_selector"
+            android:layout_marginLeft="10dp"
             android:clickable="false"
             android:focusable="false"
             android:gravity="center"

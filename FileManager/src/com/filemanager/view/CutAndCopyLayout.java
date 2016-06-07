@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.*;
 import base.util.FileUtil;
 import base.util.PreferenceDefault;
+import base.util.ViewUtil;
 import base.util.os.EnvironmentUtil;
 import com.filemanager.FileHolderListAdapter;
 import com.filemanager.R;
@@ -112,6 +113,7 @@ public class CutAndCopyLayout extends LinearLayout {
         });
 
         mAdapter = new FileHolderListAdapter(mFiles, mContext);
+        mAdapter.setPadding(ViewUtil.dip2px(mContext, 5));
         mAdapter.setOnlyShowDir(true);
         mListView.setAdapter(mAdapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

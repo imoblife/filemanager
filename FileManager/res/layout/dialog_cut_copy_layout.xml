@@ -18,6 +18,7 @@
             android:layout_height="@dimen/topBar_height"
             android:text="@string/file_dialog_select_sdcard"
             android:gravity="center"
+            android:layout_marginLeft="5dp"
             android:textColor="@color/grey_999999"
             android:textSize="13sp"
             android:drawablePadding="2dp"

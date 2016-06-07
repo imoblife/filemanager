@@ -19,6 +19,7 @@
         android:layout_below="@+id/titlebar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/topBar_height"
+        android:paddingLeft="8dp"
         android:gravity="center_vertical"
         android:background="@color/grey_f1f1f1" >
     </com.filemanager.view.PathBar>

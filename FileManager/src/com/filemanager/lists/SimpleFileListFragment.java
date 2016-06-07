@@ -243,7 +243,9 @@ public class SimpleFileListFragment extends FileListFragment implements
         if (selectedItemCount == 0) {
             mSelectModeView.setVisibility(View.GONE);
             mFileOperationLayout.setVisibility(View.GONE);
-            mSearchActionBarLayout.setVisibility(View.VISIBLE);
+            if (mSearchActionBarLayout.getVisibility() != View.VISIBLE) {
+                mSearchActionBarLayout.setVisibility(View.VISIBLE);
+            }
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.VISIBLE);
             mPathBar.setPathButtonClickable(true);
 
@@ -251,7 +253,9 @@ public class SimpleFileListFragment extends FileListFragment implements
             mSelectModeView.setVisibility(View.VISIBLE);
             mSelectModeView.setText("{FMT_ICON_SELECT_NONE}");
             mFileOperationLayout.setVisibility(View.VISIBLE);
-            mSearchActionBarLayout.setVisibility(View.GONE);
+            if (mSearchActionBarLayout.getVisibility() == View.VISIBLE) {
+                mSearchActionBarLayout.setVisibility(View.GONE);
+            }
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
             mPathBar.switchToStandardInput();
             mPathBar.setPathButtonClickable(false);
@@ -261,9 +265,13 @@ public class SimpleFileListFragment extends FileListFragment implements
             mSelectModeView.setVisibility(View.VISIBLE);
             mSelectModeView.setText("{FMT_ICON_SELECT_ALL}");
             mFileOperationLayout.setVisibility(View.VISIBLE);
-            mSearchActionBarLayout.setVisibility(View.GONE);
+            if (mSearchActionBarLayout.getVisibility() == View.VISIBLE) {
+                mSearchActionBarLayout.setVisibility(View.GONE);
+            }
             ((BaseTitlebarFragmentActivity) getActivity()).setActionVisibility(View.GONE);
-            mPathBar.switchToStandardInput();
+            if (mPathBar.getMode() != Mode.STANDARD_INPUT) {
+                mPathBar.switchToStandardInput();
+            }
             mPathBar.setPathButtonClickable(false);
 
             mFileOperationLayout.updateOperationButtonState();
