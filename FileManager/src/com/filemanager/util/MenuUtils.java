@@ -122,43 +122,6 @@ public abstract class MenuUtils {
         }
     }
 
-	/**
-	 * Call this to show the dialog that informs the user about possibly broken
-	 * options in the "More" dialog.
-	 * 
-	 * @param context
-	 *            The context that will be used for this dialog.
-	 * @param holder
-	 *            A {@link FileHolder} containing the file to act upon.
-	 */
-	private static void showWarningDialog(final FileHolder holder,
-			final Context context) {
-		LayoutInflater li = LayoutInflater.from(context);
-		View warningView = li.inflate(R.layout.dialog_warning, null);
-		final CheckBox showWarningAgain = (CheckBox) warningView
-				.findViewById(R.id.showagaincheckbox);
-
-		showWarningAgain.setChecked(PreferenceActivity
-				.getShowAllWarning(context));
-
-		new AlertDialog.Builder(context)
-				.setView(warningView)
-				.setTitle(
-						context.getString(R.string.title_warning_some_may_not_work))
-				.setMessage(
-						context.getString(R.string.warning_some_may_not_work))
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setPositiveButton(android.R.string.ok, new OnClickListener() {
-
-					public void onClick(DialogInterface dialog, int which) {
-						PreferenceActivity.setShowAllWarning(context,
-								showWarningAgain.isChecked());
-
-						showMoreCommandsDialog(holder, context);
-					}
-
-				}).create().show();
-	}
 
 	/**
 	 * Call this to show the "More" dialog for the passed {@link FileHolder}.

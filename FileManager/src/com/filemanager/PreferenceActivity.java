@@ -63,7 +63,6 @@ public class PreferenceActivity extends android.preference.PreferenceActivity
 		}
 
 
-		addPreferencesFromResource(R.xml.preferences);
 
 		/* Register the onSharedPreferenceChanged listener to update the SortBy ListPreference summary */
 		getPreferenceScreen().getSharedPreferences()
