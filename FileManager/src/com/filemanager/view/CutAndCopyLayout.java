@@ -152,6 +152,8 @@ public class CutAndCopyLayout extends LinearLayout {
         Drawable drawable = mContext.getResources().getDrawable(R.drawable.ic_sdcard);
         if (!TextUtils.isEmpty(internalSdcard)) {
             mFiles.add(new FileHolder(new File(internalSdcard), drawable, mContext));
+        } else {
+            mFiles.add(new FileHolder(new File("/"), drawable, mContext));
         }
         if ((Build.VERSION.SDK_INT < 19 || Build.VERSION.SDK_INT >= 21) && !TextUtils.isEmpty(mExSdPath)) {
             mFiles.add(new FileHolder(new File(mExSdPath), drawable, mContext));

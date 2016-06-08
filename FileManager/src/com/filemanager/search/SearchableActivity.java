@@ -90,7 +90,6 @@ public class SearchableActivity extends BaseTitlebarListActivity {
 	@Override
 	protected void onNewIntent(Intent intent) {
 		setIntent(intent);
-		handleIntent();
 	}
 
 	private void handleIntent() {
@@ -233,6 +232,7 @@ public class SearchableActivity extends BaseTitlebarListActivity {
                 }
                 //finally refresh the listView
                 mAdapter.setData(path);
+                SearchResultContainer.getInstance().clear();
                 return;
             }
 

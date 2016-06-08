@@ -120,7 +120,7 @@ public abstract class FileListFragment extends BaseListFragment {
 
 		setListAdapter(mAdapter);
         View footer = new View(getContext());
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewUtil.dip2px(getContext(), 56));
+        AbsListView.LayoutParams params = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewUtil.dip2px(getContext(), 56));
         footer.setLayoutParams(params);
         getListView().addFooterView(footer);
 		mScanner.start();

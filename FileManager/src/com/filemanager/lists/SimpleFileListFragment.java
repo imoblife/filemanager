@@ -187,9 +187,11 @@ public class SimpleFileListFragment extends FileListFragment implements
 					try {
 						if (isAdded()) {
 							final int p = mAdapter.findHighlightPosition();
-							int s = (int) MathUtil.clamp(0, p, p);
-							getListView().setSelection(s);
-						}
+                            if (p != -1) {
+                                int s = (int) MathUtil.clamp(0, p, p);
+                                getListView().setSelection(s);
+                            }
+                        }
 					} catch (Throwable ignored) {
 					}
 				}
