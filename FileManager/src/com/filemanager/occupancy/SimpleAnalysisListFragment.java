@@ -527,10 +527,10 @@ public class SimpleAnalysisListFragment extends StorageListFragment implements
             mCurrentSizeTextView.setText(Formatter.formatFileSize(getContext(), currentTreeNode.size));
 
             String format1 = getResources().getString(R.string.storage_analysis_avail_size);
-            String result1 = String.format(format1, Formatter.formatFileSize(getContext(), StatFsUtil.getFreeSdcard(getContext())));
+            String result1 = String.format(format1, Formatter.formatFileSize(getContext(), StatFsUtil.getFreeSdcard(getContext(), mPathBar.getInitialDirectory().getAbsolutePath())));
             mAvailSizeTextView.setText(result1);
             String format2 = getResources().getString(R.string.storage_analysis_total_size);
-            String result2 = String.format(format2, Formatter.formatFileSize(getContext(), StatFsUtil.getTotalSdcard(getContext())));
+            String result2 = String.format(format2, Formatter.formatFileSize(getContext(), StatFsUtil.getTotalSdcard(getContext(), mPathBar.getInitialDirectory().getAbsolutePath())));
             mTotalSizeTextView.setText(result2);
         } else {
             mStorageAnalysisLayout.setVisibility(View.GONE);
