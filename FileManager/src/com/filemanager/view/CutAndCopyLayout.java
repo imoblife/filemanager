@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.*;
+import base.util.CustomToast;
 import base.util.FileUtil;
 import base.util.PreferenceDefault;
 import base.util.ViewUtil;
@@ -287,6 +288,8 @@ public class CutAndCopyLayout extends LinearLayout {
                     } catch (Exception e) {
                         PreferenceDefault.setTreeUris(context, "");
                     }
+                } else {
+                    CustomToast.show(context, context.getResources().getString(R.string.file_path_no_permission_message, sdPath), Toast.LENGTH_SHORT);
                 }
                 return result;
             }

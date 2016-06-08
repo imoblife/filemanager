@@ -81,4 +81,5 @@
     <string name="file_dialog_operation_move_button">PASTE</string>
     <string name="file_dialog_operation_in_progress">In Progress</string>
     <string name="file_dialog_select_sdcard">SDCards</string>
+    <string name="file_path_no_permission_message">path %1s has no permission, select SD card will fix this issue</string>
 </resources>
