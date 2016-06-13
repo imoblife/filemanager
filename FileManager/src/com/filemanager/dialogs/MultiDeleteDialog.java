@@ -119,17 +119,20 @@ public class MultiDeleteDialog extends DialogFragment {
 		
 		@Override
 		protected Void doInBackground(Void... params) {
-            int progress = 0;
-            for (FileHolder fh : mFileHolders) {
-                if (mCancel) {
-                    break;
+            try {
+                int progress = 0;
+                for (FileHolder fh : mFileHolders) {
+                    if (mCancel) {
+                        break;
+                    }
+                    recursiveDelete(fh.getFile());
+                    try {
+                        dialog.setProgress(progress);
+                    } catch (Exception e) {
+                    }
+                    progress++;
                 }
-                recursiveDelete(fh.getFile());
-                try {
-                    dialog.setProgress(progress);
-                } catch (Exception e) {
-                }
-                progress++;
+            } catch (Exception e) {
             }
             return null;
 		}
