@@ -101,6 +101,11 @@ public abstract class FileListFragment extends BaseListFragment {
 		getListView().requestFocus();
 		getListView().requestFocusFromTouch();
 
+        View footer = new View(getContext());
+        AbsListView.LayoutParams params = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewUtil.dip2px(getContext(), 56));
+        footer.setLayoutParams(params);
+        getListView().addFooterView(footer);
+
 		// Init flipper
 		mFlipper = (ViewFlipper) view.findViewById(R.id.flipper);
 
@@ -119,10 +124,7 @@ public abstract class FileListFragment extends BaseListFragment {
 		mAdapter = new FileHolderListAdapter(mFiles, getActivity());
 
 		setListAdapter(mAdapter);
-        View footer = new View(getContext());
-        AbsListView.LayoutParams params = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewUtil.dip2px(getContext(), 56));
-        footer.setLayoutParams(params);
-        getListView().addFooterView(footer);
+
 		mScanner.start();
 
 	}
