@@ -130,7 +130,19 @@ public class FmFont implements ITypeface {
         FMT_ICON_SEND('\uE907'),
         FMT_ICON_SHORT('\uE908'),
         FMT_ICON_ZIP('\uE909'),
-        FMT_ICON_UNZIP('\uE91A');
+        FMT_ICON_UNZIP('\uE91A'),
+
+
+        FMT_ICON_IMAGE('\uE91B'),
+        FMT_ICON_MUSIC('\uE91C'),
+        FMT_ICON_DOWNLOAD('\uE91D'),
+        FMT_ICON_DOCUMENT('\uE91E'),
+        FMT_ICON_APK('\uE91F'),
+        FMT_ICON_VIDEO('\uE920'),
+        FMT_ICON_COMPRESS('\uE921'),
+        FMT_ICON_RECENT('\uE922'),
+        FMT_ICON_INTERNAL('\uE923'),
+        FMT_ICON_SD('\uE924');
 
 
         char character;

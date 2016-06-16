@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.filemanager.view.HomeFunctionView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/ln_up"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:minHeight="90dp"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_1"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_2"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_3"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_4"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ln_down"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ln_up"
+        android:gravity="center_vertical"
+        android:minHeight="90dp"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_5"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_6"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_7"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <include
+            android:id="@+id/function_item_8"
+            layout="@layout/home_function_item" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
+</com.filemanager.view.HomeFunctionView>

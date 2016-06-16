@@ -227,7 +227,9 @@ public class FileManagerActivity extends DistributionLibraryFragmentActivity imp
 
     @Override
     public void onSearch() {
-        onSearchRequested();
+//        onSearchRequested();
+        Intent i = new Intent(this,FileManagerMainActivity.class);
+        startActivity(i);
     }
 
     private class QuickActionMenu implements OnActionItemClickListener {

@@ -6,4 +6,13 @@
         <color name="press">#400099CC</color>
         <color name="focus">#800099CC</color>
         <color name="search_highlight">#FFF5633a</color>
+
+        <color name="function_item_color_1">#FF1CA0EC</color>
+        <color name="function_item_color_2">#FF9D73EB</color>
+        <color name="function_item_color_3">#FFFE7282</color>
+        <color name="function_item_color_4">#FF26C15F</color>
+        <color name="function_item_color_5">#FF1CA0EC</color>
+        <color name="function_item_color_6">#FF26C15F</color>
+        <color name="function_item_color_7">#FF9D73EB</color>
+        <color name="function_item_color_8">#FFFE7282</color>
     </resources>

@@ -82,4 +82,14 @@
     <string name="file_dialog_operation_in_progress">In Progress</string>
     <string name="file_dialog_select_sdcard">SDCards</string>
     <string name="file_path_no_permission_message">path %1s has no permission, select SD card will fix this issue</string>
+
+    <!--6.3-->
+    <string name="file_function_item_1">Images</string>
+    <string name="file_function_item_2">Audio</string>
+    <string name="file_function_item_3">Videos</string>
+    <string name="file_function_item_4">Documents</string>
+    <string name="file_function_item_5">Apks</string>
+    <string name="file_function_item_6">Downloads</string>
+    <string name="file_function_item_7">Compressed</string>
+    <string name="file_function_item_8">Recent</string>
 </resources>
