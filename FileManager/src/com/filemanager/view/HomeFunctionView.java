@@ -2,16 +2,20 @@ package com.filemanager.view;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import base.util.PackageUtil;
+import com.filemanager.FileImageActivity;
 import com.filemanager.R;
 import com.filemanager.iconicdroid.FmFont;
 import com.iconics.IconFontDrawable;
@@ -25,7 +29,7 @@ import java.util.TreeSet;
 /**
  * Created by Administrator on 2016/6/16.
  */
-public class HomeFunctionView extends RelativeLayout {
+public class HomeFunctionView extends RelativeLayout implements View.OnClickListener {
 
     private Context mContext;
     private FunctionItem mFunctionItem1;
@@ -36,7 +40,6 @@ public class HomeFunctionView extends RelativeLayout {
     private FunctionItem mFunctionItem6;
     private FunctionItem mFunctionItem7;
     private FunctionItem mFunctionItem8;
-
 
 
     public HomeFunctionView(Context context) {
@@ -70,15 +73,41 @@ public class HomeFunctionView extends RelativeLayout {
         mFunctionItem7 = new FunctionItem(findViewById(R.id.function_item_7), R.string.file_function_item_7, getFunctionDrawable(mContext, 7, R.color.function_item_color_7));
         mFunctionItem8 = new FunctionItem(findViewById(R.id.function_item_8), R.string.file_function_item_8, getFunctionDrawable(mContext, 8, R.color.function_item_color_8));
 
-        mFunctionItem1.textViewCount.setText(getFilePaths().size()+"");
+        mFunctionItem1.textViewCount.setText(getFilePaths((Activity) mContext).size() + "");
     }
 
-    private class FunctionItem{
+    @Override
+    public void onClick(View view) {
+        int viewId = view.getId();
+        Intent i = new Intent();
+        if (viewId == R.id.function_item_1) {
+            i.setClass(mContext, FileImageActivity.class);
+        } else if (viewId == R.id.function_item_2) {
+
+        } else if (viewId == R.id.function_item_3) {
+
+        } else if (viewId == R.id.function_item_4) {
+
+        } else if (viewId == R.id.function_item_5) {
+
+        } else if (viewId == R.id.function_item_6) {
+
+        } else if (viewId == R.id.function_item_7) {
+
+        } else if (viewId == R.id.function_item_8) {
+
+        }
+        mContext.startActivity(i);
+    }
+
+
+    private class FunctionItem {
         public ImageView imageViewIcon;
         public TextView textViewName;
         public TextView textViewCount;
 
         private FunctionItem(View rootView, int stringRes, Drawable drawable) {
+            rootView.setOnClickListener(HomeFunctionView.this);
             imageViewIcon = (ImageView) rootView.findViewById(R.id.iv_icon);
             textViewName = (TextView) rootView.findViewById(R.id.tv_name);
             textViewCount = (TextView) rootView.findViewById(R.id.tv_count);
@@ -90,7 +119,7 @@ public class HomeFunctionView extends RelativeLayout {
 
     }
 
-    private Drawable getFunctionDrawable(Context context,int type, int colorRes) {
+    private Drawable getFunctionDrawable(Context context, int type, int colorRes) {
         IconFontDrawable drawable = null;
         IIcon iIcon = null;
         switch (type) {
@@ -128,7 +157,7 @@ public class HomeFunctionView extends RelativeLayout {
         return drawable;
     }
 
-    private ArrayList<String> getFilePaths() {
+    public static ArrayList<String> getFilePaths(Activity activity) {
         Uri u = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
         String[] projection = {MediaStore.Images.ImageColumns.DATA};
         Cursor c = null;
@@ -137,7 +166,7 @@ public class HomeFunctionView extends RelativeLayout {
 
         String[] directories = null;
         if (u != null) {
-            c = ((Activity)mContext).managedQuery(u, projection, null, null, null);
+            c = activity.managedQuery(u, projection, null, null, null);
         }
 
         if ((c != null) && (c.moveToFirst())) {

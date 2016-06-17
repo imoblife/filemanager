@@ -84,6 +84,9 @@
     <string name="file_path_no_permission_message">path %1s has no permission, select SD card will fix this issue</string>
 
     <!--6.3-->
+    <string name="file_home_internal_name">Device</string>
+    <string name="file_home_sd_name">SD card</string>
+
     <string name="file_function_item_1">Images</string>
     <string name="file_function_item_2">Audio</string>
     <string name="file_function_item_3">Videos</string>
@@ -92,4 +95,6 @@
     <string name="file_function_item_6">Downloads</string>
     <string name="file_function_item_7">Compressed</string>
     <string name="file_function_item_8">Recent</string>
+
+    <string name="file_image_name">Images</string>
 </resources>

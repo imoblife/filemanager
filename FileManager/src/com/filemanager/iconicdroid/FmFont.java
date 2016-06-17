@@ -142,7 +142,8 @@ public class FmFont implements ITypeface {
         FMT_ICON_COMPRESS('\uE921'),
         FMT_ICON_RECENT('\uE922'),
         FMT_ICON_INTERNAL('\uE923'),
-        FMT_ICON_SD('\uE924');
+        FMT_ICON_SD('\uE924'),
+        FMT_ICON_ARROW_RIGHT('\uE925');
 
 
         char character;

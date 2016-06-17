@@ -19,9 +19,10 @@
         android:id="@+id/rl_content_1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
+        android:layout_below="@+id/function_layout"
+        android:layout_marginTop="12dp"
         android:paddingBottom="16dp"
-        android:layout_below="@+id/function_layout">
+        android:paddingTop="16dp">
 
         <com.iconics.view.IconicsImageView
             android:id="@+id/iv_icon_1"
@@ -35,15 +36,67 @@
             app:iiv_corner_radius="5dp"
             app:iiv_icon="FMT_ICON_INTERNAL" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/iv_arrow_1"
+            android:layout_toRightOf="@+id/iv_icon_1">
+
+            <TextView
+                android:id="@+id/tv_device"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/file_home_internal_name"
+                android:textColor="@color/grey_333333"
+                android:textSize="@dimen/normal" />
+
+            <TextView
+                android:id="@+id/tv_device_storage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tv_device"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/tv_device"
+                android:gravity="center_vertical"
+                android:text="@string/examine_ram_free"
+                android:textColor="@color/grey_999999"
+                android:textSize="@dimen/xsmall" />
+
+
+            <ProgressBar
+                android:id="@+id/size_progress_device"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@+id/tv_device"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:progressDrawable="@drawable/bg_progress_bar" />
+        </RelativeLayout>
+
+        <com.iconics.view.IconicsImageView
+            android:id="@+id/iv_arrow_1"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:iiv_color="@color/grey_cccccc"
+            app:iiv_icon="FMT_ICON_ARROW_RIGHT" />
+
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_content_2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="16dp"
+        android:layout_below="@+id/rl_content_1"
         android:paddingBottom="16dp"
-        android:layout_below="@+id/rl_content_1">
+        android:paddingTop="16dp">
 
         <com.iconics.view.IconicsImageView
             android:id="@+id/iv_icon_2"
@@ -57,6 +110,58 @@
             app:iiv_corner_radius="5dp"
             app:iiv_icon="FMT_ICON_SD" />
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@+id/iv_arrow_2"
+            android:layout_toRightOf="@+id/iv_icon_2">
+
+            <TextView
+                android:id="@+id/tv_sd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/file_home_sd_name"
+                android:textColor="@color/grey_333333"
+                android:textSize="@dimen/normal" />
+
+
+            <TextView
+                android:id="@+id/tv_sd_storage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/tv_sd"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/tv_sd"
+                android:gravity="center_vertical"
+                android:text="@string/examine_ram_free"
+                android:textColor="@color/grey_999999"
+                android:textSize="@dimen/xsmall" />
+
+
+            <ProgressBar
+                android:id="@+id/size_progress_sd"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:layout_below="@+id/tv_sd"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="8dp"
+                android:max="100"
+                android:progressDrawable="@drawable/bg_progress_bar" />
+        </RelativeLayout>
+
+        <com.iconics.view.IconicsImageView
+            android:id="@+id/iv_arrow_2"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            app:iiv_color="@color/grey_cccccc"
+            app:iiv_icon="FMT_ICON_ARROW_RIGHT" />
     </RelativeLayout>
 
 </RelativeLayout>
